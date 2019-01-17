@@ -1,0 +1,98 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <form method="POST" action="scripture_commentary">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.choose_kid.label }}
+                        {{ form.choose_kid(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ form.date.label }}
+                        {{ form.date(class_="col-12") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.start_book.label }}
+                        {{ form.start_book(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ form.start_chapter.label }}
+                        {{ form.start_chapter(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ form.start_verse.label }}
+                        {{ form.start_verse(class_="col-12") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.end_book.label }}
+                        {{ form.end_book(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ form.end_chapter.label }}
+                        {{ form.end_chapter(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ form.end_verse.label }}
+                        {{ form.end_verse(class_="col-12") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.comment.label }}
+                    {{ form.comment(class_="col-12", cols="46", rows="5") }}
+                </div>
+                <div class="form-row">
+                    <div class="col-md-auto">
+                        <input class="btn btn-primary" id="submit" type="submit"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+
+        <script>
+            document.getElementById('choose_kid').focus();
+
+            document.getElementById('comment').value = '';
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
+        </script>
+    {% endblock scripts %}
+
+{% endblock body %}

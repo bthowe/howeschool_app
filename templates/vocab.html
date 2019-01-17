@@ -1,0 +1,55 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <h3>{{ message }}</h3>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form class="form-signin" method="POST" action="vocab">
+                <div class="form-group col-md-20">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 pt-0">What do you want to do?</legend>
+                    </div>
+                    {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.practice_type) }}
+                </div>
+                <div class="form-group col-md-20">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-2 pt-0">Prompt Type:</legend>
+                    </div>
+                    {{ wtf.form_field(form.prompt_type) }}
+                </div>
+
+                {{ wtf.form_field(form.lesson_num) }}
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+            </form>
+        </div> <!-- /container -->
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+    {% endblock scripts %}
+
+{% endblock body %}

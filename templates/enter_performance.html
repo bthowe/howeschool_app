@@ -1,0 +1,320 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main_content">
+            <form onsubmit="return false;">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="choose_kid">Name</label>
+                        <select id="choose_kid" class="form-control" onchange=bookAutoFill()>
+                            <option selected>Choose...</option>
+                            <option>Calvin</option>
+                            <option>Samuel</option>
+                            <option>Kay</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="choose_book">Book</label>
+                        <select id="choose_book" class="form-control">
+                            <option selected>Choose...</option>
+                            <option value="Math_5_4">Math 5/4</option>
+                            <option value="Math_6_5">Math 6/5</option>
+                            <option value="Math_7_6">Math 7/6</option>
+                            <option value="Math_8_7">Math 8/7</option>
+                            <option value="Algebra_1_2">Algebra 1/2</option>
+                            <option value="Algebra_1">Algebra 1</option>
+                            <option value="Algebra_2">Algebra 2</option>
+                            <option value="Advanced_math">Advanced Math</option>
+                            <option value="Calculus">Calculus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-auto">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="testCheck">
+                            <label class="form-check-label" for="testCheck">Test</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="start_chapter">Start Chapter</label>
+                        <input type="text" class="form-control" id="start_chapter" placeholder="Start Chapter">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="start_problem">First Problem</label>
+                        <input type="text" class="form-control" id="start_problem" placeholder="First Problem">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="end_chapter">End Chapter</label>
+                        <input type="text" class="form-control" id="end_chapter" placeholder="End Chapter">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="end_problem">Last Problem</label>
+                        <input type="text" class="form-control" id="end_problem" placeholder="Last Problem">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="date">Date</label>
+                        <input type="text" class="form-control" id="date" placeholder="yyyy-hh-mm">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="start_time">Start Time</label>
+                        <input type="text" class="form-control" id="start_time" placeholder="hh:mm">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="end_time">Stop Time</label>
+                        <input type="text" class="form-control" id="end_time" placeholder="hh:mm">
+                    </div>
+                </div>
+                <button id="button" type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+
+        <script>
+            var kid;
+            var book;
+            var start_chapter;
+            var start_problem;
+            var end_chapter;
+            var end_problem;
+            var date;
+            var start_time;
+            var end_time;
+            var alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            var miss_list = [];
+            var add_miss_list = [];
+            var rem_miss_list = [];
+            var test;
+
+            document.getElementById('choose_kid').focus();
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
+
+
+            function createProblems(chap, probs) {
+                var num;
+                var h_tag;
+                var t_tag;
+                var count = 0;
+                h_tag = document.createElement("H1");
+                if (test) {
+                    t_tag = document.createTextNode("Test " + chap);
+                }
+                else {
+                    t_tag = document.createTextNode("Lesson " + chap);
+                }
+                h_tag.appendChild(t_tag);
+
+                var main_content = document.getElementById('main_content');
+                main_content.appendChild(h_tag);
+                for (var i = 0; i < probs.length; i++) {
+                    if ((probs[i].match(/[a-z]/i) != null) & (count == 0)) {
+                        h_tag = document.createElement("H3");
+                        t_tag = document.createTextNode("Lesson Practice");
+                        h_tag.appendChild(t_tag);
+                        main_content.appendChild(h_tag);
+                        count++;
+                    }
+                    else if ((probs[i].match(/[a-z]/i) == null) & (count == 1)) {
+                        h_tag = document.createElement("H3");
+                        t_tag = document.createTextNode("Mixed Practice");
+                        h_tag.appendChild(t_tag);
+                        main_content.appendChild(h_tag);
+                        count++;
+                    }
+                    var btn = document.createElement("BUTTON");
+                    btn.id = 'btn' + toString(probs[i]);
+                    btn.setAttribute('style', "font-size:24px; background: green");
+                    btn.innerHTML = probs[i];
+                    btn.value = chap + '_' + probs[i];
+                    main_content.appendChild(btn);
+                    btn.addEventListener('click', function (event) {
+                        if (event.target.style.background === "red") {
+                            event.target.style.background = "green";
+        //                    miss_list = miss_list.filter(function(el){ return ((el.chapter != event.target.value.split('_')[0].toString()) && (el.problem != event.target.value.split('_')[1].toString())); });
+                            var jsonData_miss = {}
+
+                            jsonData_miss['chapter'] = event.target.value.split('_')[0].toString()
+                            jsonData_miss['problem'] = event.target.value.split('_')[1].toString()
+                            rem_miss_list.push(jsonData_miss)
+                        }
+                        else {
+                            event.target.style.background = "red";
+
+                            var jsonData = {}
+                            jsonData['chapter'] = event.target.value.split('_')[0].toString()
+                            jsonData['problem'] = event.target.value.split('_')[1].toString()
+                            add_miss_list.push(jsonData)
+                        }
+                    });
+                }
+            };
+
+            function createButton() {
+                var div = document.createElement("div");
+                var main_content = document.getElementById('main_content');
+                main_content.appendChild(div);
+                document.body.appendChild(div);
+
+                var btn = document.createElement("BUTTON");
+                btn.id = 'button_record';
+                btn.innerHTML = 'Record';
+                div.appendChild(btn);
+                btn.addEventListener('click', function (event) {
+                    var request = new XMLHttpRequest();
+                    request.responseType = 'json';
+                    request.open("POST", "/add_missed_problems", true);
+                    request.send(JSON.stringify(
+                        {
+                            "kid": kid,
+                            "book": book,
+                            "start_chapter": start_chapter,
+                            "start_problem": start_problem,
+                            "end_chapter": end_chapter,
+                            "end_problem": end_problem,
+                            "date": date,
+                            "start_time": start_time,
+                            "end_time": end_time,
+                            "add_miss_list": add_miss_list,
+                            "rem_miss_list": rem_miss_list,
+                            "test": test
+                        }
+                        )
+                    );
+                    window.location.href = '/enter_performance';
+                });
+            };
+
+
+            function bookAutoFill() {
+                var kid_e = document.getElementById("choose_kid");
+                if (kid_e.value != "0") {
+                    kid = kid_e.options[kid_e.selectedIndex].text;
+                    console.log(kid);
+                    var request = new XMLHttpRequest();
+                    request.responseType = 'json';
+                    request.open("POST", "/query_book", true);
+                    request.onload = function () {
+                        var name = request.response;
+
+                        if (name != null) {
+                            document.getElementById("choose_book").value = name;
+                            document.getElementById('start_chapter').focus();
+                        }
+                        else {
+                            document.getElementById('choose_book').focus();
+                        }
+                    };
+                    request.send(JSON.stringify(
+                        {
+                            "name": kid,
+                        }
+                        )
+                    );
+                }
+            }
+{#            document.getElementById("choose_kid").onchange = bookAutoFill();#}
+
+
+
+
+            document.addEventListener('DOMContentLoaded', init, false);
+            function init() {
+                function submit() {
+                    var kid_e = document.getElementById("choose_kid");
+                    kid = kid_e.options[kid_e.selectedIndex].text;
+                    var book_e = document.getElementById("choose_book");
+                    book = book_e.options[book_e.selectedIndex].value;
+                    start_chapter = parseInt(document.getElementById('start_chapter').value);
+                    start_problem = document.getElementById('start_problem').value;
+                    end_chapter = parseInt(document.getElementById('end_chapter').value);
+                    end_problem = document.getElementById('end_problem').value;
+                    date = document.getElementById('date').value;
+                    start_time = document.getElementById('start_time').value;
+                    end_time = document.getElementById('end_time').value;
+                    test = document.getElementById('testCheck').checked;
+
+                    if ((kid == 'choose kid') || (book == 'choose book') || (isNaN(start_chapter)) || (start_problem == "") || (isNaN(end_chapter)) || (end_problem == "")){
+                        alert('Fill in all fields, dummy.')
+                    }
+                    else {
+                        var request = new XMLHttpRequest();
+                        request.responseType = 'json';
+                        request.open("POST", "/query_chapter", true);
+                        request.onload = function() {
+                            var chapter_details = JSON.parse(JSON.stringify(request.response))
+                            for (var key in chapter_details) {
+                               if (chapter_details.hasOwnProperty(key)) {
+                                   createProblems(key, chapter_details[key].replace(/'/g, '').replace('[', '').replace(']', '').split(', '))
+                                }
+                            }
+                            createButton()
+                        };
+                        request.send(JSON.stringify(
+                            {
+                                "book": book,
+                                "start_chapter": start_chapter,
+                                "start_problem": start_problem,
+                                "end_chapter": end_chapter,
+                                "end_problem": end_problem,
+                                "test": test
+                            }
+                            )
+                        );
+                    }
+                    document.getElementById('button').className = "hidden"
+                }
+                var button_submit = document.getElementById('button');
+                button_submit.addEventListener('click', submit, true);
+            }
+
+
+        </script>
+{#        <script src="{{url_for('static', filename='vendor/jquery/jquery.slim.min.js')}}"></script>#}
+{#        <script src="{{url_for('static', filename='/vendor/jquery/jquery.slim.min.js')}}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>#}
+{#        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>#}
+{#        <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>#}
+
+    {% endblock scripts %}
+
+{% endblock body %}

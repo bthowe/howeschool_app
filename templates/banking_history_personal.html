@@ -1,0 +1,129 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main">
+            <div id="total_div" class="col-12">
+            </div>
+            <div id="table_div" class="col-12">
+            </div>
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+        <script>
+            var name = {{ name }};
+            document.getElementById('choose_kid').focus();
+            tableFill();
+
+            function tableFill() {
+                var request = new XMLHttpRequest();
+                request.responseType = 'json';
+                request.open("POST", "/query_bank", true);
+                request.onload = function () {
+                    var history = request.response;
+                    make_total(history['total']);
+                    make_table(history['itemized']);
+                };
+                request.send(JSON.stringify(
+                    {
+                        "name": name
+                    }
+                    )
+                );
+            }
+
+            function make_total(amount) {
+                var balance = document.createElement('h3');
+                balance.innerHTML = name + "'s" + " Current Balance: $" + amount;
+
+                total_div.appendChild(balance)
+                document.getElementById('main').appendChild(total_div)
+            }
+
+            function make_table(history) {
+                var table = document.createElement('table');
+                table.className = "table";
+                var thead = document.createElement('thead');
+                thead.className = "thead-light";
+
+                var tr = document.createElement('tr');
+                tr.className = "d-flex";
+
+                var th1 = document.createElement('th');
+                th1.className = "col-3";
+                th1.innerText = "Date";
+                var th2 = document.createElement('th');
+                th2.className = "col-6";
+                th2.innerText = "Description";
+                var th3 = document.createElement('th');
+                th3.className = "col-3";
+                th3.innerText = "Deposit";
+                var th4 = document.createElement('th');
+                th4.className = "col-3";
+                th4.innerText = "Withdrawal";
+
+                tr.appendChild(th1);
+                tr.appendChild(th2);
+                tr.appendChild(th3);
+                tr.appendChild(th4);
+                thead.appendChild(tr);
+                table.appendChild(thead);
+
+                var tbody = document.createElement('tbody');
+                for (var i = 0; i < history.length; i++) {
+                    tr = document.createElement('tr');
+                    tr.className = "d-flex";
+
+                    var td1 = document.createElement('td');
+                    td1.className = "col-3";
+                    td1.innerText = history[i]['date'];
+                    var td2 = document.createElement('td');
+                    td2.className = "col-6";
+                    td2.innerText = history[i]['description'];
+
+                    var td3 = document.createElement('td');
+                    td3.className = "col-3";
+                    if (history[i]['type'] == 'deposit') {
+                        td3.innerText = history[i]['amount'];
+                    }
+
+                    var td4 = document.createElement('td');
+                    td4.className = "col-3";
+                    if (history[i]['type'] != 'deposit') {
+                        td4.innerText = history[i]['amount'];
+                    }
+
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    tr.appendChild(td4);
+
+                    tbody.appendChild(tr);
+                }
+                table.appendChild(tbody);
+                table_div.appendChild(table);
+                document.getElementById('main').appendChild(table_div)
+            }
+        </script>
+
+    {% endblock scripts %}
+
+{% endblock body %}

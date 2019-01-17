@@ -1,0 +1,28 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{#{% block title %}#}
+{#    base.html test#}
+{#{% endblock title %}#}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content %}
+        {{super()}}
+        {% block main %}
+            Hullo, hullo!
+            Hullo, hullo!
+        {% endblock main %}
+    {% endblock content %}
+    {% block scripts %}
+        {{ super() }}
+    {% endblock scripts %}
+
+{% endblock body %}

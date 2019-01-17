@@ -1,0 +1,60 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <form method="POST" action="banking_manage">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.choose_kid.label }}
+                        {{ form.choose_kid(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ form.credit_debit.label }}
+                        {{ form.credit_debit(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ form.amount.label }}
+                        {{ form.amount(class_="col-12") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-12">
+                        {{ form.description.label }}
+                        {{ form.description(class_="col-12", cols="46", rows="1") }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-auto">
+                        <input class="btn btn-primary" id="submit" type="submit"/>
+                    </div>
+                </div>
+            </form>
+        </div> <!-- /container -->
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+        <script>
+            document.getElementById('choose_kid').focus();
+        </script>
+
+    {% endblock scripts %}
+
+{% endblock body %}

@@ -1,0 +1,73 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <form method="POST" action="enter_problem_number">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.choose_book.label }}
+                        {{ form.choose_book(class_="col-12") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.chapter.label }}
+                        {{ form.chapter(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.num_lesson_probs.label }}
+                        {{ form.num_lesson_probs(class_="col-12") }}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.num_mixed_probs.label }}
+                        {{ form.num_mixed_probs(class_="col-12") }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-auto">
+                        {{ form.test }}
+                        {{ form.test.label }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-auto">
+                        <button id="button" type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+        <script>
+            var chapter = {{ chapter }};
+            if (chapter == 1) {
+                document.getElementById('choose_book').focus();
+                document.getElementById('chapter').value = chapter;
+            }
+            else {
+                document.getElementById('num_lesson_probs').focus();
+                document.getElementById('chapter').value = chapter;
+            }
+        </script>
+    {% endblock scripts %}
+
+{% endblock body %}
