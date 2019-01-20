@@ -199,7 +199,10 @@
                 var btn = document.createElement("BUTTON");
                 btn.id = 'button_record';
                 btn.innerHTML = 'Record';
-                div.appendChild(btn);
+                btn.className = 'btn btn-primary';
+
+{#                div.appendChild(btn);#}
+                main_content.appendChild(btn);
                 btn.addEventListener('click', function (event) {
                     var request = new XMLHttpRequest();
                     request.responseType = 'json';

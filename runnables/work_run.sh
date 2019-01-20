@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source ~/PycharmProjects/venv/data_science/bin/activate
-cd ~/Projects/github/data_science/flask_apps/saxon_input
-bash runnables/homeschool_app_command.sh
+source ~/PycharmProjects/venv/school_app/bin/activate
+cd ~/Projects/github/howeschool_app
+bash runnables/howeschool_app_command.sh
 deactivate

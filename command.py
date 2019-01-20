@@ -1,22 +1,12 @@
 import os
 import sys
 import json
-import joblib
-import yagmail
 import datetime
-import webbrowser
-import numpy as np
 import pandas as pd
-# import saxon_math_helpers
-from functools import wraps
-from flask_wtf import FlaskForm
 from flask_pymongo import PyMongo
 from collections import defaultdict
 from flask_bootstrap import Bootstrap
-from wtforms.validators import InputRequired, Email, Length
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify
-from wtforms import StringField, PasswordField, BooleanField, SelectField, IntegerField, RadioField
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 import helpers_classes
@@ -52,10 +42,6 @@ db_vocab = PyMongo(app, uri="mongodb://localhost:27017/vocab")
 db_script = PyMongo(app, uri="mongodb://localhost:27017/scripture_commentary")
 db_forms = PyMongo(app, uri="mongodb://localhost:27017/forms")
 db_bank = PyMongo(app, uri="mongodb://localhost:27017/banking")
-
-lesson_lst = list(range(4, 13)) + list(range(14, 75))
-book_lst = ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']
-
 
 
 @login_manager.user_loader
@@ -104,7 +90,7 @@ def query_book():
 
     if js['name'] == 'Choose...':
         return jsonify({})
-    for book in reversed(book_lst):
+    for book in reversed(helpers_constants.book_lst):
         l = list(db_performance.db[book].find({'kid': js['name']}))
         if l:
             return jsonify(l[0]['book'])
@@ -224,6 +210,19 @@ def login():
         return '<h1>Invalid username or password</h1>'
     return render_template('login.html', form=form)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('quit'))
+    # return redirect(url_for('login'))
+
+
+@app.route('/main_menu')
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
+@login_required
+def main_menu():
+    return render_template('main_menu.html', name=current_user.username, access=current_user.access, page_name='Main Menu')
 
 @app.route('/register', methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
@@ -244,22 +243,6 @@ def register():
 
         flash('That username already exists!')
     return render_template('register.html', form=form, access=current_user.access, page_name='Register Child')
-
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-
-
-@app.route('/main_menu')
-@helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
-@login_required
-def main_menu():
-    return render_template('main_menu.html', name=current_user.username, access=current_user.access, page_name='Main Menu')
-
 
 @app.route("/enter_performance")
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
@@ -335,6 +318,19 @@ def enter_problem_origin():
     return render_template('enter_problem_origins.html', access=current_user.access, page_name='Origin of Exercises')
 
 
+
+
+@app.route('/mongo_call_vocab', methods=['POST'])
+def mongo_call_vocab():
+    js = json.loads(request.data.decode('utf-8'))
+    js['name'] = current_user.username
+
+    tab = db_vocab[js['page']]
+    tab.insert_one(js)
+
+    print('data inserted: {}'.format(js))
+    return ''
+
 @app.route("/vocab", methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
 @login_required
@@ -349,6 +345,8 @@ def vocab():
 
 
 @app.route("/practice_card")
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
+@login_required
 def practice_card():
     lesson_num = 4
     prompt_type = 'word'
@@ -364,6 +362,27 @@ def practice_card():
     return render_template("practice_card.html", cards=cards, access=current_user.access, page_name='Vocabulary Practice', lesson_num=lesson_num)
 
 
+@app.route("/quiz_card")
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
+@login_required
+def quiz_card():
+    lesson_num = str(request.args['lesson_num'])
+    prompt_type = str(request.args['prompt_type'])
+    num_cards = len(os.listdir('static/{0}'.format(lesson_num)))
+
+    if prompt_type == 'word':
+        cards = [['../static/{0}/rc_vocab_{0}_{1}.png'.format(lesson_num, num),
+                  '../static/{0}/rc_vocab_{0}_{1}.png'.format(lesson_num, num + 1)] for num in range(0, num_cards, 2)]
+        alternatives = helpers_functions._alternatives_create(len(cards), 1)
+
+    else:
+        cards = [['../static/{0}/rc_vocab_{0}_{1}.png'.format(lesson_num, num + 1),
+                  '../static/{0}/rc_vocab_{0}_{1}.png'.format(lesson_num, num)] for num in range(0, num_cards, 2)]
+        alternatives = helpers_functions._alternatives_create(len(cards), 0)
+
+    return render_template('quiz_card.html', cards=cards, alts=alternatives, access=current_user.access, page_name='Vocabulary Quiz', lesson_num=lesson_num)
+
+
 @app.route("/banking_manage", methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
 @login_required
@@ -375,7 +394,6 @@ def banking_manage():
         ret = tab.insert_one(data)
         print('data inserted: {}'.format(ret))
     return render_template('banking_manage.html', form=form, access=current_user.access, page_name='Banking Accounts Manage')
-
 
 @app.route("/banking_history")
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
@@ -390,5 +408,14 @@ def banking_history_personal():
     return render_template('banking_history_personal.html', name=current_user.username, access=current_user.access, page_name='Banking History')
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=True)
+@app.route('/killer', methods=['POST'])
+def killer():
+    sys.exit(4)
+    return ''
+
+@app.route('/quit')
+def quit():
+    return render_template('quit.html')
+
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=8001, debug=True)

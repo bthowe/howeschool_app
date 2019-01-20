@@ -22,6 +22,8 @@ from flask import Flask, render_template, url_for, request, session, redirect, f
 from wtforms import StringField, PasswordField, BooleanField, SelectField, IntegerField, RadioField
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
+import helpers_constants
+
 
 def requires_access_level(access_level):
     def decorator(f):
@@ -293,13 +295,14 @@ def _problem_list_create(first, last, less_num):
         return list(map(str, range(int(first), int(last) + 1)))
 
 
-def query_book():
-    js = json.loads(request.data.decode('utf-8'))
-
-    if js['name'] == 'Choose...':
-        return jsonify({})
-    for book in reversed(book_lst):
-        l = list(db_performance.db[book].find({'kid': js['name']}))
-        if l:
-            return jsonify(l[0]['book'])
-    return ''
+def _alternatives_create(length, num):
+    alternatives = []
+    for card_i in range(length):
+        alternatives_i = []
+        for j in range(3):
+            random_lesson = np.random.choice(helpers_constants.lesson_lst)
+            num_cards_in_random_lesson = len(os.listdir('static/{0}'.format(random_lesson)))
+            random_card = np.random.choice(range(0, num_cards_in_random_lesson, 2))
+            alternatives_i.append('../static/{0}/rc_vocab_{0}_{1}.png'.format(random_lesson, random_card + num))
+        alternatives.append(alternatives_i)
+    return alternatives

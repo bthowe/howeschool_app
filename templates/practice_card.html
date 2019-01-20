@@ -127,6 +127,11 @@
             document.getElementById("button_back").disabled = true;
             document.getElementById("button_reshuffle_batch").disabled = true;
 
+            function database_call(payload) {
+                var request = new XMLHttpRequest();
+                request.open("POST", "/mongo_call_vocab", true);
+                request.send(JSON.stringify(payload));
+            }
 
             function batchupdate(num) {
                 if (num == '5') {
@@ -172,9 +177,7 @@
                     document.getElementById("word_back").style.visibility = "visible";
                     document.getElementById("button_flip").disabled = true;
 
-                    var request = new XMLHttpRequest();
-                    request.open("POST", "/mongo_call", true);
-                    request.send(JSON.stringify(
+                    database_call(
                         {
                             "page": "Practice",
                             "button": "Flip",
@@ -185,7 +188,8 @@
                             "card_front": cards[index][0],
                             "card_back": cards[index][1],
                             "timestamp": Math.floor(Date.now() / 1000)
-                        }));
+                        }
+                    )
                 }
                 var button_flip = document.getElementById('button_flip');
                 button_flip.addEventListener('click', flip, true);
@@ -207,9 +211,7 @@
                         document.getElementById('button_next').disabled = true;
                     }
 
-                    var request = new XMLHttpRequest();
-                    request.open("POST", "/mongo_call", true);
-                    request.send(JSON.stringify(
+                    database_call(
                         {
                             "page": "Practice",
                             "button": "Next Card",
@@ -220,7 +222,8 @@
                             "card_front": cards[index][0],
                             "card_back": cards[index][1],
                             "timestamp": Math.floor(Date.now() / 1000)
-                        }));
+                        }
+                    )
                 }
                 var button_next = document.getElementById('button_next');
                 button_next.addEventListener('click', next, true);
@@ -240,9 +243,8 @@
                     if (index == 0) {
                         document.getElementById('button_back').disabled = true;
                     }
-                    var request = new XMLHttpRequest();
-                    request.open("POST", "/mongo_call", true);
-                    request.send(JSON.stringify(
+
+                    database_call(
                         {
                             "page": "Practice",
                             "button": "Previous Card",
@@ -253,7 +255,8 @@
                             "card_front": cards[index][0],
                             "card_back": cards[index][1],
                             "timestamp": Math.floor(Date.now() / 1000)
-                        }));
+                        }
+                    )
                 }
                 var button_back = document.getElementById('button_back');
                 button_back.addEventListener('click', back, true);
@@ -272,9 +275,7 @@
                     document.getElementById('button_back').disabled = true;
                     document.getElementById('button_flip').disabled = false;
 
-                    var request = new XMLHttpRequest();
-                    request.open("POST", "/mongo_call", true);
-                    request.send(JSON.stringify(
+                    database_call(
                         {
                             "page": "Practice",
                             "button": "Shuffle Batch",
@@ -285,7 +286,8 @@
                             "card_front": cards[index][0],
                             "card_back": cards[index][1],
                             "timestamp": Math.floor(Date.now() / 1000)
-                        }));
+                        }
+                    )
                 }
                 var button_reshuffle = document.getElementById('button_reshuffle_batch');
                 button_reshuffle.addEventListener('click', reshuffle_batch, true);
@@ -310,9 +312,7 @@
                         document.getElementById('button_next_batch').disabled = true;
                     }
 
-                    var request = new XMLHttpRequest();
-                    request.open("POST", "/mongo_call", true);
-                    request.send(JSON.stringify(
+                    database_call(
                         {
                             "page": "Practice",
                             "button": "Next Batch",
@@ -323,7 +323,8 @@
                             "card_front": cards[index][0],
                             "card_back": cards[index][1],
                             "timestamp": Math.floor(Date.now() / 1000)
-                        }));
+                        }
+                    )
                 }
                 var button_next_batch = document.getElementById('button_next_batch');
                 button_next_batch.addEventListener('click', next_batch, true);
@@ -357,9 +358,7 @@
                     document.getElementById('button_back').disabled = true;
                     document.getElementById('button_flip').disabled = false;
 
-                    var request = new XMLHttpRequest();
-                    request.open("POST", "/mongo_call", true);
-                    request.send(JSON.stringify(
+                    database_call(
                         {
                             "page": "Practice",
                             "button": "Shuffle Deck",
@@ -370,11 +369,12 @@
                             "card_front": cards[index][0],
                             "card_back": cards[index][1],
                             "timestamp": Math.floor(Date.now() / 1000)
-                        }));
+                        }
+                    )
                 }
                 var button_deck_again = document.getElementById('button_reshuffle_deck');
                 button_deck_again.addEventListener('click', reshuffle_deck, true);
-            };
+            }
         </script>
 
 
