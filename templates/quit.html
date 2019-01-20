@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    .hidden {
+        display: none;
+    }
+    .unhidden {
+        display: inline-block;
+    }
+</style>
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel=stylesheet>
+    <!--<link rel="stylesheet" href="style.css">-->
+    <!--<link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel=stylesheet>-->
+</head>
+
+<body>
+
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+  <!--<a class="navbar-brand" href="#">Scripture Commentary</a>-->
+  <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">-->
+    <!--<span class="navbar-toggler-icon"></span>-->
+  <!--</button>-->
+  <!--<div class="collapse navbar-collapse" id="navbarNavDropdown">-->
+    <!--<ul class="navbar-nav">-->
+      <!--<li class="nav-item active">-->
+        <!--<a class="nav-link" href="/main_menu">Home <span class="sr-only">(current)</span></a>-->
+      <!--</li>-->
+      <!--<li class="nav-item">-->
+        <!--<a class="nav-link" href="/quit">Quit</a>-->
+      <!--</li>-->
+    <!--</ul>-->
+  <!--</div>-->
+<!--</nav>-->
+
+
+<div class="col-xs-12 col-sm-12" id="container">
+    <div class="row">
+        <div class="form-group col-md-auto" id="words">
+            Are you sure you want to quit?
+        </div>
+    </div>
+    <div class="row" id="buttons">
+        <div class="form-group col-md-auto">
+            <button class="btn btn-primary" onclick="yesFunction()">Yes</button>
+        </div>
+        <div class="form-group col-md-auto">
+            <button class="btn btn-primary" onclick="noFunction()">No</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function yesFunction() {
+        console.log("yes")
+
+        var div = document.getElementById("container")
+        var butt = document.getElementById("buttons")
+        var words = document.getElementById("words")
+
+        div.removeChild(butt)
+        words.innerHTML = "You quit successfully. See-ya, dude!"
+
+        var request = new XMLHttpRequest();
+        request.open("POST", "/killer", true);
+        request.send(JSON.stringify(
+            {}
+        ));
+
+
+    }
+    function noFunction() {
+        console.log("no")
+
+//        todo: go back to previous page.
+
+
+    }
+</script>
+</body>
+</html>

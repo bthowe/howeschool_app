@@ -1,0 +1,383 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+    <style>
+        button {
+            visibility: visible;
+        }
+        img {
+            visibility: visible;
+        }
+
+        .btn-group-vertical.center {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .center-block {
+            display: block;
+            margin: 1rem auto;
+            text-align: center;
+        }
+
+        .btn-group-vertical > button {
+            margin-bottom: 10px;
+            border-radius: 10px !important;
+        }
+    </style>
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="card">
+            <div class="card-header">
+                <label>Batch Size: </label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary btn-sm">
+                        <input type="radio" name="options" id="option1" autocomplete="off" onchange=batchupdate('5')> 5
+                    </label>
+                    <label class="btn btn-secondary btn-sm">
+                        <input type="radio" name="options" id="option2" autocomplete="off" onchange=batchupdate('10')> 10
+                    </label>
+                    <label class="btn btn-secondary btn-sm active">
+                        <input type="radio" name="options" id="option3" autocomplete="off" checked onchange=batchupdate('all')> All
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-group-vertical col-2">
+                        <button id='button_next' type="button" class="btn btn-secondary">Next Card</button>
+                        <button id='button_flip' type="button" class="btn btn-secondary">Flip</button>
+                        <button id='button_back' type="button" class="btn btn-secondary">Previous</button>
+                </div>
+                <div class="card col-lg-4">
+                    <img id="word_front" style="width:100%">
+                </div>
+                <div class="card col-lg-4">
+                    <img id="word_back" style="width:100%">
+                </div>
+                <div class="btn-group-vertical col-2">
+                        <button id='button_next_batch' type="button" class="btn btn-secondary">Next Batch</button>
+                        <button id='button_reshuffle_batch' type="button" class="btn btn-secondary">Shuffle Batch</button>
+                        <button id='button_reshuffle_deck' type="button" class="btn btn-secondary">Shuffle Deck</button>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">
+                <div class="row ">
+                    <div class="col-6"><p id="ind" class="text-left mb-0"></p></div>
+                    <div class="col-6"><p id="b_ind" class="text-right mb-0"></p></div>
+                </div>
+            </div>
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+
+        <script>
+            cards_ordered = {{cards | tojson}};
+            var cards_shuffled;
+            var cards;
+            var index = 0;
+            var batch_index = 0;
+            var batch_size = cards_ordered.length;
+            var num_batches = Math.ceil(cards_ordered.length / batch_size);
+
+            document.getElementById('b_ind').innerHTML = "Batch: " + (batch_index + 1) + " / " + num_batches;
+            document.getElementById('ind').innerHTML = "Card: " + (index + 1) + " / " + cards_ordered.length;
+
+            function shuffle(array) {
+                var currentIndex = array.length, temporaryValue, randomIndex;
+
+                // While there remain elements to shuffle...
+                while (0 !== currentIndex) {
+
+                    // Pick a remaining element...
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex -= 1;
+
+                    // And swap it with the current element.
+                    temporaryValue = array[currentIndex];
+                    array[currentIndex] = array[randomIndex];
+                    array[randomIndex] = temporaryValue;
+                }
+                return array;
+            }
+            cards_shuffled = shuffle(cards_ordered);
+            cards = cards_shuffled;
+
+            document.getElementById("word_front").src = cards[0][0];
+            document.getElementById("word_back").src = cards[0][1];
+            document.getElementById("word_back").style.visibility = "hidden";
+
+            document.getElementById("button_next_batch").disabled = true;
+            document.getElementById("button_back").disabled = true;
+            document.getElementById("button_reshuffle_batch").disabled = true;
+
+
+            function batchupdate(num) {
+                if (num == '5') {
+                    batch_size = 5;
+                    document.getElementById("button_next_batch").disabled = false;
+                    document.getElementById("button_reshuffle_batch").disabled = false;
+                    document.getElementById('button_flip').disabled = false;
+
+                    document.getElementById("word_back").style.visibility = 'hidden';
+
+                }
+                else if (num == '10') {
+                    batch_size = 10;
+                    document.getElementById("button_next_batch").disabled = false;
+                    document.getElementById("button_reshuffle_batch").disabled = false;
+                    document.getElementById('button_flip').disabled = false;
+
+                    document.getElementById("word_back").style.visibility = 'hidden';
+                }
+                else {
+                    batch_size = cards_ordered.length;
+                    document.getElementById("button_next_batch").disabled = true;
+                    document.getElementById("button_reshuffle_batch").disabled = true;
+                }
+                cards = shuffle(cards_ordered).slice(0, batch_size);
+                num_batches = Math.ceil(cards_ordered.length / batch_size);
+
+                index = 0;
+                document.getElementById('ind').innerHTML = "Card: " + (index + 1) + " / " + batch_size;
+
+                batch_index = 0;
+                document.getElementById('b_ind').innerHTML = "Batch: " + (batch_index + 1) + " / " + num_batches;
+                document.getElementById("word_front").src = cards[index][0];
+
+                document.getElementById('button_next').disabled = false;
+                document.getElementById('button_back').disabled = true;
+            }
+
+
+            document.addEventListener('DOMContentLoaded', init, false);
+            function init() {
+                function flip() {
+                    document.getElementById("word_back").style.visibility = "visible";
+                    document.getElementById("button_flip").disabled = true;
+
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "/mongo_call", true);
+                    request.send(JSON.stringify(
+                        {
+                            "page": "Practice",
+                            "button": "Flip",
+                            "index": index,
+                            "batch_index": batch_index,
+                            "batch_size": batch_size,
+                            "num_batches": num_batches,
+                            "card_front": cards[index][0],
+                            "card_back": cards[index][1],
+                            "timestamp": Math.floor(Date.now() / 1000)
+                        }));
+                }
+                var button_flip = document.getElementById('button_flip');
+                button_flip.addEventListener('click', flip, true);
+
+
+                function next() {
+                    index++;
+                    document.getElementById('ind').innerHTML = "Card: " + (index + 1) + " / " + cards.length;
+
+                    document.getElementById('word_back').style.visibility = "hidden";
+                    document.getElementById("button_flip").disabled = false;
+                    document.getElementById("word_front").src = cards[index][0];
+                    document.getElementById("word_back").src = cards[index][1];
+
+                    if (index == 1) {
+                        document.getElementById('button_back').disabled = false;
+                    }
+                    if (index == (cards.length - 1)) {
+                        document.getElementById('button_next').disabled = true;
+                    }
+
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "/mongo_call", true);
+                    request.send(JSON.stringify(
+                        {
+                            "page": "Practice",
+                            "button": "Next Card",
+                            "index": index,
+                            "batch_index": batch_index,
+                            "batch_size": batch_size,
+                            "num_batches": num_batches,
+                            "card_front": cards[index][0],
+                            "card_back": cards[index][1],
+                            "timestamp": Math.floor(Date.now() / 1000)
+                        }));
+                }
+                var button_next = document.getElementById('button_next');
+                button_next.addEventListener('click', next, true);
+
+
+                function back() {
+                    index--;
+                    document.getElementById('ind').innerHTML = "Card: " + (index + 1) + " / " + cards.length;
+                    document.getElementById("button_flip").disabled = false;
+                    document.getElementById('word_back').style.visibility = "hidden";
+                    document.getElementById("word_front").src = cards[index][0];
+                    document.getElementById("word_back").src = cards[index][1];
+
+                    if (index == (cards.length - 2)) {
+                        document.getElementById('button_next').disabled = false;
+                    }
+                    if (index == 0) {
+                        document.getElementById('button_back').disabled = true;
+                    }
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "/mongo_call", true);
+                    request.send(JSON.stringify(
+                        {
+                            "page": "Practice",
+                            "button": "Previous Card",
+                            "index": index,
+                            "batch_index": batch_index,
+                            "batch_size": batch_size,
+                            "num_batches": num_batches,
+                            "card_front": cards[index][0],
+                            "card_back": cards[index][1],
+                            "timestamp": Math.floor(Date.now() / 1000)
+                        }));
+                }
+                var button_back = document.getElementById('button_back');
+                button_back.addEventListener('click', back, true);
+
+
+                function reshuffle_batch() {
+                    cards = shuffle(cards);
+                    index = 0;
+                    document.getElementById('ind').innerHTML = "Card: " + (index + 1) + " / " + batch_size;
+
+                    document.getElementById("word_front").src = cards[index][0];
+                    document.getElementById("word_back").src = cards[index][1];
+                    document.getElementById('word_back').style.visibility = "hidden";
+
+                    document.getElementById('button_next').disabled = false;
+                    document.getElementById('button_back').disabled = true;
+                    document.getElementById('button_flip').disabled = false;
+
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "/mongo_call", true);
+                    request.send(JSON.stringify(
+                        {
+                            "page": "Practice",
+                            "button": "Shuffle Batch",
+                            "index": index,
+                            "batch_index": batch_index,
+                            "batch_size": batch_size,
+                            "num_batches": num_batches,
+                            "card_front": cards[index][0],
+                            "card_back": cards[index][1],
+                            "timestamp": Math.floor(Date.now() / 1000)
+                        }));
+                }
+                var button_reshuffle = document.getElementById('button_reshuffle_batch');
+                button_reshuffle.addEventListener('click', reshuffle_batch, true);
+
+
+                function next_batch() {
+                    batch_index++;
+                    cards = cards_shuffled.slice(batch_size * batch_index, batch_size * (batch_index + 1));
+                    index = 0;
+                    document.getElementById('ind').innerHTML = "Card: " + (index + 1) + " / " + cards.length;
+                    document.getElementById('b_ind').innerHTML = "Batch: " + (batch_index + 1) + " / " + num_batches;
+
+                    document.getElementById("word_front").src = cards[index][0];
+                    document.getElementById('word_back').style.visibility = "hidden";
+
+                    document.getElementById('button_next').disabled = false;
+                    document.getElementById('button_back').disabled = true;
+                    document.getElementById('button_flip').disabled = false;
+
+
+                    if (((cards_ordered.length / batch_size | 0) == batch_index) | ((cards_ordered.length % batch_size == 0) & ((cards_ordered.length / batch_size | 0) == batch_index + 1))) {
+                        document.getElementById('button_next_batch').disabled = true;
+                    }
+
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "/mongo_call", true);
+                    request.send(JSON.stringify(
+                        {
+                            "page": "Practice",
+                            "button": "Next Batch",
+                            "index": index,
+                            "batch_index": batch_index,
+                            "batch_size": batch_size,
+                            "num_batches": num_batches,
+                            "card_front": cards[index][0],
+                            "card_back": cards[index][1],
+                            "timestamp": Math.floor(Date.now() / 1000)
+                        }));
+                }
+                var button_next_batch = document.getElementById('button_next_batch');
+                button_next_batch.addEventListener('click', next_batch, true);
+
+
+                function reshuffle_deck() {
+                    cards_shuffled = shuffle(cards_ordered);
+                    cards = shuffle(cards_ordered).slice(0, batch_size);
+
+                    index = 0;
+                    document.getElementById('ind').innerHTML = "Card: " + (index + 1) + " / " + batch_size;
+
+                    batch_index = 0;
+                    document.getElementById('b_ind').innerHTML = "Batch: " + (batch_index + 1) + " / " + num_batches;
+
+
+                    if (!(document.getElementById("option3").checked)) {
+                        document.getElementById('button_next_batch').disabled = false;
+                        document.getElementById('button_reshuffle_batch').disabled = false;
+                    }
+                    else {
+                        document.getElementById('button_next_batch').disabled = true;
+                        document.getElementById('button_reshuffle_batch').disabled = true;
+                    }
+
+                    document.getElementById("word_front").src = cards[index][0];
+                    document.getElementById("word_back").src = cards[index][1];
+                    document.getElementById('word_back').style.visibility = "hidden";
+
+                    document.getElementById('button_next').disabled = false;
+                    document.getElementById('button_back').disabled = true;
+                    document.getElementById('button_flip').disabled = false;
+
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "/mongo_call", true);
+                    request.send(JSON.stringify(
+                        {
+                            "page": "Practice",
+                            "button": "Shuffle Deck",
+                            "index": index,
+                            "batch_index": batch_index,
+                            "batch_size": batch_size,
+                            "num_batches": num_batches,
+                            "card_front": cards[index][0],
+                            "card_back": cards[index][1],
+                            "timestamp": Math.floor(Date.now() / 1000)
+                        }));
+                }
+                var button_deck_again = document.getElementById('button_reshuffle_deck');
+                button_deck_again.addEventListener('click', reshuffle_deck, true);
+            };
+        </script>
+
+
+    {% endblock scripts %}
+
+{% endblock body %}
