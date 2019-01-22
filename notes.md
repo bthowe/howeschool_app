@@ -1,4 +1,3 @@
-1. get the header bar cleaned up and icons on the sides
 2. for each page for each user test...
     1. functions correctly
     2. buttons work
@@ -7,7 +6,7 @@
     5. side menu is correct
     6. cannot access forbidden pages
 3. deposit money
-4. enter math data 
+4. enter math book info data 
 5. dashboards working
     1. I'd like to change the daily math input to show the daily performance
 6. sidebar icons
