@@ -77,7 +77,7 @@ def math_num_data_json(form):
     if form.test.data:
         chapter = 'test ' + str(form.chapter.data)
     else:
-        chapter = str(form.chapter.data)
+        chapter = form.chapter.data
     data = {
         "book": form.choose_book.data,
         "chapter": chapter,
@@ -96,22 +96,38 @@ def credit_debit_data(form):
     }
     return data
 
-def weekly_forms_email():
+def weekly_forms_email(type='weekly_time_sheet'):
     yag = yagmail.SMTP('b.travis.howe@gmail.com', os.environ['GMAIL'])
-    yag.send(
-        # ["b.travis.howe@gmail.com"],
-        ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
-        subject="Forms for the Week",
-        contents="",
-        attachments='/Users/travis.howe/Projects/github/school_app_practice/startbootstrap-sb-admin-gh-pages/weekly_time_sheet.pdf'
-    )
+    if type == 'scripture_list':
+        yag.send(
+            # ["b.travis.howe@gmail.com"],
+            ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
+            subject="Scripture Table",
+            contents="",
+            attachments='/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf'
+        )
+    else:
+        yag.send(
+            # ["b.travis.howe@gmail.com"],
+            ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
+            subject="Forms for the Week",
+            contents="",
+            attachments=[
+                '/Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf',
+                '/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf',
+            ]
+        )
 
-def weekly_browser_display():
+def weekly_browser_display(type='weekly_time_sheet'):
     chrome = webbrowser.get('chrome')
-    chrome.open_new_tab('file:///Users/travis.howe/Projects/github/school_app_practice/startbootstrap-sb-admin-gh-pages/weekly_time_sheet.pdf')
+    if type == 'scripture_list':
+        chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
+    else:
+        chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf')
+        chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
 
 
-def latex_create(kids, books, dates, scripture, discussion_questions, jobs):
+def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions, jobs):
     header = r'''
     \documentclass[10pt,twoside,letterpaper,oldfontcommands,openany]{memoir}
     \usepackage{rotating, caption}
@@ -199,7 +215,7 @@ def latex_create(kids, books, dates, scripture, discussion_questions, jobs):
         \\centering
         \\begin{{tabular}}{{|l|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|}}
         \\multicolumn{{7}}{{l}}{{Name: {12}}} \\\\
-        \\multicolumn{{13}}{{l}}{{Scripture: {13}}} \\\\
+        \\multicolumn{{13}}{{p{{25cm}}}}{{Scripture: {13}}} \\\\
         \\multicolumn{{7}}{{l}}{{}} \\\\
         \\multicolumn{{7}}{{l}}{{}} \\\\
         \\cline{{2-13}}
@@ -243,7 +259,7 @@ def latex_create(kids, books, dates, scripture, discussion_questions, jobs):
     \\setlength{{\@fptop}}{{5pt}}
     \\makeatother
     \\begin{{sidewaystable}}
-    \\small
+    \\footnotesize
     \\centering
     \\begin{{tabular}}{{| l | l | l | l | l | l | l |}}
     \\hline\\hline
@@ -284,6 +300,52 @@ def latex_create(kids, books, dates, scripture, discussion_questions, jobs):
     os.unlink('weekly_time_sheet.tex')
 
 
+def scriptures_latex_create(df):
+    header = r'''
+    \documentclass[10pt,twoside,letterpaper,oldfontcommands,openany]{memoir}
+    \usepackage{rotating, caption}
+    \usepackage[margin=0.25in]{geometry}
+    \newcommand{\tabitem}{~~\llap{\textbullet}~~}
+    \pagenumbering{gobble}
+    \begin{document}
+    '''
+
+    footer = r'''\end{document}'''
+
+    scriptures_table = r'''
+    \begin{sidewaystable}
+    \centering
+    \begin{tabular}{| l | l | p{20cm} |}
+    \hline
+     Start Date & Reference & Scriptures \\
+    \hline\hline
+    '''
+    for scripture in df.values:
+        scriptures_table += r'''{date} & {ref} & {scripture} \\ \hline'''.format(date=scripture[2], ref=scripture[1], scripture=scripture[0])
+
+    scriptures_table += r'''
+    \end{tabular}
+    \end{sidewaystable}
+    '''
+
+
+    # content = header + 'hey' + footer
+    content = header + scriptures_table + footer
+
+    print(content)
+
+    with open('scripture_table.tex', 'w') as f:
+         f.write(content)
+
+    commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'scripture_table.tex'])
+    # commandLine = subprocess.Popen(['pdflatex', 'weekly_time_sheet.tex'])
+    commandLine.communicate()
+
+    os.unlink('scripture_table.aux')
+    os.unlink('scripture_table.log')
+    os.unlink('scripture_table.tex')
+
+
 def _problem_list_create(first, last, less_num):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     if str(first).isalpha():
@@ -306,3 +368,20 @@ def _alternatives_create(length, num):
             alternatives_i.append('../static/{0}/rc_vocab_{0}_{1}.png'.format(random_lesson, random_card + num))
         alternatives.append(alternatives_i)
     return alternatives
+
+
+def scripture_table_create(data, year='current'):
+    data['week_start_date'] = pd.to_datetime(data['week_start_date'])
+    if year == 'current':
+        year = max(data['week_start_date'].dt.year)
+    elif year == 'all':
+        year = '2019'
+    data. \
+        query('week_start_date >= "{year}-01-01"'.format(year=year)).\
+        sort_values('week_start_date').\
+        assign(week_start_date=data['week_start_date'].astype(str)).\
+        groupby('scripture'). \
+        first(). \
+        reset_index() \
+        [['scripture', 'scripture_ref', 'week_start_date']]. \
+        pipe(scriptures_latex_create)

@@ -157,13 +157,15 @@
             document.getElementById('date').focus();
 
             date = {{ date | tojson }}
-                formData = {{ form_data | tojson }}
+            formData = {{ form_data | tojson }}
 
-                    day_lst = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+            day_lst = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
             kid_lst = ['calvin', 'samuel', 'kay'];
 
             document.getElementById('date').value = date;
 
+            document.getElementById('scripture_ref').value = formData['scripture_ref'];
+            document.getElementById('scripture').value = formData['scripture'];
             for (i = 0; i < day_lst.length; ++i) {
                 document.getElementById(day_lst[i] + '_job').value = formData[day_lst[i] + '_job'];
                 document.getElementById(day_lst[i] + '_question').value = formData[day_lst[i] + '_question'];

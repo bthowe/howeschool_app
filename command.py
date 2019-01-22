@@ -278,11 +278,10 @@ def weekly_forms_create():
     form = helpers_classes.WeeklyForm()
     if request.method == 'POST':  # and form.validate_on_submit():
         data = helpers_functions.weekly_data_json(form)
-        tab = db_forms.db['Weekly']
-        ret = tab.insert_one(data)
+        ret = db_forms.db['Weekly'].insert_one(data)
         print('data inserted: {}'.format(ret))
 
-        helpers_functions.latex_create(
+        helpers_functions.weekly_form_latex_create(
                 ['Calvin', 'Samuel', 'Kay'],
                 [form.cal_book.data, form.sam_book.data, form.kay_book.data],
                 [str(form.weekof.data + datetime.timedelta(days)) for days in range(0, 6)],
@@ -290,10 +289,27 @@ def weekly_forms_create():
                 [form.mon_dis.data, form.tue_dis.data, form.wed_dis.data, form.thu_dis.data, form.fri_dis.data, form.sat_dis.data],
                 [form.mon_job.data, form.tue_job.data, form.wed_job.data, form.thu_job.data, form.fri_job.data, form.sat_job.data]
         )
+        helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
+
         helpers_functions.weekly_forms_email()
         helpers_functions.weekly_browser_display()
         return redirect(url_for('weekly_forms_create'))
     return render_template('weekly_forms_create.html', form=form, date=date, form_data=output, access=current_user.access, page_name='Weekly Forms')
+
+@app.route("/scripture_list", methods=['POST', 'GET'])
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
+@login_required
+def scripture_list():
+    form = helpers_classes.ScriptureListForm()
+    if request.method == 'POST':  # and form.validate_on_submit():
+        helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())), str(form.choose_year.data))
+
+        if form.email.data == 'yes':
+            helpers_functions.weekly_forms_email('scripture_list')
+        helpers_functions.weekly_browser_display('scripture_list')
+        return redirect(url_for('scripture_list'))
+    return render_template('scripture_list.html', form=form, access=current_user.access, page_name='Weekly Forms')
+
 
 
 @app.route("/enter_problem_number", methods=['POST', 'GET'])
@@ -304,8 +320,7 @@ def enter_problem_number():
     chapter = 1
     if request.method == 'POST':  # and form.validate_on_submit():
         data = helpers_functions.math_num_data_json(form)
-        tab = db_forms.db[form.choose_book.data]
-        ret = tab.insert_one(data)
+        ret = db_number.db[form.choose_book.data].insert_one(data)
         print('data inserted: {}'.format(ret))
         chapter += form.chapter.data
         return render_template('enter_problem_number.html', form=form, access=current_user.access, page_name='Number of Exercises', chapter=chapter)
@@ -415,7 +430,19 @@ def killer():
 
 @app.route('/quit')
 def quit():
-    return render_template('quit.html')
+    return render_template('gunicorn_quit.html')
 
+
+# def shutdown_server():
+#     func = request.environ.get('werkzeug.server.shutdown')
+#     if func is None:
+#         raise RuntimeError('Not running with the Werkzeug Server')
+#     func()
+#
+# @app.route('/quit')
+# def quit():
+#     shutdown_server()
+#     return render_template('quit.html')
+#
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=8001, debug=True)

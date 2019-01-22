@@ -35,14 +35,14 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
 
 class VocabForm(FlaskForm):
-    practice_type = RadioField('What do you want to do', choices=[('practice', 'Practice'), ('quiz', 'Quiz')])
-    prompt_type = RadioField('Prompt Type', choices=[('word', 'Word'), ('def', 'Definition/Sentence')])
+    practice_type = RadioField('What do you want to do', choices=[('practice', 'Practice'), ('quiz', 'Quiz')], default='practice')
+    prompt_type = RadioField('Prompt Type', choices=[('word', 'Word'), ('def', 'Definition/Sentence')], default='word')
     lesson_num = IntegerField('Lesson Number', validators=[InputRequired()])
 
 class WeeklyForm(FlaskForm):
     weekof = DateField('For the week beginning on', validators=[InputRequired()], id='date')
-    scripture_ref = StringField('Reference', validators=[InputRequired()])
-    scripture = StringField('Text', validators=[InputRequired()], widget=TextArea())
+    scripture_ref = StringField('Reference', validators=[InputRequired()], id='scripture_ref')
+    scripture = StringField('Text', validators=[InputRequired()], widget=TextArea(), id='scripture')
     mon_job = StringField('Monday', validators=[InputRequired()], id='mon_job')
     tue_job = StringField('Tuesday', validators=[InputRequired()], id='tue_job')
     wed_job = StringField('Wednesday', validators=[InputRequired()], id='wed_job')
@@ -85,8 +85,8 @@ class ScriptureDailyForm(FlaskForm):
 class NumberofExercisesForm(FlaskForm):
     choose_book = SelectField('Book', choices=[('choose', 'Choose...'), ('Math_5_4', 'Math 5/4'), ('Math_6_5', 'Math 6/5'), ('Math_7_6', 'Math 7/6'), ('Math_8_7', 'Math 8/7'), ('Algebra_1_2', 'Algebra 1/2'), ('Algebra_1', 'Algebra 1'), ('Algebra_2', 'Algebra 2'), ('Advanced_math', 'Advanced Math'), ('Calculus', 'Calculus')], validators=[InputRequired()], id='choose_book')
     chapter = IntegerField('Chapter', validators=[InputRequired()], id='chapter')
-    num_lesson_probs = IntegerField('Number of Lesson Problems', validators=[InputRequired()], id='num_lesson_probs')
-    num_mixed_probs = IntegerField('Number of Mixed Problems', validators=[InputRequired()], id='num_mixed_probs')
+    num_lesson_probs = StringField('Number of Lesson Problems', validators=[InputRequired()], id='num_lesson_probs')
+    num_mixed_probs = StringField('Number of Mixed Problems', validators=[InputRequired()], id='num_mixed_probs')
     test = BooleanField('Test')
 
 class CreditDebit(FlaskForm):
@@ -94,6 +94,11 @@ class CreditDebit(FlaskForm):
     credit_debit = SelectField('Transaction Type', choices=[('choose', 'Choose...'), ('deposit', 'Deposit'), ('withdrawal', 'Withdrawal')], validators=[InputRequired()], id='credit_debit')
     amount = IntegerField('Amount', validators=[InputRequired()], id='amount')
     description = StringField('Description', validators=[InputRequired()], widget=TextArea(), id='description')
+
+class ScriptureListForm(FlaskForm):
+    choose_year = SelectField('Year', choices=[('choose', 'Choose...'), ('2019', '2019'), ('all', 'All')], validators=[InputRequired()], id='choose_year')
+    email = RadioField('Email List?', choices=[('yes', 'Yes'), ('no', 'No')], id='email', default='yes')
+
 
 class User(UserMixin):
     def __init__(self, username, access=helpers_constants.ACCESS['user']):

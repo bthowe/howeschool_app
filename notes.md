@@ -1,4 +1,4 @@
-1. get the bash scripts setup
+1. get the header bar cleaned up and icons on the sides
 2. for each page for each user test...
     1. functions correctly
     2. buttons work
@@ -28,3 +28,12 @@ vocab issues:
     - red and green colors don't pad the image nicely
 - practice
     - button padding and spacing: I can't get the buttons centered.
+
+checks to make sure the data is inserted correctly.
+the math exercise input drop down looks funny
+the math performance record button is in a weird place.
+
+can send messages to the kids
+
+
+
