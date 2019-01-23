@@ -308,7 +308,7 @@ def scripture_list():
             helpers_functions.weekly_forms_email('scripture_list')
         helpers_functions.weekly_browser_display('scripture_list')
         return redirect(url_for('scripture_list'))
-    return render_template('scripture_list.html', form=form, access=current_user.access, page_name='Weekly Forms')
+    return render_template('scripture_list.html', form=form, access=current_user.access, page_name='Scripture List')
 
 
 
@@ -340,10 +340,8 @@ def mongo_call_vocab():
     js = json.loads(request.data.decode('utf-8'))
     js['name'] = current_user.username
 
-    tab = db_vocab[js['page']]
-    tab.insert_one(js)
-
-    print('data inserted: {}'.format(js))
+    # ret = db_vocab.db[js['page']].insert_one(js)
+    # print('data inserted: {}'.format(ret))
     return ''
 
 @app.route("/vocab", methods=['POST', 'GET'])
@@ -425,11 +423,13 @@ def banking_history_personal():
 
 @app.route('/killer', methods=['POST'])
 def killer():
+    print('here2')
     sys.exit(4)
     return ''
 
 @app.route('/quit')
 def quit():
+    print('here')
     return render_template('gunicorn_quit.html')
 
 

@@ -18,29 +18,28 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <form method="POST" action="enter_problem_number">
                 <div class="row">
+{#                    <div class="form-group col-md-2">#}
+{#                        {{ form.choose_book.label }}#}
+{#                        {{ form.choose_book(class_="col-12") }}#}
+{#                    </div>#}
                     <div class="form-group col-md-2">
-                        {{ form.choose_book.label }}
-                        {{ form.choose_book(class_="col-12") }}
+                        {{ wtf.form_field(form.choose_book) }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-2">
-                        {{ form.chapter.label }}
-                        {{ form.chapter(class_="col-12") }}
+                    <div class="form-group col-md-1">
+                        {{ wtf.form_field(form.chapter) }}
                     </div>
                     <div class="form-group col-md-3">
-                        {{ form.num_lesson_probs.label }}
-                        {{ form.num_lesson_probs(class_="col-12") }}
+                        {{ wtf.form_field(form.num_lesson_probs) }}
                     </div>
                     <div class="form-group col-md-3">
-                        {{ form.num_mixed_probs.label }}
-                        {{ form.num_mixed_probs(class_="col-12") }}
+                        {{ wtf.form_field(form.num_mixed_probs) }}
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-auto">
-                        {{ form.test }}
-                        {{ form.test.label }}
+                    <div class="form-group col-md-1">
+                        {{ wtf.form_field(form.test) }}
                     </div>
                 </div>
                 <div class="form-row">

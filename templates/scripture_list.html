@@ -19,8 +19,9 @@
             <form method="POST" action="scripture_list">
                 <div class="row">
                     <div class="form-group col-md-2">
-                        {{ form.choose_year.label }}
-                        {{ form.choose_year(class_="col-12") }}
+{#                        {{ form.choose_year.label }}#}
+{#                        {{ form.choose_year(class_="col-12") }}#}
+                        {{ wtf.form_field(form.choose_year) }}
                     </div>
                 </div>
                 <div class="form-group col-md-20">

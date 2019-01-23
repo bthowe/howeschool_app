@@ -25,19 +25,20 @@ import helpers_constants
 
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)], render_kw={'autofocus': True})
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=15)], render_kw={'autofocus': True})
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
     # remember = BooleanField('remember me')
 
 class RegisterForm(FlaskForm):
-    access = SelectField('Access Level', choices=[(0, 'guest'), (1, 'user'), (2, 'admin')], coerce=int)
+    # access = SelectField('Access Level', choices=[(0, 'guest'), (1, 'user'), (2, 'admin')], coerce=int)
+    access = SelectField('Access Level', choices=[(1, 'user'), (2, 'admin')], coerce=int)
     username = StringField('First Name', validators=[InputRequired(), Length(min=4, max=15)], render_kw={'autofocus': True})
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
 
 class VocabForm(FlaskForm):
-    practice_type = RadioField('What do you want to do', choices=[('practice', 'Practice'), ('quiz', 'Quiz')], default='practice')
-    prompt_type = RadioField('Prompt Type', choices=[('word', 'Word'), ('def', 'Definition/Sentence')], default='word')
-    lesson_num = IntegerField('Lesson Number', validators=[InputRequired()])
+    practice_type = RadioField('What do you want to do?', choices=[('practice', 'Practice'), ('quiz', 'Quiz')], default='practice')
+    prompt_type = RadioField('Prompt Type:', choices=[('word', 'Word'), ('def', 'Definition/Sentence')], default='word')
+    lesson_num = IntegerField('Lesson Number:', validators=[InputRequired()])
 
 class WeeklyForm(FlaskForm):
     weekof = DateField('For the week beginning on', validators=[InputRequired()], id='date')

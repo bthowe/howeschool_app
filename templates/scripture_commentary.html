@@ -19,40 +19,34 @@
             <form method="POST" action="scripture_commentary">
                 <div class="row">
                     <div class="form-group col-md-2">
-                        {{ form.choose_kid.label }}
-                        {{ form.choose_kid(class_="col-12") }}
+{#                        {{ form.choose_kid.label }}#}
+{#                        {{ form.choose_kid(class_="col-12") }}#}
+                        {{ wtf.form_field(form.choose_kid) }}
                     </div>
                     <div class="form-group col-md-2">
-                        {{ form.date.label }}
-                        {{ form.date(class_="col-12") }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-2">
-                        {{ form.start_book.label }}
-                        {{ form.start_book(class_="col-12") }}
-                    </div>
-                    <div class="form-group col-md-2">
-                        {{ form.start_chapter.label }}
-                        {{ form.start_chapter(class_="col-12") }}
-                    </div>
-                    <div class="form-group col-md-2">
-                        {{ form.start_verse.label }}
-                        {{ form.start_verse(class_="col-12") }}
+                        {{ wtf.form_field(form.date) }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-2">
-                        {{ form.end_book.label }}
-                        {{ form.end_book(class_="col-12") }}
+                        {{ wtf.form_field(form.start_book) }}
                     </div>
                     <div class="form-group col-md-2">
-                        {{ form.end_chapter.label }}
-                        {{ form.end_chapter(class_="col-12") }}
+                        {{ wtf.form_field(form.start_chapter) }}
                     </div>
                     <div class="form-group col-md-2">
-                        {{ form.end_verse.label }}
-                        {{ form.end_verse(class_="col-12") }}
+                        {{ wtf.form_field(form.start_verse) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ wtf.form_field(form.end_book) }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ wtf.form_field(form.end_chapter) }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ wtf.form_field(form.end_verse) }}
                     </div>
                 </div>
                 <div class="form-group">
@@ -60,7 +54,7 @@
                     {{ form.comment(class_="col-12", cols="46", rows="5") }}
                 </div>
                 <div class="form-row">
-                    <div class="col-md-auto">
+                    <div class="col-md-auto pt-2">
                         <input class="btn btn-primary" id="submit" type="submit"/>
                     </div>
                 </div>

@@ -1,25 +1,130 @@
-{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}
-Login
-{% endblock %}
+{#{% block title %}#}
+{#    Login#}
+{#{% endblock %}#}
 
-{% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='signin.css')}}">
-{% endblock %}
+{#{% block styles %}#}
+{#    {{ super() }}#}
+    {#    <link rel="stylesheet" href="{{ url_for('.static', filename='signin.css') }}">#}
+{#{% endblock %}#}
 
-{% block content %}
-    <div class="container">
+{#{% block content %}#}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel=stylesheet>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='background-blur-clean-531880.jpg') }}");
+            padding-top: 100px;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="bg-dark">
+    <div class="container py-5">
+    <div class="row">
+        <div class="col-md-12">
+{#            <h2 class="text-center text-info mb-4">Howeschool Login</h2>#}
+{#            <h2 class="text-center text-white mb-4">Howeschool Login</h2>#}
+            <div class="row">
+                <div class="col-md-6 mx-auto">
 
-      <form class="form-signin" method="POST" action="login">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.username) }}
-        {{ wtf.form_field(form.password) }}
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
+                    <!-- form card login -->
+                    <div class="card rounded-0">
+{#                        <div class="card-header">#}
+{#                            <h5 class="mb-0">Howeschool Login</h5>#}
+{#                        </div>#}
+                        <div class="card-body">
+{#                            <form class="form" role="form" autocomplete="off" id="formLogin" novalidate="" method="POST" action="login">#}
+                            <form class="form" method="POST" action="login">
+                                {{ form.hidden_tag() }}
 
-    </div> <!-- /container -->
-{% endblock %}
+                                <div class="form-group">
+                                    {{ wtf.form_field(form.username) }}
+
+{#                                    <label for="uname1">Username</label>#}
+{#                                    <input type="text" class="form-control form-control-lg rounded-0" name="uname1" id="uname1" required="">#}
+{#                                    <div class="invalid-feedback">Oops, you missed this one.</div>#}
+                                </div>
+                                <div class="form-group">
+                                    {{ wtf.form_field(form.password) }}
+
+{#                                    <label>Password</label>#}
+{#                                    <input type="password" class="form-control form-control-lg rounded-0" id="pwd1" required="" autocomplete="new-password">#}
+{#                                    <div class="invalid-feedback">Enter your password too!</div>#}
+                                </div>
+{#                                <div>#}
+{#                                    <label class="custom-control custom-checkbox">#}
+{#                                      <input type="checkbox" class="custom-control-input">#}
+{#                                      <span class="custom-control-indicator"></span>#}
+{#                                      <span class="custom-control-description small text-dark">Remember me on this computer</span>#}
+{#                                    </label>#}
+{#                                </div>#}
+{#                                <button type="submit" class="btn btn-success btn-lg float-right" id="btnLogin">Login</button>#}
+                                    <input class="btn btn-lg btn-success float-right" type="submit" value="Login"/>
+                            </form>
+                        </div>
+                        <!--/card-block-->
+                    </div>
+                    <!-- /form card login -->
+
+                </div>
+
+
+            </div>
+            <!--/row-->
+
+        </div>
+        <!--/col-->
+    </div>
+    <!--/row-->
+</div>
+<!--/container-->
+
+</body>
+</html>
+
+    {#    <div class="container h-100">#}
+    {#        <div class="row align-items-center h-100">#}
+    {#            <form class="form-signin justify-content-center" method="POST" action="login">#}
+    {##}
+    {#                <div class="form-group col-md-4">#}
+    {#                </div>#}
+    {#                <div class="form-group col-md-4">#}
+    {#                    {{ form.hidden_tag() }}#}
+    {#                    {{ wtf.form_field(form.username) }}#}
+    {#                    {{ wtf.form_field(form.password) }}#}
+    {#                    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign in"/>#}
+    {#                </div>#}
+    {#                <div class="form-group col-md-4">#}
+    {#                </div>#}
+    {#            </form>#}
+    {#        </div>#}
+    {##}
+    {#    </div> <!-- /container -->#}
+
+
+
+{#{% endblock %}#}
+
+
+
+
+{##}
+{#{% block content %}#}
+{#    <div class="container">#}
+{##}
+{#      <form class="form-signin" method="POST" action="login">#}
+{#        <h2 class="form-signin-heading">Please sign in</h2>#}
+{#        {{ form.hidden_tag() }}#}
+{#        {{ wtf.form_field(form.username) }}#}
+{#        {{ wtf.form_field(form.password) }}#}
+{#        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>#}
+{#      </form>#}
+{##}
+{#    </div> <!-- /container -->#}
+{#{% endblock %}#}
+{##}

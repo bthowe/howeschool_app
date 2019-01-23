@@ -1,7 +1,6 @@
 2. for each page for each user test...
     1. functions correctly
     2. buttons work
-    3. cosmetic work
     4. writes to database
     5. side menu is correct
     6. cannot access forbidden pages
@@ -9,7 +8,16 @@
 4. enter math book info data 
 5. dashboards working
     1. I'd like to change the daily math input to show the daily performance
-6. sidebar icons
+6. production and development frameworks.
+
+
+
+math peformance input > input button screen over the performance plot with breadcrumbs to go back to the input screen
+math peformance input + input buttons > performance plot with button to return 
+
+
+I wonder if it would be better to make an aggregation table (the big one) that I can query quickly rather than create and load everytime I login, etc.
+
 
 
 smaller bugs
@@ -36,3 +44,14 @@ can send messages to the kids
 
 
 
+If I host the server on the raspberry pi
+- can I access it from the mac?
+- would I want it to send the data to github periodically?
+    - I could simply store it on a usb or external harddrive.
+    - how would I back it up automatically?
+    - just put a dev database in github and develop using that?
+        - probably a good idea anyway
+
+https://stackoverflow.com/questions/12657651/connect-device-to-mac-localhost-server
+https://stackoverflow.com/questions/9304058/how-to-view-localhost-on-my-ipod-touch
+https://stackoverflow.com/questions/3132105/how-do-you-access-a-website-running-on-localhost-from-iphone-browser/41857012#41857012
