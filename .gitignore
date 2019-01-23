@@ -1,6 +1,10 @@
 node_modules
 
-.pdf
-.DS_Store
-.pyc
-.xml
+*.pdf
+*.DS_Store
+*.pyc
+*.xml
+
+.idea/
+__pycache__/
+
