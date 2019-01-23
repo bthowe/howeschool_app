@@ -58,9 +58,11 @@ def query_chapter():
     book = js['book']
 
     problems_dic = {}
+    total_problems_dic = {}
 
     if js['test']:
         problems_dic[js['start_chapter']] = str(list(map(str, range(1, 21))))
+        total_problems_dic[js['start_chapter']] = str(list(map(str, range(1, 21))))
     else:
         start_chapter_details = list(db_number.db[book].find({'chapter': js['start_chapter']}))[0]
         end_chapter_details = list(db_number.db[book].find({'chapter': js['end_chapter']}))[0]
@@ -68,20 +70,47 @@ def query_chapter():
         if int(js['end_chapter']) - int(js['start_chapter']) == 0:  # if start and end is the same chapter
             problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create(js['start_problem'], js['end_problem'], start_chapter_details['num_lesson_probs']))
 
+            if start_chapter_details['num_lesson_probs'] == 'none':
+                total_problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create(1, start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
+            else:
+                total_problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create('a', start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
+
         elif int(js['end_chapter']) - int(js['start_chapter']) == 1:  # if start and end is one chapter apart
             problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create(js['start_problem'], start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
             problems_dic[js['end_chapter']] = str(helpers_functions._problem_list_create('a', js['end_problem'], end_chapter_details['num_lesson_probs']))
 
+            if start_chapter_details['num_lesson_probs'] == 'none':
+                total_problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create(1, start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
+            else:
+                total_problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create('a', start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
+            if end_chapter_details['num_lesson_probs'] == 'none':
+                total_problems_dic[js['end_chapter']] = str(helpers_functions._problem_list_create(1, end_chapter_details['num_mixed_probs'], end_chapter_details['num_lesson_probs']))
+            else:
+                total_problems_dic[js['end_chapter']] = str(helpers_functions._problem_list_create('a', end_chapter_details['num_mixed_probs'], end_chapter_details['num_lesson_probs']))
+
         else:  # if start and end is multiple chapters apart
             problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create(js['start_problem'], start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
             problems_dic[js['end_chapter']] = str(helpers_functions._problem_list_create('a', js['end_problem'], end_chapter_details['num_lesson_probs']))
+
+            if start_chapter_details['num_lesson_probs'] == 'none':
+                total_problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create(1, start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
+            else:
+                total_problems_dic[js['start_chapter']] = str(helpers_functions._problem_list_create('a', start_chapter_details['num_mixed_probs'], start_chapter_details['num_lesson_probs']))
+            if end_chapter_details['num_lesson_probs'] == 'none':
+                total_problems_dic[js['end_chapter']] = str(helpers_functions._problem_list_create(1, end_chapter_details['num_mixed_probs'], end_chapter_details['num_lesson_probs']))
+            else:
+                total_problems_dic[js['end_chapter']] = str(helpers_functions._problem_list_create('a', end_chapter_details['num_mixed_probs'], end_chapter_details['num_lesson_probs']))
+
             for chapter in range(int(js['start_chapter']) + 1, int(js['end_chapter'])):
                 mid_chapter_details = list(db_number.db[book].find({'chapter': chapter}))[0]
                 problems_dic[chapter] = str(helpers_functions._problem_list_create('a', mid_chapter_details['num_mixed_probs'], mid_chapter_details['num_lesson_probs']))
 
-    print(problems_dic)
+                if mid_chapter_details['num_lesson_probs'] == 'none':
+                    total_problems_dic[chapter] = str(helpers_functions._problem_list_create(1, mid_chapter_details['num_mixed_probs'], mid_chapter_details['num_lesson_probs']))
+                else:
+                    total_problems_dic[chapter] = str(helpers_functions._problem_list_create('a', mid_chapter_details['num_mixed_probs'], mid_chapter_details['num_lesson_probs']))
 
-    return jsonify(problems_dic)
+    return jsonify({'problems_dic': problems_dic, 'total_problems_dic': total_problems_dic})
 
 
 @app.route('/query_book', methods=['POST'])

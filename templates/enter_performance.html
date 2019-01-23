@@ -15,7 +15,9 @@
     {% endblock content1 %}
     {% block main %}
 
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main_content">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="row">
+            <div class="col">
             <form onsubmit="return false;">
                 <div class="row">
                     <div class="form-group col-md-2">
@@ -87,8 +89,16 @@
                         <input type="text" class="form-control" id="end_time" placeholder="hh:mm">
                     </div>
                 </div>
-                <button id="button" type="submit" class="btn btn-primary">Submit</button>
+                <div class="row">
+                    <div class="col">
+{#                    <div class="form-group col-md-2">#}
+                        <button id="button" type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
             </form>
+        </div></div>
+        <div class="row" id="main_content">
+        </div>
         </div>
 
     {% endblock main %}
@@ -116,6 +126,7 @@
 
             document.getElementById('choose_kid').focus();
 
+
             var today = new Date();
             var dd = today.getDate();
             var mm = today.getMonth() + 1; //January is 0!
@@ -129,6 +140,46 @@
                 mm = '0' + mm
             }
             document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
+
+
+
+
+            function problem_buttons_create(chapter, chapter_details, problem_details) {
+                var main_content = document.getElementById('main_content');
+
+                var div_col = document.createElement('div');
+                div_col.className = 'col pb-4';
+
+                var label_button_group = document.createElement('label');
+                label_button_group.for = 'button_group' + chapter;
+                label_button_group.innerText = 'Lesson ' + chapter;
+                div_col.appendChild(label_button_group);
+
+                var div_button_group = document.createElement('div');
+                div_button_group.id = 'button_group' + chapter;
+                div_button_group.className = 'btn-group';
+
+                for (var i = 0; i < chapter_details.length; i++) {
+                    var btn = document.createElement("BUTTON");
+                    btn.id = 'btn' + chapter + chapter_details[i];
+                    btn.setAttribute('disabled', true);
+
+                    btn.innerHTML = chapter_details[i];
+                    btn.value = chapter + '_' + chapter_details[i];
+                    div_button_group.appendChild(btn);
+                }
+                div_col.appendChild(div_button_group);
+                main_content.appendChild(div_col);
+
+                for (var i = 0; i < problem_details.length; i++) {
+                    document.getElementById('btn' + chapter + problem_details[i]).disabled = false;
+                    document.getElementById('btn' + chapter + problem_details[i]).style.background = 'green';
+                }
+            }
+
+{#            todo: change color for the mixed and lesson problems#}
+{#            todo: hook everything all up.#}
+
 
 
             function createProblems(chap, probs) {
@@ -146,22 +197,25 @@
                 h_tag.appendChild(t_tag);
 
                 var main_content = document.getElementById('main_content');
-{#                main_content.appendChild(h_tag);#}
+                main_content.appendChild(h_tag);
                 for (var i = 0; i < probs.length; i++) {
                     if ((probs[i].match(/[a-z]/i) != null) & (count == 0)) {
                         h_tag = document.createElement("H3");
                         t_tag = document.createTextNode("Lesson Practice");
                         h_tag.appendChild(t_tag);
-{#                        main_content.appendChild(h_tag);#}
+                        main_content.appendChild(h_tag);
                         count++;
                     }
                     else if ((probs[i].match(/[a-z]/i) == null) & (count == 1)) {
                         h_tag = document.createElement("H3");
                         t_tag = document.createTextNode("Mixed Practice");
                         h_tag.appendChild(t_tag);
-{#                        main_content.appendChild(h_tag);#}
+                        main_content.appendChild(h_tag);
                         count++;
                     }
+
+
+
                     var btn = document.createElement("BUTTON");
                     btn.id = 'btn' + toString(probs[i]);
                     btn.setAttribute('style', "font-size:24px; background: green");
@@ -233,7 +287,6 @@
                 var kid_e = document.getElementById("choose_kid");
                 if (kid_e.value != "0") {
                     kid = kid_e.options[kid_e.selectedIndex].text;
-                    console.log(kid);
                     var request = new XMLHttpRequest();
                     request.responseType = 'json';
                     request.open("POST", "/query_book", true);
@@ -277,6 +330,10 @@
                     end_time = document.getElementById('end_time').value;
                     test = document.getElementById('testCheck').checked;
 
+                    var button = document.getElementById("button").style.visibility = 'hidden';
+
+
+
                     if ((kid == 'choose kid') || (book == 'choose book') || (isNaN(start_chapter)) || (start_problem == "") || (isNaN(end_chapter)) || (end_problem == "")){
                         alert('Fill in all fields, dummy.')
                     }
@@ -285,12 +342,25 @@
                         request.responseType = 'json';
                         request.open("POST", "/query_chapter", true);
                         request.onload = function() {
-                            var chapter_details = JSON.parse(JSON.stringify(request.response))
-                            for (var key in chapter_details) {
-                               if (chapter_details.hasOwnProperty(key)) {
-                                   createProblems(key, chapter_details[key].replace(/'/g, '').replace('[', '').replace(']', '').split(', '))
-                                }
-                            }
+{#                            var problems_dic = JSON.parse(JSON.stringify(request.response));#}
+                            var problems_dic = request.response;
+                            var chapter_details = problems_dic['total_problems_dic'];
+                            var problem_details = problems_dic['problems_dic'];
+                            console.log(chapter_details)
+                            console.log(problem_details)
+{#                            for (var key in chapter_details) {#}
+{#                               if (chapter_details.hasOwnProperty(key)) {#}
+{#                                   createProblems(key, chapter_details[key].replace(/'/g, '').replace('[', '').replace(']', '').split(', '))#}
+{#                                }#}
+{#                            }#}
+                            Object.keys(chapter_details).forEach(function(key) {
+                                console.log(typeof chapter_details[key])
+                                problem_buttons_create(
+                                    key,
+                                    chapter_details[key].replace(/'/g, '').replace(/ /g, '').replace("]", "").replace("[", "").split(','),
+                                    problem_details[key].replace(/'/g, '').replace(/ /g, '').replace("]", "").replace("[", "").split(',')
+                                )
+                            });
                             createButton()
                         };
                         request.send(JSON.stringify(
