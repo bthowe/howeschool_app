@@ -87,6 +87,7 @@ def math_num_data_json(form):
     return data
 
 def credit_debit_data(form):
+    print(form.amount.data)
     data = {
         "kid": form.choose_kid.data,
         "type": form.credit_debit.data,

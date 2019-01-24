@@ -17,7 +17,7 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from wtforms import StringField, PasswordField, BooleanField, SelectField, IntegerField, RadioField, DateField, TimeField
+from wtforms import StringField, PasswordField, BooleanField, SelectField, IntegerField, RadioField, DateField, TimeField, FloatField
 from wtforms.widgets import TextArea
 
 import helpers_constants
@@ -93,7 +93,7 @@ class NumberofExercisesForm(FlaskForm):
 class CreditDebit(FlaskForm):
     choose_kid = SelectField('Name', choices=[('choose', 'Choose...'), ('Calvin', 'Calvin'), ('Samuel', 'Samuel'), ('Kay', 'Kay')], validators=[InputRequired()], id='choose_kid')
     credit_debit = SelectField('Transaction Type', choices=[('choose', 'Choose...'), ('deposit', 'Deposit'), ('withdrawal', 'Withdrawal')], validators=[InputRequired()], id='credit_debit')
-    amount = IntegerField('Amount', validators=[InputRequired()], id='amount')
+    amount = FloatField('Amount', validators=[InputRequired()], id='amount')
     description = StringField('Description', validators=[InputRequired()], widget=TextArea(), id='description')
 
 class ScriptureListForm(FlaskForm):
