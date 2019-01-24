@@ -435,6 +435,7 @@ def banking_manage():
         tab = db_bank.db[form.choose_kid.data]
         ret = tab.insert_one(data)
         print('data inserted: {}'.format(ret))
+        return redirect(url_for('banking_manage'))
     return render_template('banking_manage.html', form=form, access=current_user.access, page_name='Banking Accounts Manage')
 
 @app.route("/banking_history")
