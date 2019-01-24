@@ -167,17 +167,49 @@
                     btn.innerHTML = chapter_details[i];
                     btn.value = chapter + '_' + chapter_details[i];
                     div_button_group.appendChild(btn);
+
+                    btn.addEventListener('click', function (event) {
+                        if (event.target.style.background === "red") {
+                            event.target.style.background = "green";
+
+                            if (/[a-z]/.test(event.target.innerHTML)) {
+                                event.target.style.background = '#AED6F1';
+                            }
+                            else {
+                                event.target.style.background = '#A9DFBF';
+                            }
+
+                            var jsonData_miss = {}
+
+                            jsonData_miss['chapter'] = event.target.value.split('_')[0].toString()
+                            jsonData_miss['problem'] = event.target.value.split('_')[1].toString()
+                            rem_miss_list.push(jsonData_miss)
+                        }
+                        else {
+                            event.target.style.background = "red";
+
+                            var jsonData = {}
+                            jsonData['chapter'] = event.target.value.split('_')[0].toString()
+                            jsonData['problem'] = event.target.value.split('_')[1].toString()
+                            add_miss_list.push(jsonData)
+                        }
+                    });
                 }
                 div_col.appendChild(div_button_group);
                 main_content.appendChild(div_col);
 
                 for (var i = 0; i < problem_details.length; i++) {
                     document.getElementById('btn' + chapter + problem_details[i]).disabled = false;
-                    document.getElementById('btn' + chapter + problem_details[i]).style.background = 'green';
+                    if (/[a-z]/.test(problem_details[i])) {
+                        document.getElementById('btn' + chapter + problem_details[i]).style.background = '#AED6F1';
+                    }
+                    else {
+                        document.getElementById('btn' + chapter + problem_details[i]).style.background = '#A9DFBF';
+                    }
                 }
+
             }
 
-{#            todo: change color for the mixed and lesson problems#}
 {#            todo: hook everything all up.#}
 
 
@@ -214,8 +246,6 @@
                         count++;
                     }
 
-
-
                     var btn = document.createElement("BUTTON");
                     btn.id = 'btn' + toString(probs[i]);
                     btn.setAttribute('style', "font-size:24px; background: green");
@@ -245,18 +275,29 @@
             };
 
             function createButton() {
-                var div = document.createElement("div");
                 var main_content = document.getElementById('main_content');
-                main_content.appendChild(div);
-                document.body.appendChild(div);
+
+                var div_col1 = document.createElement('div');
+                div_col1.className = 'col-1 pb-4';
+
+                var div_col2 = document.createElement('div');
+                div_col2.className = 'col-1 pb-4';
 
                 var btn = document.createElement("BUTTON");
                 btn.id = 'button_record';
                 btn.innerHTML = 'Record';
                 btn.className = 'btn btn-primary';
 
-{#                div.appendChild(btn);#}
-                main_content.appendChild(btn);
+                var btn_refresh = document.createElement("BUTTON");
+                btn_refresh.id = 'button_refresh';
+                btn_refresh.innerHTML = 'Change Information';
+                btn_refresh.className = 'btn btn-primary';
+
+                div_col1.appendChild(btn);
+                div_col2.appendChild(btn_refresh);
+                main_content.appendChild(div_col1);
+                main_content.appendChild(div_col2);
+
                 btn.addEventListener('click', function (event) {
                     var request = new XMLHttpRequest();
                     request.responseType = 'json';
