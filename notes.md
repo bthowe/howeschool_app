@@ -1,3 +1,7 @@
+1. test enter_performance
+2. clean up code
+3. merge to master
+
 2. for each page for each user test...
     1. functions correctly
     2. buttons work
