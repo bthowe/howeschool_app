@@ -1,6 +1,11 @@
 1. enter math book info data
 2. server
     1. production and development frameworks.
+        1. I'm thinking I'll just use develop for building
+        2. When ready, merge into master.
+        3. Never prototype in master.
+        4. the server pulls master in cron job every day
+        5. the server only runs master
 3. dashboards
     1. I'd like to change the daily math input to show the daily performance after the record button is hit
         1. draw from the aggregate table and then just use the current data with it to show an updated table.
@@ -13,6 +18,7 @@
     2. https://kb.iu.edu/d/afiz
     1. update the aggregation table
     2. pay my kids weekly
+    3. pull master
 6. validate forms that I wasn't able to before.
 
 
