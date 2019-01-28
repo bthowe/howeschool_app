@@ -209,6 +209,17 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
             \\end{{table}}
             '''.format(i[0][0], sunday_date)
 
+    if scripture[0] == 'Review':
+        scrip = 'Review Time!'
+    else:
+        scrip = '``{0}" ({1})'.format(scripture[1], scripture[0])  # 13
+
+    print('\n\n\n\n\n\n\n')
+    print(scrip)
+    print(scripture[0])
+    print(scripture[1])
+    print('\n\n\n\n\n\n\n')
+
     time_sheets = ''''''
     for name in kids:
         time_sheets += '''
@@ -250,7 +261,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
             dates[0], dates[1], dates[2], dates[3], dates[4], dates[5],  # 0-5
             discussion_questions[0], discussion_questions[1], discussion_questions[2], discussion_questions[3], discussion_questions[4], discussion_questions[5],  # 6-11
             name,  # 12
-            '``{0}" ({1})'.format(scripture[1], scripture[0])  # 13
+            scrip  # 13
         )
 
     jobs = '''
@@ -262,7 +273,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
     \\begin{{sidewaystable}}
     \\footnotesize
     \\centering
-    \\begin{{tabular}}{{| l | l | l | l | l | l | l |}}
+    \\begin{{tabular}}{{| p{{1cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} |}}
     \\hline\\hline
      & Monday & Tuesday & Wednesday & Thursday & Friday & Saturday \\\\[10pt]
     \\hline\\hline
@@ -332,8 +343,6 @@ def scriptures_latex_create(df):
 
     # content = header + 'hey' + footer
     content = header + scriptures_table + footer
-
-    print(content)
 
     with open('scripture_table.tex', 'w') as f:
          f.write(content)
