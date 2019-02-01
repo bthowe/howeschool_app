@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"users.users"}],"uuid":"ec5800c0ea8741eda9f0742725073e95"}
+{ "options" : { "create" : "users" }, "indexes" : [ { "v" : 1, "name" : "_id_", "key" : { "_id" : 1 }, "ns" : "users.users" } ] }
