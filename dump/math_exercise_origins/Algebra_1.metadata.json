@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"math_exercise_origins.Algebra_1"}],"uuid":"41888d911ff84b2ca95eeedc11380f09"}
+{ "options" : { "create" : "Algebra_1" }, "indexes" : [ { "v" : 1, "name" : "_id_", "key" : { "_id" : 1 }, "ns" : "math_exercise_origins.Algebra_1" } ] }
