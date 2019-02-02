@@ -226,6 +226,8 @@ def query_bank():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     form = helpers_classes.LoginForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('main_menu'))
     if request.method == 'POST' and form.validate_on_submit():
         user = db_users.db.users.find_one({'name': form.username.data})
         if user:
@@ -243,8 +245,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('quit'))
-    # return redirect(url_for('login'))
+    return redirect(url_for('login'))
 
 
 @app.route('/main_menu')
@@ -450,29 +451,5 @@ def banking_history():
 def banking_history_personal():
     return render_template('banking_history_personal.html', name=current_user.username, access=current_user.access, page_name='Banking History')
 
-
-@app.route('/killer', methods=['POST'])
-def killer():
-    print('here2')
-    sys.exit(4)
-    return ''
-
-@app.route('/quit')
-def quit():
-    print('here')
-    return render_template('gunicorn_quit.html')
-
-
-# def shutdown_server():
-#     func = request.environ.get('werkzeug.server.shutdown')
-#     if func is None:
-#         raise RuntimeError('Not running with the Werkzeug Server')
-#     func()
-#
-# @app.route('/quit')
-# def quit():
-#     shutdown_server()
-#     return render_template('quit.html')
-#
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=True)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=8001, debug=True)

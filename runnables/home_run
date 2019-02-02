@@ -1,6 +1,0 @@
-#!/bin/sh
-
-source activate py36
-cd ~/PycharmProjects/howeschool_app
-bash runnables/howeschool_app_command.sh
-deactivate

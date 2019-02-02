@@ -1,3 +1,22 @@
+server:
+1. set up supervisor
+    1. https://www.vultr.com/docs/installing-and-configuring-supervisor-on-ubuntu-16-04
+    2. https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xvii-deployment-on-linux
+2. no kill on logout but redirect.
+3. set up crons jobs 
+    1. backup data
+    2. shutdown the server at a certain time? Or should I just leave it up and running?
+        1. Have Calvin turn it on around the time he uses it.
+        2. Have a Chron job turn it off at like 10 pm
+        3. Turn it off manually if done with it.
+            1. I could have an endpoint that turns it off.
+    3. pull from master
+4. clean up repo for production
+
+
+if logged in , redirect to main menu
+
+
 1. enter math book info data
 2. server
     1. production and development frameworks.
