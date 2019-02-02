@@ -106,8 +106,8 @@ class User(UserMixin):
         self.username = username
         self.access = access
 
-    def is_authenticated(self):
-        return True
+    # def is_authenticated(self):
+    #     return True
 
     def is_active(self):
         # Here you should write whatever the code is that checks the database if your user is active
