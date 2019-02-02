@@ -391,8 +391,8 @@ def vocab():
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
 @login_required
 def practice_card():
-    lesson_num = 4
-    prompt_type = 'word'
+    lesson_num = str(request.args['lesson_num'])
+    prompt_type = str(request.args['prompt_type'])
     num_cards = len(os.listdir('static/{0}'.format(lesson_num)))
 
     if prompt_type == 'word':
