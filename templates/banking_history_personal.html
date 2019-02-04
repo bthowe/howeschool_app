@@ -29,8 +29,7 @@
     {% block scripts %}
         {{ super() }}
         <script>
-            var name = {{ name }};
-            document.getElementById('choose_kid').focus();
+            var name = "{{ name }}";
             tableFill();
 
             function tableFill() {

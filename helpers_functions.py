@@ -101,21 +101,19 @@ def weekly_forms_email(type='weekly_time_sheet'):
     yag = yagmail.SMTP('b.travis.howe@gmail.com', os.environ['GMAIL'])
     if type == 'scripture_list':
         yag.send(
-            # ["b.travis.howe@gmail.com"],
             ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
             subject="Scripture Table",
             contents="",
-            attachments='/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf'
+            attachments='/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
         )
     else:
         yag.send(
-            # ["b.travis.howe@gmail.com"],
             ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
             subject="Forms for the Week",
             contents="",
             attachments=[
-                '/Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf',
-                '/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf',
+                '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf',
+                '/home/pi/PythonProject/howeschool_app/scripture_table.pdf',
             ]
         )
 
@@ -303,16 +301,21 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
     with open('weekly_time_sheet.tex', 'w') as f:
          f.write(content)
 
-    commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'weekly_time_sheet.tex'])
-    # commandLine = subprocess.Popen(['pdflatex', 'weekly_time_sheet.tex'])
-    commandLine.communicate()
+    subprocess.Popen(['/usr/local/bin/laton', 'weekly_time_sheet.tex'])
 
-    os.unlink('weekly_time_sheet.aux')
-    os.unlink('weekly_time_sheet.log')
-    os.unlink('weekly_time_sheet.tex')
+
+    # commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'weekly_time_sheet.tex'])
+    # # commandLine = subprocess.Popen(['pdflatex', 'weekly_time_sheet.tex'])
+    # commandLine.communicate()
+    #
+    # os.unlink('weekly_time_sheet.aux')
+    # os.unlink('weekly_time_sheet.log')
+    # os.unlink('weekly_time_sheet.tex')
 
 
 def scriptures_latex_create(df):
+    df.sort_values('week_start_date', inplace=True)
+
     header = r'''
     \documentclass[10pt,twoside,letterpaper,oldfontcommands,openany]{memoir}
     \usepackage{rotating, caption}
@@ -340,20 +343,21 @@ def scriptures_latex_create(df):
     \end{sidewaystable}
     '''
 
-
     # content = header + 'hey' + footer
     content = header + scriptures_table + footer
 
     with open('scripture_table.tex', 'w') as f:
-         f.write(content)
+        f.write(content)
 
-    commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'scripture_table.tex'])
-    # commandLine = subprocess.Popen(['pdflatex', 'weekly_time_sheet.tex'])
-    commandLine.communicate()
+    subprocess.Popen(['/usr/local/bin/laton', 'scripture_table.tex'])
 
-    os.unlink('scripture_table.aux')
-    os.unlink('scripture_table.log')
-    os.unlink('scripture_table.tex')
+    # commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'scripture_table.tex'])
+    # # commandLine = subprocess.Popen(['pdflatex', 'weekly_time_sheet.tex'])
+    # commandLine.communicate()
+    #
+    # os.unlink('scripture_table.aux')
+    # os.unlink('scripture_table.log')
+    # os.unlink('scripture_table.tex')
 
 
 def _problem_list_create(first, last, less_num):
@@ -378,6 +382,15 @@ def _alternatives_create(length, num):
             alternatives_i.append('../static/{0}/rc_vocab_{0}_{1}.png'.format(random_lesson, random_card + num))
         alternatives.append(alternatives_i)
     return alternatives
+
+
+def scripture_data_json(form):
+    data = {
+        "week_start_date": str(form.weekof.data),
+        "scripture_ref": form.scripture_ref.data,
+        "scripture": form.scripture.data,
+    }
+    return data
 
 
 def scripture_table_create(data, year='current'):
