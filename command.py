@@ -201,7 +201,7 @@ def query_bank():
         itemized.append(
             {
                 'type': entry['type'],
-                'amount': entry['amount'],
+                'amount': '{0:.2f}'.format(entry['amount']),
                 'description': entry['description'],
                 'date': entry['date']
             }
