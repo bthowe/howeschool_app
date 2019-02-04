@@ -313,6 +313,8 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
 
 
 def scriptures_latex_create(df):
+    df.sort_values('week_start_date', inplace=True)
+
     header = r'''
     \documentclass[10pt,twoside,letterpaper,oldfontcommands,openany]{memoir}
     \usepackage{rotating, caption}
@@ -378,6 +380,15 @@ def _alternatives_create(length, num):
             alternatives_i.append('../static/{0}/rc_vocab_{0}_{1}.png'.format(random_lesson, random_card + num))
         alternatives.append(alternatives_i)
     return alternatives
+
+
+def scripture_data_json(form):
+    data = {
+        "week_start_date": str(form.weekof.data),
+        "scripture_ref": form.scripture_ref.data,
+        "scripture": form.scripture.data,
+    }
+    return data
 
 
 def scripture_table_create(data, year='current'):

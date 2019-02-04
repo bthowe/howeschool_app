@@ -307,10 +307,9 @@ def weekly_forms_create():
 
     form = helpers_classes.WeeklyForm()
     if request.method == 'POST':  # and form.validate_on_submit():
-        data = helpers_functions.weekly_data_json(form)
-        ret = db_forms.db['Weekly'].insert_one(data)
-        print('data inserted: {}'.format(ret))
-
+        data_weekly = helpers_functions.weekly_data_json(form)
+        ret_weekly = db_forms.db['Weekly'].insert_one(data_weekly)
+        print('Weekly data inserted: {}'.format(ret_weekly))
         helpers_functions.weekly_form_latex_create(
                 ['Calvin', 'Samuel', 'Kay'],
                 [form.cal_book.data, form.sam_book.data, form.kay_book.data],
@@ -319,6 +318,10 @@ def weekly_forms_create():
                 [form.mon_dis.data, form.tue_dis.data, form.wed_dis.data, form.thu_dis.data, form.fri_dis.data, form.sat_dis.data],
                 [form.mon_job.data, form.tue_job.data, form.wed_job.data, form.thu_job.data, form.fri_job.data, form.sat_job.data]
         )
+
+        data_scriptures = helpers_functions.scripture_data_json(form)
+        ret_scriptures = db_forms.db['Scriptures'].insert_one(data_scriptures)
+        print('Scriptures data inserted: {}'.format(ret_scriptures))
         helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
 
         helpers_functions.weekly_forms_email()
@@ -332,7 +335,10 @@ def weekly_forms_create():
 def scripture_list():
     form = helpers_classes.ScriptureListForm()
     if request.method == 'POST':  # and form.validate_on_submit():
-        helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())), str(form.choose_year.data))
+        helpers_functions.scripture_table_create(
+            pd.DataFrame(list(db_forms.db['Scriptures'].find())),
+            str(form.choose_year.data)
+        )
 
         if form.email.data == 'yes':
             helpers_functions.weekly_forms_email('scripture_list')
