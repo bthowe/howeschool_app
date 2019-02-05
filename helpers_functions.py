@@ -384,7 +384,7 @@ def _alternatives_create(length, num):
     return alternatives
 
 
-def scripture_data_json(form):
+def scripture_list_json(form):
     data = {
         "week_start_date": str(form.weekof.data),
         "scripture_ref": form.scripture_ref.data,

@@ -319,7 +319,7 @@ def weekly_forms_create():
                 [form.mon_job.data, form.tue_job.data, form.wed_job.data, form.thu_job.data, form.fri_job.data, form.sat_job.data]
         )
 
-        data_scriptures = helpers_functions.scripture_data_json(form)
+        data_scriptures = helpers_functions.scripture_list_json(form)
         ret_scriptures = db_forms.db['Scriptures'].insert_one(data_scriptures)
         print('Scriptures data inserted: {}'.format(ret_scriptures))
         helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
