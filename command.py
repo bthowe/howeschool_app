@@ -485,5 +485,13 @@ def banking_history_personal():
     return render_template('banking_history_personal.html', name=current_user.username, access=current_user.access, page_name='Banking History')
 
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=8001, debug=True)
+
+@app.route("/sotw", methods=['POST', 'GET'])
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
+@login_required
+def sotw():
+    df_scripture = pd.DataFrame(list(db_forms.db['Scriptures'].find())).sort_values('week_start_date').values[-1, :]
+    return render_template('sotw.html', scripture_ref=df_scripture[2], scripture=df_scripture[1], page_name='Scripture of the Week', access=current_user.access)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8001, debug=True)
