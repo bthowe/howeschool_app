@@ -301,7 +301,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
     with open('weekly_time_sheet.tex', 'w') as f:
          f.write(content)
 
-    subprocess.Popen(['/usr/local/bin/laton', 'weekly_time_sheet.tex'])
+    subprocess.Popen(['sudo', '/usr/local/bin/laton', 'weekly_time_sheet.tex'])
 
 
     # commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'weekly_time_sheet.tex'])
