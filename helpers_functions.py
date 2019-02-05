@@ -118,12 +118,15 @@ def weekly_forms_email(type='weekly_time_sheet'):
         )
 
 def weekly_browser_display(type='weekly_time_sheet'):
-    chrome = webbrowser.get('chrome')
+    chrome = webbrowser   #.get('chrome')
     if type == 'scripture_list':
-        chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
+        # chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
+        chrome.open_new_tab('file:///home/pi/PythonProject/howeschool_app/scripture_table.pdf')
     else:
-        chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf')
-        chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
+        chrome.open_new_tab('file:///home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf')
+        chrome.open_new_tab('file:///home/pi/PythonProject/howeschool_app/scripture_table.pdf')
+        # chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf')
+        # chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
 
 
 def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions, jobs):
