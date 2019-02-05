@@ -117,17 +117,6 @@ def weekly_forms_email(type='weekly_time_sheet'):
             ]
         )
 
-def weekly_browser_display(type='weekly_time_sheet'):
-    chrome = webbrowser   #.get('chrome')
-    if type == 'scripture_list':
-        # chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
-        chrome.open_new_tab('file:///home/pi/PythonProject/howeschool_app/scripture_table.pdf')
-    else:
-        chrome.open_new_tab('file:///home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf')
-        chrome.open_new_tab('file:///home/pi/PythonProject/howeschool_app/scripture_table.pdf')
-        # chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf')
-        # chrome.open_new_tab('file:///Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf')
-
 
 def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions, jobs):
     header = r'''
@@ -215,12 +204,6 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
     else:
         scrip = '``{0}" ({1})'.format(scripture[1], scripture[0])  # 13
 
-    print('\n\n\n\n\n\n\n')
-    print(scrip)
-    print(scripture[0])
-    print(scripture[1])
-    print('\n\n\n\n\n\n\n')
-
     time_sheets = ''''''
     for name in kids:
         time_sheets += '''
@@ -304,16 +287,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
     with open('weekly_time_sheet.tex', 'w') as f:
          f.write(content)
 
-    subprocess.Popen(['sudo', '/usr/local/bin/laton', 'weekly_time_sheet.tex'])
-
-
-    # commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'weekly_time_sheet.tex'])
-    # # commandLine = subprocess.Popen(['pdflatex', 'weekly_time_sheet.tex'])
-    # commandLine.communicate()
-    #
-    # os.unlink('weekly_time_sheet.aux')
-    # os.unlink('weekly_time_sheet.log')
-    # os.unlink('weekly_time_sheet.tex')
+    subprocess.Popen(['/usr/local/bin/laton', 'weekly_time_sheet.tex'])
 
 
 def scriptures_latex_create(df):
@@ -353,14 +327,6 @@ def scriptures_latex_create(df):
         f.write(content)
 
     subprocess.Popen(['/usr/local/bin/laton', 'scripture_table.tex'])
-
-    # commandLine = subprocess.Popen(['/Library/TeX/Root/bin/x86_64-darwin/pdflatex', 'scripture_table.tex'])
-    # # commandLine = subprocess.Popen(['pdflatex', 'weekly_time_sheet.tex'])
-    # commandLine.communicate()
-    #
-    # os.unlink('scripture_table.aux')
-    # os.unlink('scripture_table.log')
-    # os.unlink('scripture_table.tex')
 
 
 def _problem_list_create(first, last, less_num):

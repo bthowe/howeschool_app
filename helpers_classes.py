@@ -98,7 +98,7 @@ class CreditDebit(FlaskForm):
 
 class ScriptureListForm(FlaskForm):
     choose_year = SelectField('Year', choices=[('choose', 'Choose...'), ('2019', '2019'), ('all', 'All')], validators=[InputRequired()], id='choose_year')
-    email = RadioField('Email List?', choices=[('yes', 'Yes'), ('no', 'No')], id='email', default='yes')
+    email = RadioField('Email List?', choices=[('yes', 'Yes'), ('no', 'No')], id='email', default='no')
 
 
 class User(UserMixin):

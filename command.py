@@ -1,12 +1,14 @@
 import os
+import os.path
 import sys
+import time
 import json
 import datetime
 import pandas as pd
 from flask_pymongo import PyMongo
 from collections import defaultdict
 from flask_bootstrap import Bootstrap
-from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify
+from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify, send_file
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 import helpers_classes
@@ -307,6 +309,16 @@ def weekly_forms_create():
 
     form = helpers_classes.WeeklyForm()
     if request.method == 'POST':  # and form.validate_on_submit():
+        path_weekly = '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf'
+        path_scrip = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
+
+        # remove if pdfs already exists
+        if os.path.exists(path_weekly):
+            os.remove(path_weekly)
+        if os.path.exists(path_scrip):
+            os.remove(path_scrip)
+
+        # write to database and create pdf files
         data_weekly = helpers_functions.weekly_data_json(form)
         ret_weekly = db_forms.db['Weekly'].insert_one(data_weekly)
         print('Weekly data inserted: {}'.format(ret_weekly))
@@ -318,15 +330,20 @@ def weekly_forms_create():
                 [form.mon_dis.data, form.tue_dis.data, form.wed_dis.data, form.thu_dis.data, form.fri_dis.data, form.sat_dis.data],
                 [form.mon_job.data, form.tue_job.data, form.wed_job.data, form.thu_job.data, form.fri_job.data, form.sat_job.data]
         )
-
         data_scriptures = helpers_functions.scripture_list_json(form)
         ret_scriptures = db_forms.db['Scriptures'].insert_one(data_scriptures)
         print('Scriptures data inserted: {}'.format(ret_scriptures))
         helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
 
+        # wait while the pdf is created
+        while not (os.path.exists(path_weekly) and os.path.exists(path_scrip)):
+            time.sleep(1)
+
+        # email files
         helpers_functions.weekly_forms_email()
-        helpers_functions.weekly_browser_display()
-        return redirect(url_for('weekly_forms_create'))
+
+        # download files
+        return send_file(path_weekly, as_attachment=True)
     return render_template('weekly_forms_create.html', form=form, date=date, form_data=output, access=current_user.access, page_name='Weekly Forms')
 
 @app.route("/scripture_list", methods=['POST', 'GET'])
@@ -335,6 +352,13 @@ def weekly_forms_create():
 def scripture_list():
     form = helpers_classes.ScriptureListForm()
     if request.method == 'POST':  # and form.validate_on_submit():
+        path = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
+
+        # remove if the pdf already exists
+        if os.path.exists(path):
+            os.remove(path)
+
+        # generate pdf
         helpers_functions.scripture_table_create(
             pd.DataFrame(list(db_forms.db['Scriptures'].find())),
             str(form.choose_year.data)
@@ -342,8 +366,13 @@ def scripture_list():
 
         if form.email.data == 'yes':
             helpers_functions.weekly_forms_email('scripture_list')
-        helpers_functions.weekly_browser_display('scripture_list')
-        return redirect(url_for('scripture_list'))
+
+        # wait while the pdf is created
+        while not os.path.exists(path):
+            time.sleep(1)
+
+        # download file
+        return send_file(path, as_attachment=True)
     return render_template('scripture_list.html', form=form, access=current_user.access, page_name='Scripture List')
 
 
@@ -370,14 +399,13 @@ def enter_problem_origin():
 
 
 
-
 @app.route('/mongo_call_vocab', methods=['POST'])
 def mongo_call_vocab():
     js = json.loads(request.data.decode('utf-8'))
     js['name'] = current_user.username
 
-    # ret = db_vocab.db[js['page']].insert_one(js)
-    # print('data inserted: {}'.format(ret))
+    ret = db_vocab.db[js['page']].insert_one(js)
+    print('data inserted: {}'.format(ret))
     return ''
 
 @app.route("/vocab", methods=['POST', 'GET'])
@@ -391,7 +419,6 @@ def vocab():
         else:
             return redirect(url_for('practice_card', lesson_num=form.lesson_num.data, prompt_type=form.prompt_type.data))
     return render_template('vocab.html', form=form, page_name='Vocabulary Menu', access=current_user.access)
-
 
 @app.route("/practice_card")
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
@@ -409,7 +436,6 @@ def practice_card():
                   'static/{0}/rc_vocab_{0}_{1}.png'.format(lesson_num, num)] for num in range(0, num_cards, 2)]
 
     return render_template("practice_card.html", cards=cards, access=current_user.access, page_name='Vocabulary Practice', lesson_num=lesson_num)
-
 
 @app.route("/quiz_card")
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
@@ -430,6 +456,7 @@ def quiz_card():
         alternatives = helpers_functions._alternatives_create(len(cards), 0)
 
     return render_template('quiz_card.html', cards=cards, alts=alternatives, access=current_user.access, page_name='Vocabulary Quiz', lesson_num=lesson_num)
+
 
 
 @app.route("/banking_manage", methods=['POST', 'GET'])
@@ -456,6 +483,7 @@ def banking_history():
 @login_required
 def banking_history_personal():
     return render_template('banking_history_personal.html', name=current_user.username, access=current_user.access, page_name='Banking History')
+
 
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=8001, debug=True)
