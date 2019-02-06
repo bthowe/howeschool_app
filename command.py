@@ -368,11 +368,12 @@ def scripture_list():
             helpers_functions.weekly_forms_email('scripture_list')
 
         # wait while the pdf is created
-        while not os.path.exists(path):
-            time.sleep(1)
+#        while not os.path.exists(path):
+#            time.sleep(1)
 
         # download file
-        return send_file(path, as_attachment=True)
+#        return send_file(path, as_attachment=True)
+        return ''
     return render_template('scripture_list.html', form=form, access=current_user.access, page_name='Scripture List')
 
 
