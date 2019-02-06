@@ -287,7 +287,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
     with open('weekly_time_sheet.tex', 'w') as f:
          f.write(content)
 
-    subprocess.Popen(['/usr/local/bin/laton', 'weekly_time_sheet.tex'])
+    subprocess.Popen(['sudo', '/usr/local/bin/laton', 'weekly_time_sheet.tex'])
 
 
 def scriptures_latex_create(df):
@@ -326,7 +326,7 @@ def scriptures_latex_create(df):
     with open('scripture_table.tex', 'w') as f:
         f.write(content)
 
-    subprocess.Popen(['/usr/local/bin/laton', 'scripture_table.tex'])
+    subprocess.Popen(['sudo', '/usr/local/bin/laton', 'scripture_table.tex'])
 
 
 def _problem_list_create(first, last, less_num):
