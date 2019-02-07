@@ -97,25 +97,19 @@ def credit_debit_data(form):
     }
     return data
 
-def weekly_forms_email(type='weekly_time_sheet'):
+def weekly_forms_email():
     yag = yagmail.SMTP('b.travis.howe@gmail.com', os.environ['GMAIL'])
-    if type == 'scripture_list':
-        yag.send(
-            ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
-            subject="Scripture Table",
-            contents="",
-            attachments='/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
-        )
-    else:
-        yag.send(
-            ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
-            subject="Forms for the Week",
-            contents="",
-            attachments=[
-                '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf',
-                '/home/pi/PythonProject/howeschool_app/scripture_table.pdf',
-            ]
-        )
+    yag.send(
+        ["b.travis.howe@gmail.com", "kassie.howe@gmail.com"],
+        subject="Forms for the Week",
+        contents="",
+        attachments=[
+            '/Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf'
+            '/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf'
+            # '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf',
+            # '/home/pi/PythonProject/howeschool_app/scripture_table.pdf',
+        ]
+    )
 
 
 def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions, jobs):

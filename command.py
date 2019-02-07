@@ -309,14 +309,14 @@ def weekly_forms_create():
 
     form = helpers_classes.WeeklyForm()
     if request.method == 'POST':  # and form.validate_on_submit():
-        path_weekly = '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf'
-        path_scrip = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
+        # path_weekly = '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf'
+        # path_scrip = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
 
         # remove if pdfs already exists
-        if os.path.exists(path_weekly):
-            os.remove(path_weekly)
-        if os.path.exists(path_scrip):
-            os.remove(path_scrip)
+        # if os.path.exists(path_weekly):
+        #     os.remove(path_weekly)
+        # if os.path.exists(path_scrip):
+        #     os.remove(path_scrip)
 
         # write to database and create pdf files
         data_weekly = helpers_functions.weekly_data_json(form)
@@ -336,45 +336,46 @@ def weekly_forms_create():
         helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
 
         # wait while the pdf is created
-        while not (os.path.exists(path_weekly) and os.path.exists(path_scrip)):
-            time.sleep(1)
+        # while not (os.path.exists(path_weekly) and os.path.exists(path_scrip)):
+        #     time.sleep(1)
 
         # email files
-        helpers_functions.weekly_forms_email()
+        # helpers_functions.weekly_forms_email()
 
         # download files
-        return send_file(path_weekly, as_attachment=True)
+        return redirect(url_for('weekly_forms_create'))
     return render_template('weekly_forms_create.html', form=form, date=date, form_data=output, access=current_user.access, page_name='Weekly Forms')
 
-@app.route("/scripture_list", methods=['POST', 'GET'])
+@app.route("/download_forms", methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
 @login_required
-def scripture_list():
-    form = helpers_classes.ScriptureListForm()
+def download_forms():
+    form = helpers_classes.DownloadFormsForm()
+
+    # path = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
+    path_week_base = '/Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf'
+    path_scrip_base = '/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf'
+    path_week_static = '/Users/travis.howe/Projects/github/howeschool_app/static/weekly_time_sheet.pdf'
+    path_scrip_static = '/Users/travis.howe/Projects/github/howeschool_app/static/scripture_table.pdf'
+
+    if os.path.exists(path_week_base):
+        os.rename(path_week_base, path_week_static)
+    if os.path.exists(path_scrip_base):
+        os.rename(path_scrip_base, path_scrip_static)
+
     if request.method == 'POST':  # and form.validate_on_submit():
-        path = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
+        helpers_functions.weekly_forms_email()
+        return redirect(url_for('download_forms'))
+    # todo: flash message that the email has been sent.
+    return render_template(
+        'download_forms.html',
+        form=form,
+        access=current_user.access,
+        page_name='Download Forms',
+        weekly_forms_pdf=str(datetime.datetime.fromtimestamp(os.path.getmtime(path_scrip_static))),
+        scripture_list_pdf=str(datetime.datetime.fromtimestamp(os.path.getmtime(path_week_static)))
+    )
 
-        # remove if the pdf already exists
-        if os.path.exists(path):
-            os.remove(path)
-
-        # generate pdf
-        helpers_functions.scripture_table_create(
-            pd.DataFrame(list(db_forms.db['Scriptures'].find())),
-            str(form.choose_year.data)
-        )
-
-        if form.email.data == 'yes':
-            helpers_functions.weekly_forms_email('scripture_list')
-
-        # wait while the pdf is created
-#        while not os.path.exists(path):
-#            time.sleep(1)
-
-        # download file
-#        return send_file(path, as_attachment=True)
-        return ''
-    return render_template('scripture_list.html', form=form, access=current_user.access, page_name='Scripture List')
 
 
 

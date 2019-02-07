@@ -1,0 +1,76 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="col">
+                <div class="row">
+{#                    <p>Files available for download:</p>#}
+                    <table class="table table-sm">
+                        <thead class="thead-light">
+                        <tr class="d-flex">
+                            <th class="col-3">File</th>
+                            <th class="col-3">Modified</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="d-flex">
+                            <td class="col-3"><a href="/static/weekly_time_sheet.pdf" download>weekly_time_sheet.pdf</a></td>
+                            <td class="col-3">{{ weekly_forms_pdf }} </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <td class="col-3"><a href="/static/scripture_table.pdf" download>scripture_table.pdf</a></td>
+                            <td class="col-3">{{ scripture_list_pdf }} </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <form method="POST" action="download_forms">
+{#                        <div class="form-group col-md-20">#}
+{#                            <div class="row">#}
+{#                                <legend class="col-form-label col-sm-2 pt-0">Email List?</legend>#}
+{#                            </div>#}
+{#                            {{ wtf.form_field(form.email) }}#}
+{#                        </div>#}
+                        <div class="form-row">
+                            <div class="col-md-auto">
+                                <input class="btn btn-primary" id="submit" type="submit" value="Email Files"/>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+
+        <script>
+            document.getElementById('choose_year').focus();
+        </script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                crossorigin="anonymous"></script>
+{#        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>#}
+    {% endblock scripts %}
+
+{% endblock body %}

@@ -96,8 +96,7 @@ class CreditDebit(FlaskForm):
     amount = FloatField('Amount', validators=[InputRequired()], id='amount')
     description = StringField('Description', validators=[InputRequired()], widget=TextArea(), id='description')
 
-class ScriptureListForm(FlaskForm):
-    choose_year = SelectField('Year', choices=[('choose', 'Choose...'), ('2019', '2019'), ('all', 'All')], validators=[InputRequired()], id='choose_year')
+class DownloadFormsForm(FlaskForm):
     email = RadioField('Email List?', choices=[('yes', 'Yes'), ('no', 'No')], id='email', default='no')
 
 
