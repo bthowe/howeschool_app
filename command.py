@@ -352,10 +352,10 @@ def weekly_forms_create():
 def download_forms():
     form = helpers_classes.DownloadFormsForm()
 
-    path_week_base = '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf'
-    path_scrip_base = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
-    path_week_static = '/home/pi/PythonProject/howeschool_app/static/weekly_time_sheet.pdf'
-    path_scrip_static = '/home/pi/PythonProject/howeschool_app/static/scripture_table.pdf'
+    path_week_base = '/home/pi/PythonProjects/howeschool_app/weekly_time_sheet.pdf'
+    path_scrip_base = '/home/pi/PythonProjects/howeschool_app/scripture_table.pdf'
+    path_week_static = '/home/pi/PythonProjects/howeschool_app/static/weekly_time_sheet.pdf'
+    path_scrip_static = '/home/pi/PythonProjects/howeschool_app/static/scripture_table.pdf'
     # path_week_base = '/Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf'
     # path_scrip_base = '/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf'
     # path_week_static = '/Users/travis.howe/Projects/github/howeschool_app/static/weekly_time_sheet.pdf'
