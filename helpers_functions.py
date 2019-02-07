@@ -104,8 +104,6 @@ def weekly_forms_email():
         subject="Forms for the Week",
         contents="",
         attachments=[
-            # '/Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf'
-            # '/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf'
             '/home/pi/PythonProjects/howeschool_app/static/weekly_time_sheet.pdf',
             '/home/pi/PythonProjects/howeschool_app/static/scripture_table.pdf',
         ]

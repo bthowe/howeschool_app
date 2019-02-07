@@ -309,16 +309,6 @@ def weekly_forms_create():
 
     form = helpers_classes.WeeklyForm()
     if request.method == 'POST':  # and form.validate_on_submit():
-        # path_weekly = '/home/pi/PythonProject/howeschool_app/weekly_time_sheet.pdf'
-        # path_scrip = '/home/pi/PythonProject/howeschool_app/scripture_table.pdf'
-
-        # remove if pdfs already exists
-        # if os.path.exists(path_weekly):
-        #     os.remove(path_weekly)
-        # if os.path.exists(path_scrip):
-        #     os.remove(path_scrip)
-
-        # write to database and create pdf files
         data_weekly = helpers_functions.weekly_data_json(form)
         ret_weekly = db_forms.db['Weekly'].insert_one(data_weekly)
         print('Weekly data inserted: {}'.format(ret_weekly))
@@ -335,14 +325,6 @@ def weekly_forms_create():
         print('Scriptures data inserted: {}'.format(ret_scriptures))
         helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
 
-        # wait while the pdf is created
-        # while not (os.path.exists(path_weekly) and os.path.exists(path_scrip)):
-        #     time.sleep(1)
-
-        # email files
-        # helpers_functions.weekly_forms_email()
-
-        # download files
         return redirect(url_for('weekly_forms_create'))
     return render_template('weekly_forms_create.html', form=form, date=date, form_data=output, access=current_user.access, page_name='Weekly Forms')
 
@@ -356,10 +338,6 @@ def download_forms():
     path_scrip_base = '/home/pi/PythonProjects/howeschool_app/scripture_table.pdf'
     path_week_static = '/home/pi/PythonProjects/howeschool_app/static/weekly_time_sheet.pdf'
     path_scrip_static = '/home/pi/PythonProjects/howeschool_app/static/scripture_table.pdf'
-    # path_week_base = '/Users/travis.howe/Projects/github/howeschool_app/weekly_time_sheet.pdf'
-    # path_scrip_base = '/Users/travis.howe/Projects/github/howeschool_app/scripture_table.pdf'
-    # path_week_static = '/Users/travis.howe/Projects/github/howeschool_app/static/weekly_time_sheet.pdf'
-    # path_scrip_static = '/Users/travis.howe/Projects/github/howeschool_app/static/scripture_table.pdf'
 
     if os.path.exists(path_week_base):
         os.rename(path_week_base, path_week_static)
