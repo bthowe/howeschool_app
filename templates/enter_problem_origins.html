@@ -85,7 +85,7 @@
                 t_tag = document.createTextNode("Enter the lesson number corresponding to the exercise's origin");
                 h_tag.appendChild(t_tag);
                 div.appendChild(h_tag);
-                num = parseInt(str)
+                num = parseInt(str);
 
                 for (var i = 1; i <= num; i++) {
                     nextChar = i;
@@ -104,7 +104,7 @@
                     br.id = 'br' + nextChar
                     div.appendChild(br);
                 }
-            };
+            }
 
 
             function createButton(flag) {
@@ -113,36 +113,48 @@
                 btn.innerHTML = 'Record';
                 btn.className = 'btn btn-primary';
                 div.appendChild(btn);
-                btn.addEventListener('click', function (event) {
-                    for (var i = 1; i <= num_mixed_probs; i++) {
-                        origin_list.push(document.getElementById('input' + i).value)
-                        document.getElementById('input' + i).remove();
-                        document.getElementById('br' + i).remove();
-                    }
 
-                    var request = new XMLHttpRequest();
-                    request.responseType = 'json';
-                    request.open("POST", "/add_problem_origin", true);
-                    request.send(JSON.stringify(
-                        {
-                            "book": book,
-                            "chapter": chapter,
-                            "origin_list": origin_list,
-                            "flag": flag
+                if (flag == 0){
+                    btn.onclick = function() {
+                        if (confirm("Are you sure you want to update the database?")) {
+                            submitFunction(flag)
                         }
-                        )
-                    );
-                    document.getElementById('h1').remove();
-                    document.getElementById('div').remove();
-                    document.getElementById('button').className = "unhidden";
-                    document.getElementById('button').focus();
-                    origin_list = []
-                    chapter++
-                    document.getElementById('chapter').value = chapter
-                });
+                    }
+                }
+                else {
+                    btn.onclick = function() {submitFunction(flag)}
+                }
             }
-            ;
 
+            function submitFunction(flag) {
+                for (var i = 1; i <= num_mixed_probs; i++) {
+                    origin_list.push(document.getElementById('input' + i).value);
+                    document.getElementById('input' + i).remove();
+                    document.getElementById('br' + i).remove();
+                }
+
+                var request = new XMLHttpRequest();
+                request.responseType = 'json';
+                request.open("POST", "/add_problem_origin", true);
+                request.send(JSON.stringify(
+                    {
+                        "book": book,
+                        "chapter": chapter,
+                        "origin_list": origin_list,
+                        "flag": flag
+                    }
+                    )
+                );
+                document.getElementById('h1').remove();
+                document.getElementById('div').remove();
+                document.getElementById('button').className = "unhidden";
+                document.getElementById('button').focus();
+                origin_list = [];
+                chapter++;
+                document.getElementById('chapter').value = chapter
+            }
+
+{#todo: I'm thinking maybe I should get rid of the listener and make an onclick function#}
             document.addEventListener('DOMContentLoaded', init, false);
             function init() {
                 function submit() {
@@ -160,16 +172,14 @@
                             var chapter_details = JSON.parse(JSON.stringify(request.response));
                             num_mixed_probs = parseInt(chapter_details['num_mixed_probs']);
                             createProblems(num_mixed_probs);
+                            createButton(chapter_details['flag']);
 
 {#                            if information has already been entered, fill and update if needed#}
                             if (chapter_details['flag'] == 0) {
                                 for (var i = 1; i <= num_mixed_probs; i++) {
                                     document.getElementById("input" + i).value = chapter_details['origin_lst'][i - 1]
                                 }
-
                             }
-                            createButton(chapter_details['flag']);
-                            document.getElementById('input1').focus();
                         };
                         request.send(JSON.stringify(
                             {
