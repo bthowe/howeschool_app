@@ -168,11 +168,12 @@ def add_problem_origin():
     js = json.loads(request.data.decode('utf-8'))
     print(js)
 
-    collection = db_origin.db[js['book']]
-    y = collection.insert_one(js)
-    print(y)
-
-    print('data inserted: {}'.format(js))
+    if js['flag'] == 0:
+        ret = db_origin.db[js['book']].update({'book': js['book'], 'chapter': js['chapter']}, {'book': js['book'], 'chapter': js['chapter'], 'origin_list': js['origin_list']}, upsert=True)
+        print('data updated: {}'.format(ret))
+    else:
+        ret = db_origin.db[js['book']].insert_one({'book': js['book'], 'chapter': js['chapter'], 'origin_list': js['origin_list']})
+        print('data inserted: {}'.format(ret))
     return ''
 
 
@@ -184,9 +185,11 @@ def query_chapter2():
     book = js['book']
 
     output = list(db_number.db[book].find({'chapter': js['chapter']}))[0]
-    print(output)
-    problems_dic = {'num_lesson_probs': output['num_lesson_probs'], 'num_mixed_probs': output['num_mixed_probs']}
-    return jsonify(problems_dic)
+
+    origin_problems = list(db_origin.db[book].find({'chapter': js['chapter']}))
+    if origin_problems:
+        return jsonify({'origin_lst': origin_problems[0]['origin_list'], 'num_lesson_probs': output['num_lesson_probs'], 'num_mixed_probs': output['num_mixed_probs'], 'flag': 0})
+    return jsonify({'num_lesson_probs': output['num_lesson_probs'], 'num_mixed_probs': output['num_mixed_probs'], 'flag': 1})
 
 @app.route('/query_bank', methods=['POST', 'GET'])
 def query_bank():
@@ -208,7 +211,7 @@ def query_bank():
                 'date': entry['date']
             }
         )
-    output = {'itemized': itemized, 'total': sum}
+    output = {'itemized': itemized, 'total': '{0:.2f}'.format(sum)}
     return jsonify(output)
 
 
@@ -476,5 +479,5 @@ def sotw():
     df_scripture = pd.DataFrame(list(db_forms.db['Scriptures'].find())).sort_values('week_start_date').values[-1, :]
     return render_template('sotw.html', scripture_ref=df_scripture[2], scripture=df_scripture[1], page_name='Scripture of the Week', access=current_user.access)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=True)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=8001, debug=True)
