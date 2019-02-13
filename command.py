@@ -214,6 +214,42 @@ def query_bank():
     output = {'itemized': itemized, 'total': '{0:.2f}'.format(sum)}
     return jsonify(output)
 
+@app.route('/query_dbs', methods=['POST', 'GET'])
+def query_dbs():
+    js = json.loads(request.data.decode('utf-8'))
+    print(js)
+
+    dbs = js['dbs']
+    if dbs == 'Forms':
+        if js['date'] != '':
+            print(list(db_forms.db[js['collection']].find({'week_start_date': js['date']}, {'_id': False})))
+        else:
+            print(list(db_forms.db[js['collection']].find({}, {'_id': False})))
+            return jsonify(items=list(db_forms.db[js['collection']].find({}, {'_id': False})))
+            # return jsonify({'items': list(db_forms.db[js['collection']].find({}, {'_id': False}))})
+
+    elif dbs == 'Math Daily':
+        db = db_performance
+    elif dbs == 'Math Origins':
+        db = db_origin
+    elif dbs == 'Scripture Commentary':
+        db = db_script
+    elif dbs == 'Users':
+        db = db_users
+
+
+
+    # book = js['book']
+    #
+    # output = list(db_number.db[book].find({'chapter': js['chapter']}))[0]
+    #
+    # origin_problems = list(db_origin.db[book].find({'chapter': js['chapter']}))
+    # if origin_problems:
+    #     return jsonify({'origin_lst': origin_problems[0]['origin_list'], 'num_lesson_probs': output['num_lesson_probs'], 'num_mixed_probs': output['num_mixed_probs'], 'flag': 0})
+    # return jsonify({'num_lesson_probs': output['num_lesson_probs'], 'num_mixed_probs': output['num_mixed_probs'], 'flag': 1})
+    return ''
+
+
 
 
 
@@ -479,5 +515,17 @@ def sotw():
     df_scripture = pd.DataFrame(list(db_forms.db['Scriptures'].find())).sort_values('week_start_date').values[-1, :]
     return render_template('sotw.html', scripture_ref=df_scripture[2], scripture=df_scripture[1], page_name='Scripture of the Week', access=current_user.access)
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=8001, debug=True)
+
+
+@app.route("/database_viewer", methods=['POST', 'GET'])
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
+@login_required
+def database_viewer():
+    return render_template('data_viewer.html', page_name='Database Viewer', access=current_user.access)
+
+
+
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8001, debug=True)

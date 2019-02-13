@@ -1,0 +1,243 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main">
+            <div class="row" id="dropDownRow">
+                <div class="col-2">
+                    <label for="choose_dbs">Database</label>
+                    <select id="choose_dbs" class="form-control" onchange=collectionAutoFill()>
+                        <option selected>Choose...</option>
+                        <option>Forms</option>
+                        <option>Math Daily</option>
+                        <option>Math Origins</option>
+                        <option>Scripture Commentary</option>
+                        <option>Users</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" id="buttonRow"></div>
+            <div class="row" id="tableRow"></div>
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+        <script>
+        {#            todo: remove if reset database#}
+
+            document.getElementById('choose_dbs').focus();
+
+            function collectionAutoFill() {
+                var dbs_e = document.getElementById("choose_dbs");
+                if (dbs_e.value != "0") {
+                    dbs = dbs_e.options[dbs_e.selectedIndex].text;
+
+                    if (dbs == "Forms"){
+                        dropDownCreate(["All", "Scriptures", "Weekly"]);
+                        document.getElementById('choose_collection').focus();
+                    }
+                    else if (dbs == "Math Dailiy"){
+                        dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"])
+                        document.getElementById('choose_collection').focus();
+                        textFieldCreate();
+                        document.getElementById('date_input').focus();
+                    }
+                    else if (dbs == "Math Origins"){
+                        dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"])
+                        document.getElementById('choose_collection').focus();
+                        textFieldCreate();
+                        document.getElementById('date_input').focus();
+                    }
+                    else if (dbs == "Scripture Commentary"){
+                        dropDownCreate(["All", "Calvin", "Samuel", "Kay"])
+                        document.getElementById('choose_collection').focus();
+                        textFieldCreate();
+                        document.getElementById('date_input').focus();
+                    }
+                    else if (dbs == "User"){
+                        dropDownCreate(["users"])
+                        document.getElementById('choose_collection').focus();
+                        textFieldCreate();
+                        document.getElementById('date_input').focus();
+                    }
+                }
+            }
+
+            function dropDownCreate(collections) {
+                var dropdown = document.createElement('select');
+                dropdown.id = 'choose_collection';
+                dropdown.className = 'form-control';
+                dropdown.onchange = function () {
+                    dateAutoFill()
+                };
+
+                var label = document.createElement('Label');
+                label.setAttribute("for", 'choose_collection');
+                label.innerHTML = 'Collections';
+
+                for (var i = 0; i < collections.length; i++) {
+                    var option = document.createElement('option')
+                    option.text = collections[i]
+                    dropdown.appendChild(option)
+                }
+
+                var dropdownrow = document.getElementById('dropDownRow');
+                var dropdowndiv = document.createElement('div');
+                dropdowndiv.className = 'col-2';
+
+                dropdowndiv.appendChild(label);
+                dropdowndiv.appendChild(dropdown);
+                dropdownrow.appendChild(dropdowndiv);
+            }
+
+            function dateAutoFill() {
+                textFieldCreate();
+                buttonCreate();
+                document.getElementById('date_input').focus();
+            }
+
+            function textFieldCreate() {
+                var input = document.createElement('input');
+                input.id = 'date_input';
+                input.className = 'form-control';
+                input.placeholder = 'yyyy-mm-dd';
+
+                var label = document.createElement('Label');
+                label.setAttribute("for", 'date_input');
+                label.innerHTML = 'Date (leave blank for all rows)';
+
+                var dropdownrow = document.getElementById('dropDownRow');
+                var dropdowndiv = document.createElement('div');
+                dropdowndiv.className = 'col-3';
+
+                dropdowndiv.appendChild(label);
+                dropdowndiv.appendChild(input);
+                dropdownrow.appendChild(dropdowndiv);
+            }
+
+            function buttonCreate() {
+                var button = document.createElement('button');
+                button.id = 'submit';
+                button.className = 'btn btn-primary';
+                button.innerHTML = 'Submit';
+                button.onclick = function() {
+                    var dbs_e = document.getElementById("choose_dbs");
+                    var col_e = document.getElementById("choose_collection");
+
+                    var request = new XMLHttpRequest();
+                    request.responseType = 'json';
+                    request.open("POST", "/query_dbs", true);
+                    request.onload = function () {
+                        var dbs_details = JSON.parse(JSON.stringify(request.response))['items'];
+                        tableCreate(dbs_details);
+                    };
+                    request.send(JSON.stringify(
+                        {
+                            "dbs": dbs_e.options[dbs_e.selectedIndex].text,
+                            "collection": col_e.options[col_e.selectedIndex].text,
+                            "date": date_input.value
+                        }
+                        )
+                    );
+
+                };
+
+                var buttonrow = document.getElementById('buttonRow');
+                var buttondiv = document.createElement('div');
+                buttondiv.className = 'col pt-4';
+
+                buttondiv.appendChild(button);
+                buttonrow.appendChild(buttondiv);
+            }
+
+            function tableCreate(dbs_details) {
+{#                document.getElementById('tableRow').remove();#}
+
+                var table_div = document.createElement('div')
+                table_div.id = 'table_div';
+                table_div.className = 'col-12';
+
+                var table = document.createElement('table');
+                table.className = "table";
+                var thead = document.createElement('thead');
+                thead.className = "thead-light";
+
+                var tr = document.createElement('tr');
+                tr.className = "d-flex";
+
+                for (var k in dbs_details[0]) {
+                    console.log(k)
+                    var th = document.createElement('th');
+                    th.className = "col-auto";
+                    th.innerText = k;
+
+                    tr.appendChild(th);
+                }
+                thead.appendChild(tr);
+                table.appendChild(thead);
+
+                var tbody = document.createElement('tbody');
+                for (var i = 0; i < dbs_details.length; i++) {
+                    tr = document.createElement('tr');
+                    tr.className = "d-flex";
+
+                    for (var k in dbs_details[i]) {
+                        var td = document.createElement('td');
+                        td.className = "col-auto";
+                        td.innerText = dbs_details[i][k];
+
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                }
+
+
+                    {#                    var td2 = document.createElement('td');#}
+{#                    td2.className = "col-6";#}
+{#                    td2.innerText = history[i]['description'];#}
+{##}
+{#                    var td3 = document.createElement('td');#}
+{#                    td3.className = "col-3";#}
+{#                    if (history[i]['type'] == 'deposit') {#}
+{#                        td3.innerText = history[i]['amount'];#}
+{#                    }#}
+{##}
+{#                    var td4 = document.createElement('td');#}
+{#                    td4.className = "col-3";#}
+{#                    if (history[i]['type'] != 'deposit') {#}
+{#                        td4.innerText = history[i]['amount'];#}
+{#                    }#}
+{##}
+{#                    tr.appendChild(td1);#}
+{#                    tr.appendChild(td2);#}
+{#                    tr.appendChild(td3);#}
+{#                    tr.appendChild(td4);#}
+{##}
+{#                    tbody.appendChild(tr);#}
+{#                }#}
+                table.appendChild(tbody);
+                table_div.appendChild(table);
+                document.getElementById('tableRow').appendChild(table_div)
+            }
+        </script>
+
+    {% endblock scripts %}
+
+{% endblock body %}
