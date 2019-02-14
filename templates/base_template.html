@@ -143,12 +143,21 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-fw fa-database"></i>
+                        <span>Database</span>
+                    </a>
+                    <div class="dropdown-menu bg-dark" aria-labelledby="pagesDropdown">
+                        <a class="dropdown-item bg-dark text-secondary" href="{{ url_for('database_viewer') }}">Table Viewer</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-fw fa-users"></i>
                         <span>Manage Accounts</span>
                     </a>
                     <div class="dropdown-menu bg-dark" aria-labelledby="pagesDropdown">
                         <a class="dropdown-item bg-dark text-secondary" href="{{ url_for('register') }}">Register Child</a>
-                        <a class="dropdown-item bg-dark text-secondary" href="{{ url_for('database_viewer') }}">Database Viewer</a>
+{#                        <a class="dropdown-item bg-dark text-secondary" href="{{ url_for('database_viewer') }}">Database Viewer</a>#}
                     </div>
                 </li>
 

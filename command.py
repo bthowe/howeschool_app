@@ -520,7 +520,7 @@ def sotw():
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
 @login_required
 def database_viewer():
-    return render_template('data_viewer.html', page_name='Database Viewer', access=current_user.access)
+    return render_template('data_viewer.html', page_name='Table Viewer', access=current_user.access)
 
 
 
