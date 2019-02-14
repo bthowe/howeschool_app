@@ -16,88 +16,93 @@
     {% block main %}
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <div class="row">
-            <div class="col">
-            <form onsubmit="return false;">
-                <div class="row">
-                    <div class="form-group col-md-2">
-                        <label for="choose_kid">Name</label>
-                        <select id="choose_kid" class="form-control" onchange=bookAutoFill()>
-                            <option selected>Choose...</option>
-                            <option>Calvin</option>
-                            <option>Samuel</option>
-                            <option>Kay</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="choose_book">Book</label>
-                        <select id="choose_book" class="form-control">
-                            <option selected>Choose...</option>
-                            <option value="Math_5_4">Math 5/4</option>
-                            <option value="Math_6_5">Math 6/5</option>
-                            <option value="Math_7_6">Math 7/6</option>
-                            <option value="Math_8_7">Math 8/7</option>
-                            <option value="Algebra_1_2">Algebra 1/2</option>
-                            <option value="Algebra_1">Algebra 1</option>
-                            <option value="Algebra_2">Algebra 2</option>
-                            <option value="Advanced_math">Advanced Math</option>
-                            <option value="Calculus">Calculus</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-auto">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="testCheck">
-                            <label class="form-check-label" for="testCheck">Test</label>
+            <div class="row">
+                <div class="col-6">
+                    <form onsubmit="return false;">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="choose_kid">Name</label>
+                                <select id="choose_kid" class="form-control" onchange=bookAutoFill()>
+                                    <option selected>Choose...</option>
+                                    <option>Calvin</option>
+                                    <option>Samuel</option>
+                                    <option>Kay</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="choose_book">Book</label>
+                                <select id="choose_book" class="form-control">
+                                    <option selected>Choose...</option>
+                                    <option value="Math_5_4">Math 5/4</option>
+                                    <option value="Math_6_5">Math 6/5</option>
+                                    <option value="Math_7_6">Math 7/6</option>
+                                    <option value="Math_8_7">Math 8/7</option>
+                                    <option value="Algebra_1_2">Algebra 1/2</option>
+                                    <option value="Algebra_1">Algebra 1</option>
+                                    <option value="Algebra_2">Algebra 2</option>
+                                    <option value="Advanced_math">Advanced Math</option>
+                                    <option value="Calculus">Calculus</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="form-group col-md-2">
-                        <label for="start_chapter">Start Chapter</label>
-                        <input type="text" class="form-control" id="start_chapter" placeholder="Start Chapter">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="start_problem">First Problem</label>
-                        <input type="text" class="form-control" id="start_problem" placeholder="First Problem">
-                    </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-auto">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="testCheck">
+                                    <label class="form-check-label" for="testCheck">Test</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="start_chapter">Start Chapter</label>
+                                <input type="text" class="form-control" id="start_chapter" placeholder="Start Chapter">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="start_problem">First Problem</label>
+                                <input type="text" class="form-control" id="start_problem" placeholder="First Problem">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="end_chapter">End Chapter</label>
+                                <input type="text" class="form-control" id="end_chapter" placeholder="End Chapter">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="end_problem">Last Problem</label>
+                                <input type="text" class="form-control" id="end_problem" placeholder="Last Problem">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="date">Date</label>
+                                <input type="text" class="form-control" id="date" placeholder="yyyy-hh-mm">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="start_time">Start Time</label>
+                                <input type="text" class="form-control" id="start_time" placeholder="hh:mm">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="end_time">Stop Time</label>
+                                <input type="text" class="form-control" id="end_time" placeholder="hh:mm">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {#                    <div class="form-group col-md-2">#}
+                                <button id="button" type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="row">
-                    <div class="form-group col-md-2">
-                        <label for="end_chapter">End Chapter</label>
-                        <input type="text" class="form-control" id="end_chapter" placeholder="End Chapter">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="end_problem">Last Problem</label>
-                        <input type="text" class="form-control" id="end_problem" placeholder="Last Problem">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-2">
-                        <label for="date">Date</label>
-                        <input type="text" class="form-control" id="date" placeholder="yyyy-hh-mm">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="start_time">Start Time</label>
-                        <input type="text" class="form-control" id="start_time" placeholder="hh:mm">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="end_time">Stop Time</label>
-                        <input type="text" class="form-control" id="end_time" placeholder="hh:mm">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-{#                    <div class="form-group col-md-2">#}
-                        <button id="button" type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            </form>
-        </div></div>
-        <div class="row" id="main_content">
+{#                Todo: think about adding a view of the data in the following commented out pane#}
+{#                <div class="col-6">#}
+{#                    hi#}
+{#                </div>#}
+            </div>
+            <div class="row" id="main_content">
         </div>
         </div>
 
