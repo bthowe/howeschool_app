@@ -219,35 +219,34 @@ def query_dbs():
     js = json.loads(request.data.decode('utf-8'))
     print(js)
 
+    if js['collection'] == 'All':
+        collections = db_performance.db.list_collection_names()
+    else:
+        collections = [js['collection']]
+
     dbs = js['dbs']
     if dbs == 'Forms':
-        if js['date'] != '':
-            print(list(db_forms.db[js['collection']].find({'week_start_date': js['date']}, {'_id': False})))
-        else:
-            print(list(db_forms.db[js['collection']].find({}, {'_id': False})))
-            return jsonify(items=list(db_forms.db[js['collection']].find({}, {'_id': False})))
-            # return jsonify({'items': list(db_forms.db[js['collection']].find({}, {'_id': False}))})
-
+        date = 'week_start_date'
+        database = db_forms
     elif dbs == 'Math Daily':
-        db = db_performance
+        date = 'date'
+        database = db_performance
     elif dbs == 'Math Origins':
-        db = db_origin
+        database = db_origin
     elif dbs == 'Scripture Commentary':
-        db = db_script
+        database = db_script
+        date = 'date'
     elif dbs == 'Users':
-        db = db_users
+        database = db_users
 
+    docs = []
+    for col in collections:
+        if js['date'] != '':
+            docs += list(database.db[col].find({date: js['date']}, {'_id': False}))
+        else:
+            docs += list(database.db[col].find({}, {'_id': False}))
 
-
-    # book = js['book']
-    #
-    # output = list(db_number.db[book].find({'chapter': js['chapter']}))[0]
-    #
-    # origin_problems = list(db_origin.db[book].find({'chapter': js['chapter']}))
-    # if origin_problems:
-    #     return jsonify({'origin_lst': origin_problems[0]['origin_list'], 'num_lesson_probs': output['num_lesson_probs'], 'num_mixed_probs': output['num_mixed_probs'], 'flag': 0})
-    # return jsonify({'num_lesson_probs': output['num_lesson_probs'], 'num_mixed_probs': output['num_mixed_probs'], 'flag': 1})
-    return ''
+    return jsonify(items=docs)
 
 
 

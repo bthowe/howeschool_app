@@ -40,11 +40,19 @@
     {% block scripts %}
         {{ super() }}
         <script>
-        {#            todo: remove if reset database#}
-
             document.getElementById('choose_dbs').focus();
 
             function collectionAutoFill() {
+                if (document.getElementById('submit')) {
+                    document.getElementById('submit').remove();
+                    document.getElementById('dropDownDiv').remove();
+                    document.getElementById('textFieldDiv').remove();
+                    document.getElementById('buttonDiv').remove();
+                }
+                if (document.getElementById('table_div')) {
+                    document.getElementById('table_div').remove();
+                }
+
                 var dbs_e = document.getElementById("choose_dbs");
                 if (dbs_e.value != "0") {
                     dbs = dbs_e.options[dbs_e.selectedIndex].text;
@@ -52,30 +60,38 @@
                     if (dbs == "Forms"){
                         dropDownCreate(["Scriptures", "Weekly"]);
                         document.getElementById('choose_collection').focus();
+                        textFieldCreate();
+                        buttonCreate();
                     }
-                    else if (dbs == "Math Dailiy"){
+                    else if (dbs == "Math Daily"){
                         dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"])
                         document.getElementById('choose_collection').focus();
                         textFieldCreate();
-                        document.getElementById('date_input').focus();
+                        buttonCreate();
                     }
                     else if (dbs == "Math Origins"){
                         dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"])
                         document.getElementById('choose_collection').focus();
                         textFieldCreate();
-                        document.getElementById('date_input').focus();
+                        document.getElementById('date_input').style.visibility = 'hidden';
+                        document.getElementById('date_label').style.visibility = 'hidden';
+                        buttonCreate();
                     }
                     else if (dbs == "Scripture Commentary"){
-                        dropDownCreate(["All", "Calvin", "Samuel", "Kay"])
+                        dropDownCreate(["All", "Calvin", "Samuel", "Kay"]);
                         document.getElementById('choose_collection').focus();
                         textFieldCreate();
-                        document.getElementById('date_input').focus();
+                        buttonCreate();
                     }
-                    else if (dbs == "User"){
-                        dropDownCreate(["users"])
-                        document.getElementById('choose_collection').focus();
+                    else if (dbs == "Users"){
+                        dropDownCreate(["users"]);
+                        document.getElementById('choose_collection').style.visibility = 'hidden';
+                        document.getElementById('collection_label').style.visibility = 'hidden';
                         textFieldCreate();
-                        document.getElementById('date_input').focus();
+                        document.getElementById('date_input').style.visibility = 'hidden';
+                        document.getElementById('date_label').style.visibility = 'hidden';
+                        buttonCreate();
+                        document.getElementById('submit').focus();
                     }
                 }
             }
@@ -84,11 +100,9 @@
                 var dropdown = document.createElement('select');
                 dropdown.id = 'choose_collection';
                 dropdown.className = 'form-control';
-                dropdown.onchange = function () {
-                    dateAutoFill()
-                };
 
                 var label = document.createElement('Label');
+                label.id = 'collection_label';
                 label.setAttribute("for", 'choose_collection');
                 label.innerHTML = 'Collections';
 
@@ -100,17 +114,12 @@
 
                 var dropdownrow = document.getElementById('dropDownRow');
                 var dropdowndiv = document.createElement('div');
+                dropdowndiv.id = 'dropDownDiv';
                 dropdowndiv.className = 'col-2';
 
                 dropdowndiv.appendChild(label);
                 dropdowndiv.appendChild(dropdown);
                 dropdownrow.appendChild(dropdowndiv);
-            }
-
-            function dateAutoFill() {
-                textFieldCreate();
-                buttonCreate();
-                document.getElementById('date_input').focus();
             }
 
             function textFieldCreate() {
@@ -120,11 +129,13 @@
                 input.placeholder = 'yyyy-mm-dd';
 
                 var label = document.createElement('Label');
+                label.id = 'date_label';
                 label.setAttribute("for", 'date_input');
                 label.innerHTML = 'Date (leave blank for all rows)';
 
                 var dropdownrow = document.getElementById('dropDownRow');
                 var dropdowndiv = document.createElement('div');
+                dropdowndiv.id = 'textFieldDiv';
                 dropdowndiv.className = 'col-3';
 
                 dropdowndiv.appendChild(label);
@@ -147,6 +158,7 @@
                     request.onload = function () {
                         var dbs_details = JSON.parse(JSON.stringify(request.response))['items'];
                         tableCreate(dbs_details);
+                        document.getElementById('choose_dbs').focus();
                     };
                     request.send(JSON.stringify(
                         {
@@ -161,6 +173,7 @@
 
                 var buttonrow = document.getElementById('buttonRow');
                 var buttondiv = document.createElement('div');
+                buttondiv.id = 'buttonDiv';
                 buttondiv.className = 'col pt-4 pb-4';
 
                 buttondiv.appendChild(button);
@@ -168,14 +181,12 @@
             }
 
             function tableCreate(dbs_details) {
-{#                document.getElementById('tableRow').remove();#}
-
                 var table_div = document.createElement('div');
                 table_div.id = 'table_div';
-                table_div.className = 'col-12 scrollme';
+                table_div.className = 'col table-responsive';
 
                 var table = document.createElement('table');
-                table.className = "table table-striped table-bordered table-responsive";
+                table.className = "table table-striped table-bordered";
                 var thead = document.createElement('thead');
                 thead.className = "thead-light";
 
@@ -212,30 +223,6 @@
                     tbody.appendChild(tr);
                 }
 
-
-                    {#                    var td2 = document.createElement('td');#}
-{#                    td2.className = "col-6";#}
-{#                    td2.innerText = history[i]['description'];#}
-{##}
-{#                    var td3 = document.createElement('td');#}
-{#                    td3.className = "col-3";#}
-{#                    if (history[i]['type'] == 'deposit') {#}
-{#                        td3.innerText = history[i]['amount'];#}
-{#                    }#}
-{##}
-{#                    var td4 = document.createElement('td');#}
-{#                    td4.className = "col-3";#}
-{#                    if (history[i]['type'] != 'deposit') {#}
-{#                        td4.innerText = history[i]['amount'];#}
-{#                    }#}
-{##}
-{#                    tr.appendChild(td1);#}
-{#                    tr.appendChild(td2);#}
-{#                    tr.appendChild(td3);#}
-{#                    tr.appendChild(td4);#}
-{##}
-{#                    tbody.appendChild(tr);#}
-{#                }#}
                 table.appendChild(tbody);
                 table_div.appendChild(table);
                 document.getElementById('tableRow').appendChild(table_div)
