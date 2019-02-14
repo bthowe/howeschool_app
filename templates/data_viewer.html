@@ -50,7 +50,7 @@
                     dbs = dbs_e.options[dbs_e.selectedIndex].text;
 
                     if (dbs == "Forms"){
-                        dropDownCreate(["All", "Scriptures", "Weekly"]);
+                        dropDownCreate(["Scriptures", "Weekly"]);
                         document.getElementById('choose_collection').focus();
                     }
                     else if (dbs == "Math Dailiy"){
@@ -161,7 +161,7 @@
 
                 var buttonrow = document.getElementById('buttonRow');
                 var buttondiv = document.createElement('div');
-                buttondiv.className = 'col pt-4';
+                buttondiv.className = 'col pt-4 pb-4';
 
                 buttondiv.appendChild(button);
                 buttonrow.appendChild(buttondiv);
@@ -170,12 +170,12 @@
             function tableCreate(dbs_details) {
 {#                document.getElementById('tableRow').remove();#}
 
-                var table_div = document.createElement('div')
+                var table_div = document.createElement('div');
                 table_div.id = 'table_div';
-                table_div.className = 'col-12';
+                table_div.className = 'col-12 scrollme';
 
                 var table = document.createElement('table');
-                table.className = "table";
+                table.className = "table table-striped table-bordered table-responsive";
                 var thead = document.createElement('thead');
                 thead.className = "thead-light";
 
@@ -185,7 +185,7 @@
                 for (var k in dbs_details[0]) {
                     console.log(k)
                     var th = document.createElement('th');
-                    th.className = "col-auto";
+                    th.className = "col-4";
                     th.innerText = k;
 
                     tr.appendChild(th);
@@ -200,9 +200,13 @@
 
                     for (var k in dbs_details[i]) {
                         var td = document.createElement('td');
-                        td.className = "col-auto";
-                        td.innerText = dbs_details[i][k];
+                        td.className = "col-4";
 
+                        td_div = document.createElement('div');
+                        td_div.setAttribute("style", "word-break:break-all;");
+                        td_div.innerHTML = dbs_details[i][k];
+
+                        td.appendChild(td_div);
                         tr.appendChild(td);
                     }
                     tbody.appendChild(tr);
