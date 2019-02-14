@@ -42,17 +42,23 @@
         <script>
             document.getElementById('choose_dbs').focus();
 
-            function collectionAutoFill() {
-                if (document.getElementById('submit')) {
-                    document.getElementById('submit').remove();
-                    document.getElementById('dropDownDiv').remove();
-                    document.getElementById('textFieldDiv').remove();
-                    document.getElementById('buttonDiv').remove();
+            function clearDivs(submitBool) {
+                if (!submitBool)
+                {
+                    if (document.getElementById('submit')) {
+                        document.getElementById('submit').remove();
+                        document.getElementById('dropDownDiv').remove();
+                        document.getElementById('textFieldDiv').remove();
+                        document.getElementById('buttonDiv').remove();
+                    }
                 }
                 if (document.getElementById('table_div')) {
                     document.getElementById('table_div').remove();
                 }
+            }
 
+            function collectionAutoFill() {
+                clearDivs(false);
                 var dbs_e = document.getElementById("choose_dbs");
                 if (dbs_e.value != "0") {
                     dbs = dbs_e.options[dbs_e.selectedIndex].text;
@@ -64,13 +70,13 @@
                         buttonCreate();
                     }
                     else if (dbs == "Math Daily"){
-                        dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"])
+                        dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"]);
                         document.getElementById('choose_collection').focus();
                         textFieldCreate();
                         buttonCreate();
                     }
                     else if (dbs == "Math Origins"){
-                        dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"])
+                        dropDownCreate(["All", "Math_7_6", "Algebra_1_2", "Algebra_1"]);
                         document.getElementById('choose_collection').focus();
                         textFieldCreate();
                         document.getElementById('date_input').style.visibility = 'hidden';
@@ -156,6 +162,7 @@
                     request.responseType = 'json';
                     request.open("POST", "/query_dbs", true);
                     request.onload = function () {
+                        clearDivs(true);
                         var dbs_details = JSON.parse(JSON.stringify(request.response))['items'];
                         tableCreate(dbs_details);
                         document.getElementById('choose_dbs').focus();
@@ -188,17 +195,22 @@
                 var table = document.createElement('table');
                 table.className = "table table-striped table-bordered";
                 var thead = document.createElement('thead');
-                thead.className = "thead-light";
+                thead.className = "thead-dark";
 
                 var tr = document.createElement('tr');
                 tr.className = "d-flex";
 
-                for (var k in dbs_details[0]) {
-                    console.log(k)
-                    var th = document.createElement('th');
-                    th.className = "col-4";
-                    th.innerText = k;
+                var th = document.createElement('th');
+                th.scope = 'col';
+                th.innerText = "#";
+                th.setAttribute("style", "width:40px;");
+                tr.appendChild(th);
 
+                for (var k in dbs_details[0]) {
+                    var th = document.createElement('th');
+                    th.scope = 'col';
+                    th.innerText = k;
+                    th.setAttribute("style", "width:300px;");
                     tr.appendChild(th);
                 }
                 thead.appendChild(tr);
@@ -208,10 +220,16 @@
                 for (var i = 0; i < dbs_details.length; i++) {
                     tr = document.createElement('tr');
                     tr.className = "d-flex";
+                    var th = document.createElement('th');
+                    th.scope = 'row';
+                    th.innerHTML = i + 1;
+                    th.setAttribute("style", "width:40px;");
+                    tr.appendChild(th);
 
                     for (var k in dbs_details[i]) {
                         var td = document.createElement('td');
-                        td.className = "col-4";
+{#                        td.className = "col-4";#}
+                        td.setAttribute("style", "width:300px;");
 
                         td_div = document.createElement('div');
                         td_div.setAttribute("style", "word-break:break-all;");
