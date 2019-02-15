@@ -217,13 +217,6 @@ def query_bank():
 @app.route('/query_dbs', methods=['POST', 'GET'])
 def query_dbs():
     js = json.loads(request.data.decode('utf-8'))
-    print(js)
-
-    if js['collection'] == 'All':
-        collections = db_performance.db.collection_names()
-        # collections = db_performance.db.list_collection_names()
-    else:
-        collections = [js['collection']]
 
     dbs = js['dbs']
     if dbs == 'Forms':
@@ -240,12 +233,20 @@ def query_dbs():
     elif dbs == 'Users':
         database = db_users
 
+    if js['collection'] == 'All':
+        collections = database.db.collection_names()
+    else:
+        collections = [js['collection']]
+
     docs = []
     for col in collections:
+        print(col)
         if js['date'] != '':
             docs += list(database.db[col].find({date: js['date']}, {'_id': False}))
         else:
             docs += list(database.db[col].find({}, {'_id': False}))
+
+    print(docs)
 
     return jsonify(items=docs)
 
