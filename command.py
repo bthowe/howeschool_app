@@ -220,7 +220,8 @@ def query_dbs():
     print(js)
 
     if js['collection'] == 'All':
-        collections = db_performance.db.list_collection_names()
+        collections = db_performance.db.collection_names()
+        # collections = db_performance.db.list_collection_names()
     else:
         collections = [js['collection']]
 
