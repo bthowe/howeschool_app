@@ -203,14 +203,14 @@
                 var th = document.createElement('th');
                 th.scope = 'col';
                 th.innerText = "#";
-                th.setAttribute("style", "width:40px;");
+                th.setAttribute("style", "width:50px;");
                 tr.appendChild(th);
 
                 for (var k in dbs_details[0]) {
                     var th = document.createElement('th');
                     th.scope = 'col';
                     th.innerText = k;
-                    th.setAttribute("style", "width:300px;");
+                    th.setAttribute("style", "width:305px;");
                     tr.appendChild(th);
                 }
                 thead.appendChild(tr);
@@ -223,13 +223,13 @@
                     var th = document.createElement('th');
                     th.scope = 'row';
                     th.innerHTML = i + 1;
-                    th.setAttribute("style", "width:40px;");
+                    th.setAttribute("style", "width:50px;");
                     tr.appendChild(th);
 
                     for (var k in dbs_details[i]) {
                         var td = document.createElement('td');
 {#                        td.className = "col-4";#}
-                        td.setAttribute("style", "width:300px;");
+                        td.setAttribute("style", "width:305px;");
 
                         td_div = document.createElement('div');
                         td_div.setAttribute("style", "word-break:break-all;");
