@@ -101,8 +101,10 @@
                     div.insertBefore(label, input);
 
                     var br = document.createElement("br");
-                    br.id = 'br' + nextChar
+                    br.id = 'br' + nextChar;
                     div.appendChild(br);
+
+                    document.getElementById('input1').focus();
                 }
             }
 
