@@ -178,10 +178,12 @@ def query_performance(name):
 def db_writer(user, df):
     db_math_aggregate[user].drop()
     ret = db_math_aggregate[user].insert_many(df)
-    print(ret.inserted_ids)
+    # print(ret.inserted_ids)
 
 def main():
+    print(user_list())
     for user in user_list():
+        print(user)
         qp = query_performance(user).reset_index(drop=True)
         qp['name'] = user
         qp['date'] = qp['date'].dt.date.astype(str)
