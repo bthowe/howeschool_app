@@ -181,9 +181,7 @@ def db_writer(user, df):
     # print(ret.inserted_ids)
 
 def main():
-    print(user_list())
-    for user in user_list():
-        print(user)
+    for user in ['Calvin', 'Samuel']:
         qp = query_performance(user).reset_index(drop=True)
         qp['name'] = user
         qp['date'] = qp['date'].dt.date.astype(str)
