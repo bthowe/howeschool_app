@@ -17,7 +17,7 @@
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main">
             <div class="row" id="dropDownRow">
-                <div class="col-2">
+                <div class="col-3">
                     <label for="choose_dbs">Database</label>
                     <select id="choose_dbs" class="form-control" onchange=collectionAutoFill()>
                         <option selected>Choose...</option>
@@ -26,6 +26,7 @@
                         <option>Math Origins</option>
                         <option>Scripture Commentary</option>
                         <option>Users</option>
+                        <option>Math Aggregate</option>
                     </select>
                 </div>
             </div>
@@ -89,7 +90,7 @@
                         textFieldCreate();
                         buttonCreate();
                     }
-                    else if (dbs == "Users"){
+                    else if (dbs == "Users") {
                         dropDownCreate(["users"]);
                         document.getElementById('choose_collection').style.visibility = 'hidden';
                         document.getElementById('collection_label').style.visibility = 'hidden';
@@ -97,8 +98,14 @@
                         document.getElementById('date_input').style.visibility = 'hidden';
                         document.getElementById('date_label').style.visibility = 'hidden';
                         buttonCreate();
-                        document.getElementById('submit').focus();
+                        document.getElementById('submit').focus()
                     }
+                    else if (dbs == "Math Aggregate"){
+                        dropDownCreate(["All", "Calvin", "Samuel"]);
+                        document.getElementById('choose_collection').focus();
+                        textFieldCreate();
+                        buttonCreate();
+                    };
                 }
             }
 

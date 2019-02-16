@@ -44,6 +44,7 @@ db_vocab = PyMongo(app, uri="mongodb://localhost:27017/vocab")
 db_script = PyMongo(app, uri="mongodb://localhost:27017/scripture_commentary")
 db_forms = PyMongo(app, uri="mongodb://localhost:27017/forms")
 db_bank = PyMongo(app, uri="mongodb://localhost:27017/banking")
+db_aggregate = PyMongo(app, uri="mongodb://localhost:27017/math_aggregate")
 
 
 @login_manager.user_loader
@@ -232,6 +233,10 @@ def query_dbs():
         date = 'date'
     elif dbs == 'Users':
         database = db_users
+    elif dbs == 'Math Aggregate':
+        date = 'date'
+        database = db_aggregate
+
 
     if js['collection'] == 'All':
         collections = database.db.collection_names()
@@ -246,7 +251,7 @@ def query_dbs():
         else:
             docs += list(database.db[col].find({}, {'_id': False}))
 
-    print(docs)
+    docs = [{str(k): str(v) for k, v in doc.items()} for doc in docs]
 
     return jsonify(items=docs)
 
