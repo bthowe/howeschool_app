@@ -369,3 +369,17 @@ def scripture_table_create(data, year='current'):
         reset_index() \
         [['scripture', 'scripture_ref', 'week_start_date']]. \
         pipe(scriptures_latex_create)
+
+def performance_over_time(df, book, kid):
+    def js_month(x):
+        x_lst = x.split('-')
+        x_lst[1] = str(int(x_lst[1]) - 1)
+        if len(x_lst[1]) == 1:
+            x_lst[1] = '0' + x_lst[1]
+        return '-'.join(x_lst)
+    df['date'] = df['date'].astype(str).apply(js_month)  # this zero indexes the month for js's benefit.
+
+    return df['correct'].\
+        groupby(df['date']).mean().\
+        reset_index(drop=False). \
+        assign(book=book, kid=kid, position=range(0, df['date'].unique().shape[0]))

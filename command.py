@@ -295,11 +295,37 @@ def logout():
     return redirect(url_for('login'))
 
 
+
+# def performance_over_time(df, book, kid):
+def performance_over_time(df):
+    def js_month(x):
+        x_lst = x.split('-')
+        x_lst[1] = str(int(x_lst[1]) - 1)
+        if len(x_lst[1]) == 1:
+            x_lst[1] = '0' + x_lst[1]
+        return '-'.join(x_lst)
+    df['date'] = df['date'].astype(str).apply(js_month)  # this zero indexes the month for js's benefit.
+
+    return df['correct'].\
+        groupby(df['date']).mean().\
+        reset_index(drop=False). \
+        assign(position=range(0, df['date'].unique().shape[0]))
+        # assign(book=book, kid=kid, position=range(0, df['date'].unique().shape[0]))
+
+
+def math_daily_create(name):
+    df = pd.DataFrame(list(db_aggregate.db[name].find()))
+    df['date'] = pd.to_datetime(df['date'])
+    df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
+    df.sort_values('date', ascending=True, inplace=True)
+    return performance_over_time(df).to_dict('records')
+
+
 @app.route('/main_menu')
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
 @login_required
 def main_menu():
-    return render_template('main_menu.html', name=current_user.username, access=current_user.access, page_name='Main Menu')
+    return render_template('main_menu.html', name=current_user.username, access=current_user.access, page_name='Main Menu', df_calvin=math_daily_create('Calvin'), df_samuel=math_daily_create('Samuel'))
 
 @app.route('/register', methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])

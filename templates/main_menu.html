@@ -3,6 +3,18 @@
 
 {% block styles %}
     {{super()}}
+    <style>
+        div.tooltip {
+            position: absolute;
+            text-align: left;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightyellow;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
 {% endblock styles %}
 
 
@@ -15,16 +27,61 @@
     {% endblock content1 %}
 
     {% block main %}
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fas fa-chart-area"></i>
-                Area Chart Example
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#calvin" id="one" data-toggle="tab" onclick=rend("Calvin")>Calvin</a>
+            </li>
+            <li class="nav-item">
+{#                <a class="nav-link" href="#samuel"  id="two" data-toggle="tab">Samuel</a>#}
+                <a class="nav-link" href="#samuel"  id="two" data-toggle="tab" onclick=rend("Samuel")>Samuel</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="calvin" class="row-12 tab-pane fade show active">
+                <div class="card mb-3" id="CalvinCardDiv">
+                    <div class="card-header">
+                        <i class="fas fa-chart-area"></i>
+                        Calvin Math Daily
+                    </div>
+                    <div class="card-body" id="CalvinAssScores">
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <canvas id="myAreaChart" width="100%" height="30"></canvas>
+            <div id="samuel" class="row-12 tab-pane fade ">
+                <div class="card mb-3" id="SamuelCardDiv">
+                    <div class="card-header">
+                        <i class="fas fa-chart-area"></i>
+                        Samuel Math Daily
+                    </div>
+                    <div class="card-body" id="SamuelAssScores">
+                    </div>
+                    {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
+                </div>
             </div>
-            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
         </div>
+{#        {% if (name == 'Calvin') or (name == 'Travis') %}#}
+{#            <div class="card mb-3">#}
+{#                <div class="card-header">#}
+{#                    <i class="fas fa-chart-area"></i>#}
+{#                    Calvin Math Daily#}
+{#                </div>#}
+{#                <div class="card-body" id="CalvinAssScores">#}
+{#                </div>#}
+    {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#        {% if (name == 'Samuel') or (name == 'Travis') %}#}
+{#            <div class="card mb-3">#}
+{#                <div class="card-header">#}
+{#                    <i class="fas fa-chart-area"></i>#}
+{#                    Samuel Math Daily#}
+{#                </div>#}
+{#                <div class="card-body" id="SamuelAssScores">#}
+{#                </div>#}
+    {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
+{#            </div>#}
+{#        {% endif %}#}
 
         <div class="row">
             <div class="col-lg-8">
@@ -36,7 +93,7 @@
                     <div class="card-body">
                         <canvas id="myBarChart" width="100%" height="50"></canvas>
                     </div>
-                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+{#                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
                 </div>
             </div>
             <div class="col-lg-4">
@@ -48,7 +105,7 @@
                     <div class="card-body">
                         <canvas id="myPieChart" width="100%" height="100"></canvas>
                     </div>
-                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+{#                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
                 </div>
             </div>
         </div>
@@ -61,8 +118,187 @@
     {% block scripts %}
         {{ super() }}
 
-
+        <script src="https://d3js.org/d3.v5.min.js"></script>
         <script>
+            var current_tab = "Calvin";
+            var tab_width = document.getElementById("CalvinAssScores").offsetWidth;
+
+            df_calvin = timeTransform({{ df_calvin | tojson }});
+            df_samuel = timeTransform({{ df_samuel | tojson }});
+
+            function parse(str) {
+                var y = str.substr(0, 4),
+                    m = str.substr(5, 2),
+                    d = str.substr(8, 2);
+                return new Date(y, m, d).toLocaleString('en-En',{weekday: "short", month: "short", day: "numeric"});
+            };
+            function timeTransform(df) {
+                for (i = 0; i < df.length; i++) {
+                    df[i].date = parse(df[i].date)
+                }
+                return df
+            };
+
+            if (document.getElementById('CalvinAssScores')) {
+                renderTimePlot(df_calvin, 'Calvin');
+            }
+
+            function rend(name) {
+                document.getElementById(current_tab + "AssScores").remove();
+                current_tab = name;
+
+                var div = document.createElement('div');
+                div.id = name + 'AssScores';
+                div.className = 'card-body';
+
+                document.getElementById(name + "CardDiv").appendChild(div);
+
+                if (name == "Calvin") {
+                    renderTimePlot(df_calvin, 'Calvin');
+                }
+                else {
+                    renderTimePlot(df_samuel, 'Samuel');
+                }
+            }
+
+
+
+            function renderTimePlot(df, name) {
+                var svg = d3.select("div#"+name+"AssScores").append("svg");
+
+                var leftMargin = 30,
+                    rightMargin = 30,
+                    rightPanel = 20,
+                    axisGap = 15,
+                    width = tab_width - leftMargin - axisGap - rightPanel - rightMargin,
+                    topMargin = 5,
+                    bottomMargin = 100,
+                    height = 300 - topMargin - bottomMargin,
+                    translateText = "translate(" + (leftMargin + axisGap) + "," + topMargin + ")";
+
+                svg.selectAll("*").remove();
+                svg.attr("width", "100%").attr("height", "290px");
+
+                var g_translate_plot = svg.append("g")
+                    .attr("transform", translateText);
+                var div = d3.select("body").append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
+
+                //    X-AXIS
+                x = d3.scalePoint()
+                    .range([0, width])
+                    .domain(df.map(function (d) {
+                        return d.date
+                    }));
+                xAxis = d3.axisBottom(x);
+                svg.append("g")
+                    .attr("transform", "translate(" + (leftMargin + axisGap) + "," + (topMargin + height + axisGap) + ")")
+                    .attr("class", "x axis")
+                    .call(xAxis)
+                    .selectAll("text")
+                    .attr("y", 0)
+                    .attr("x", 40)
+                    .attr("dy", ".35em")
+                    .attr("transform", "rotate(90)")
+                    .style("text-anchor", "middle")
+                    .style("font-size", "10px");
+
+                //    Y-AXIS
+                y = d3.scaleLinear()
+                    .range([height, 0])
+                    .domain([0.5, 1]);
+                yAxis = d3.axisLeft(y);
+                svg.append("g")
+                    .attr("transform", "translate(" + leftMargin + "," + topMargin + ")")
+                    .attr("class", "y axis")
+                    .call(yAxis);
+
+                //  PATH
+                var lineFunction = d3.line()
+                    .x(function (d) {
+                        return x(d.date);
+                    })
+                    .y(function (d) {
+                        return y(d.correct);
+                    });
+                g_translate_plot
+                    .append("path")
+                    .data([df])
+                    .attr("class", "line")
+                    .attr("d", lineFunction)
+                    .style("fill", "none")
+                    .style("stroke-width", 5)
+                    .style("stroke", 'steelblue');
+
+                // PATH FILL BENEATH
+                var area = d3.area()
+                    .x(function (d) {
+                        return x(d.date);
+                    })
+                    .y0(height)
+                    .y1(function (d) {
+                        return y(d.correct);
+                    });
+                g_translate_plot
+                    .append("path")
+                    .data([df])
+                    .style("fill", "lightsteelblue")
+                    .attr("d", area);
+
+                // POINTS
+                g_translate_plot
+                    .selectAll("circle")
+                    .data(df)
+                    .enter().append("circle")
+                    .attr("cx", function (d) {
+                        return x(d.date)
+                    })
+                    .attr("cy", function (d) {
+                        return y(d.correct)
+                    })
+                    .attr("r", "3")
+                    .on("mouseover", function (d) {
+                        div.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        div.html(d.date + ": " + d.correct.toFixed(2))
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px")
+                            .attr("width", this.getComputedTextLength)
+                            .attr("height", "56px");
+                    })
+                    .on("mouseout", function (d) {
+                        div.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
+
+                // GOAL LINE
+                g_translate_plot
+                    .style("stroke-width", 5)
+                    .append("line")
+                    .attr("x1", 0)
+                    .attr("y1", height * .2)
+                    .attr("x2", width)
+                    .attr("y2", height * .2)
+                    .attr("stroke", "DarkSalmon")
+                    .style("opacity", .3);
+
+            }
+
+            function tab_switch(name) {
+                console.log('hey')
+{#                if (name == "Calvin") {#}
+{#                    document.getElementById("Samuel").className = "tab-pane fade in active";#}
+{#                    document.getElementById("Calvin").className = "tab-pane fade in";#}
+{#                }#}
+{#                else {#}
+{#                    document.getElementById("Calvin").className = "tab-pane fade in active";#}
+{#                    document.getElementById("Samuel").className = "tab-pane fade in";#}
+{#                }#}
+            }
+
         </script>
 
 
