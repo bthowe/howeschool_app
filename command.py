@@ -13,11 +13,6 @@ import helpers_classes
 import helpers_constants
 import helpers_functions
 
-app = Flask(__name__)
-app.secret_key = 'mysecret'
-bootstrap = Bootstrap(app)
-
-
 pd.set_option('max_columns', 1000)
 pd.set_option('max_info_columns', 1000)
 pd.set_option('expand_frame_repr', False)
