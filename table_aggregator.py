@@ -1,14 +1,7 @@
-import os
-import sys
-import json
-import joblib
 import datetime
-import webbrowser
 import numpy as np
 import pandas as pd
 from pymongo import MongoClient
-from collections import defaultdict
-from flask import Flask, request, render_template, jsonify, redirect
 
 pd.set_option('max_columns', 1000)
 pd.set_option('max_info_columns', 1000)
