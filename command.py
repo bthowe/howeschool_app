@@ -1,15 +1,13 @@
 import os
 import os.path
-import sys
-import time
 import json
 import datetime
 import pandas as pd
 from flask_pymongo import PyMongo
 from collections import defaultdict
 from flask_bootstrap import Bootstrap
-from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify, send_file
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 import helpers_classes
 import helpers_constants
@@ -158,9 +156,13 @@ def add_missed_problems():
     del js['rem_miss_list']
     del js['test']
 
-    db_performance.db[js['book']].insert_one(js)
+    ret = db_performance.db[js['book']].insert_one(js)
+    print('data inserted: {}'.format(ret))
 
-    print('data inserted: {}'.format(js))
+    # run update after successfully entering data
+    # what does ret look like?
+    # subprocess.Popen(['sudo', '/usr/local/bin/python3', 'table_aggregator.py'])
+
     return ''
 
 
@@ -297,7 +299,7 @@ def logout():
 
 
 # def performance_over_time(df, book, kid):
-def performance_over_time(df):
+def performance_over_time(df, varname):
     def js_month(x):
         x_lst = x.split('-')
         x_lst[1] = str(int(x_lst[1]) - 1)
@@ -306,7 +308,7 @@ def performance_over_time(df):
         return '-'.join(x_lst)
     df['date'] = df['date'].astype(str).apply(js_month)  # this zero indexes the month for js's benefit.
 
-    return df['correct'].\
+    return df[varname].\
         groupby(df['date']).mean().\
         reset_index(drop=False). \
         assign(position=range(0, df['date'].unique().shape[0]))
@@ -318,14 +320,48 @@ def math_daily_create(name):
     df['date'] = pd.to_datetime(df['date'])
     df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
     df.sort_values('date', ascending=True, inplace=True)
-    return performance_over_time(df).to_dict('records')
+    return performance_over_time(df, 'correct').to_dict('records'), str(df['meta__insert_time'].iloc[0])
 
+def math_daily_time(name):
+    df = pd.DataFrame()
+    for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
+        df = df.append(pd.DataFrame(list(db_performance.db[book].find({'kid': name}))))
+    df = df.iloc[2:].drop(['chapter', 'miss_list'], 1)
+    df['date'] = pd.to_datetime(df['date'])
+    df.sort_values('date', inplace=True)
+    df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
+    df['date'] = df['date'].astype(str)
+
+
+    df['start_time'] = df.apply(lambda x: datetime.datetime.strptime('{0} {1}'.format(x['date'], x['start_time']), '%Y-%m-%d %H:%M'), axis=1)
+    df['start_time'] = df['start_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 7 else x)
+
+    df['end_time'] = df.apply(lambda x: datetime.datetime.strptime('{0} {1}'.format(x['date'], x['end_time']), '%Y-%m-%d %H:%M'), axis=1)
+    df['end_time'] = df['end_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 7 else x)
+
+    df['duration'] = (df['end_time'] - df['start_time']).astype('timedelta64[m]')
+
+
+    return performance_over_time(df[['date', 'duration']], 'duration').to_dict('records')
 
 @app.route('/main_menu')
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
 @login_required
 def main_menu():
-    return render_template('main_menu.html', name=current_user.username, access=current_user.access, page_name='Main Menu', df_calvin=math_daily_create('Calvin'), df_samuel=math_daily_create('Samuel'))
+    df_calvin_ass, update_calvin = math_daily_create('Calvin')
+    df_samuel_ass, update_samuel = math_daily_create('Samuel')
+    return render_template(
+        'main_menu.html',
+        name=current_user.username,
+        access=current_user.access,
+        page_name='Main Menu',
+        df_calvin=df_calvin_ass,
+        df_samuel=df_samuel_ass,
+        df_calvin_time=math_daily_time('Calvin'),
+        df_samuel_time=math_daily_time('Samuel'),
+        update_calvin=update_calvin,
+        update_samuel=update_samuel
+    )
 
 @app.route('/register', methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])

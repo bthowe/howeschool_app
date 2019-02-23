@@ -1,28 +1,10 @@
-import os
-import sys
-import json
-import joblib
-import yagmail
-import datetime
-import webbrowser
-import numpy as np
-import pandas as pd
-# import saxon_math_helpers
-from functools import wraps
 from flask_wtf import FlaskForm
-from flask_pymongo import PyMongo
-from collections import defaultdict
-from flask_bootstrap import Bootstrap
-from wtforms.validators import InputRequired, Email, Length
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, render_template, url_for, request, session, redirect, flash, jsonify
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from wtforms.validators import InputRequired, Length
+from flask_login import UserMixin
 from wtforms import StringField, PasswordField, BooleanField, SelectField, IntegerField, RadioField, DateField, TimeField, FloatField
 from wtforms.widgets import TextArea
 
 import helpers_constants
-
-
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), Length(min=4, max=15)], render_kw={'autofocus': True})

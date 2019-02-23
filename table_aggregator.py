@@ -185,6 +185,7 @@ def main():
         qp = query_performance(user).reset_index(drop=True)
         qp['name'] = user
         qp['date'] = qp['date'].dt.date.astype(str)
+        qp['meta__insert_time'] = str(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
         # [{'name': 'Calvin', 'time': str(datetime.datetime.today())}]
         db_writer(user, qp.to_dict(orient='records'))
