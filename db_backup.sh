@@ -6,3 +6,4 @@ mongodump -d scripture_commentary -o /media/pi/HOWESCHOOL/database_files
 mongodump -d forms -o /media/pi/HOWESCHOOL/database_files
 mongodump -d banking -o /media/pi/HOWESCHOOL/database_files
 mongodump -d users -o /media/pi/HOWESCHOOL/database_files
+sudo supervisorctl stop mongod
