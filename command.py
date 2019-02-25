@@ -39,6 +39,7 @@ db_script = PyMongo(app, uri="mongodb://localhost:27017/scripture_commentary")
 db_forms = PyMongo(app, uri="mongodb://localhost:27017/forms")
 db_bank = PyMongo(app, uri="mongodb://localhost:27017/banking")
 db_aggregate = PyMongo(app, uri="mongodb://localhost:27017/math_aggregate")
+db_time = PyMongo(app, uri="mongodb://localhost:27017/math_time_aggregate")
 
 
 @login_manager.user_loader
@@ -155,7 +156,8 @@ def add_missed_problems():
     ret = db_performance.db[js['book']].insert_one(js)
     print('data inserted: {}'.format(ret))
 
-    subprocess.Popen(['sudo', '/usr/local/bin/python3', 'table_aggregator.py'])
+    subprocess.Popen(['sudo', '/usr/local/bin/python3', 'aggregator_math_performance.py'])
+    subprocess.Popen(['sudo', '/usr/local/bin/python3', 'aggregator_math_time.py'])
 
     return ''
 
@@ -291,8 +293,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-
-# def performance_over_time(df, book, kid):
+# todo: at some point I'll probably want to put these three functions in the helpers file
 def performance_over_time(df, varname):
     def js_month(x):
         x_lst = x.split('-')
@@ -306,7 +307,6 @@ def performance_over_time(df, varname):
         groupby(df['date']).mean().\
         reset_index(drop=False). \
         assign(position=range(0, df['date'].unique().shape[0]))
-        # assign(book=book, kid=kid, position=range(0, df['date'].unique().shape[0]))
 
 
 def math_daily_create(name):
@@ -316,27 +316,14 @@ def math_daily_create(name):
     df.sort_values('date', ascending=True, inplace=True)
     return performance_over_time(df, 'correct').to_dict('records'), str(df['meta__insert_time'].iloc[0])
 
+
 def math_daily_time(name):
-    df = pd.DataFrame()
-    for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
-        df = df.append(pd.DataFrame(list(db_performance.db[book].find({'kid': name}))))
-    df = df.iloc[2:].drop(['chapter', 'miss_list'], 1)
+    df = pd.DataFrame(list(db_time.db[name].find()))
     df['date'] = pd.to_datetime(df['date'])
-    df.sort_values('date', inplace=True)
     df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
-    df['date'] = df['date'].astype(str)
-
-
-    df['start_time'] = df.apply(lambda x: datetime.datetime.strptime('{0} {1}'.format(x['date'], x['start_time']), '%Y-%m-%d %H:%M'), axis=1)
-    df['start_time'] = df['start_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 7 else x)
-
-    df['end_time'] = df.apply(lambda x: datetime.datetime.strptime('{0} {1}'.format(x['date'], x['end_time']), '%Y-%m-%d %H:%M'), axis=1)
-    df['end_time'] = df['end_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 7 else x)
-
-    df['duration'] = (df['end_time'] - df['start_time']).astype('timedelta64[m]')
-
-
+    df.sort_values('date', ascending=True, inplace=True)
     return performance_over_time(df[['date', 'duration']], 'duration').to_dict('records')
+
 
 @app.route('/main_menu')
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
