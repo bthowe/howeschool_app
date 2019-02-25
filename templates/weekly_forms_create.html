@@ -23,24 +23,46 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <h1>Scripture</h1>
-                    <table class="table table-sm">
-                        <thead class="thead-light">
-                        <tr class="d-flex">
-                            <th class="col-2"></th>
-                            <th class="col-5"></th>
-                        </thead>
-                        <tbody>
-                        <tr class="d-flex">
-                                <th class="col-2">Reference</th>
-                                <td class="col-5">{{ form.scripture_ref(class_="col-12") }}</td>
-                        </tr>
-                        <tr class="d-flex">
-                                <th class="col-2">Text</th>
-                                <td class="col-5">{{ form.scripture(cols="46", rows="10") }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col">
+                                <h1>Scripture</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col pb-3">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-secondary active">
+                                        <input type="radio" id="new_script" checked onchange=scriptEnter('new')> New
+                                    </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="radio" id="review_script" onchange=scriptEnter('review')> Review
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="script_enter">
+                            <div class="col">
+                                <table class="table table-sm">
+                                    <thead class="thead-light">
+                                    <tr class="d-flex">
+                                        <th class="col-2"></th>
+                                        <th class="col-5"></th>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="d-flex">
+                                        <th class="col-2">Reference</th>
+                                        <td class="col-5">{{ form.scripture_ref(class_="col-12") }}</td>
+                                    </tr>
+                                    <tr class="d-flex">
+                                        <th class="col-2">Text</th>
+                                        <td class="col-5">{{ form.scripture(cols="46", rows="10") }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -174,31 +196,21 @@
                 }
             }
 
+            function scriptEnter(type) {
+                console.log(type);
+                if (type=='new') {
+                    document.getElementById("script_enter").style.visibility = 'visible';
 
-            function createData() {
-                data_send = {}
-                for (i = 0; i < day_lst.length; ++i) {
-                    data_send[day_lst[i] + '_job'] = document.getElementById(day_lst[i] + '_job').value
-                    data_send[day_lst[i] + '_question'] = document.getElementById(day_lst[i] + '_question').value
+                    document.getElementById('scripture_ref').value = formData['scripture_ref'];
+                    document.getElementById('scripture').value = formData['scripture'];
                 }
-                for (i = 0; i < kid_lst.length; ++i) {
-                    data_send[kid_lst[i] + '_book'] = document.getElementById(kid_lst[i] + '_book').value;
+                else {
+                    document.getElementById("script_enter").style.visibility = 'hidden';
+
+                    document.getElementById('scripture_ref').value = ' ';
+                    document.getElementById('scripture').value = 'Review Time!';
                 }
-                data_send['week_start_date'] = document.getElementById('date').value;
-                return data_send
             }
-
-
-{#            document.addEventListener('DOMContentLoaded', init, false);#}
-{#            function init() {#}
-{#                function submit() {#}
-{#                    var request = new XMLHttpRequest();#}
-{#                    request.open("POST", "/mongo_call_forms", true);#}
-{#                    request.send(JSON.stringify(createData()));#}
-{#                }#}
-{#                var button_submit = document.getElementById('submit');#}
-{#                button_submit.addEventListener('click', submit, true);#}
-{#            }#}
 
 
         </script>

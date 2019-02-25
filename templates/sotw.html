@@ -16,12 +16,12 @@
     {% block main %}
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main">
-            <div id="total_div" class="col-12 pb-4 pt-2">
-                <h5>{{ scripture_ref }}</h5>
-            </div>
-            <div id="total_div" class="col-12">
-                {{ scripture }}
-            </div>
+{#            <div id="total_div" class="col-12 pb-4 pt-2">#}
+{#                <h5>{{ scripture_ref }}</h5>#}
+{#            </div>#}
+{#            <div id="total_div" class="col-12">#}
+{#                {{ scripture }}#}
+{#            </div>#}
         </div>
 
     {% endblock main %}
@@ -30,6 +30,31 @@
     {% endblock content2 %}
     {% block scripts %}
         {{ super() }}
+        <script>
+            scriptures = {{ scripture | tojson }};
+            console.log(scriptures[0])
+
+            mainDiv = document.getElementById('main');
+            for (i=0; i<3; i++) {
+                divRow = document.createElement("div");
+                divRow.className = "row pb-4";
+
+                divRef = document.createElement("div");
+                divRef.className = "col-12 pb-1 pt-2";
+                h5 = document.createElement("h5");
+                h5.innerHTML = scriptures[i]['scripture_ref'];
+
+                divScrip = document.createElement("div");
+                divScrip.className = "col-12";
+                divScrip.innerHTML = scriptures[i]['scripture'];
+
+                divRef.appendChild(h5);
+                divRow.appendChild(divRef);
+                divRow.appendChild(divScrip);
+                mainDiv.appendChild(divRow);
+            }
+
+        </script>
     {% endblock scripts %}
 
 {% endblock body %}

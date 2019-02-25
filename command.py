@@ -2,6 +2,7 @@ import os
 import os.path
 import json
 import datetime
+import subprocess
 import pandas as pd
 from flask_pymongo import PyMongo
 from collections import defaultdict
@@ -154,9 +155,7 @@ def add_missed_problems():
     ret = db_performance.db[js['book']].insert_one(js)
     print('data inserted: {}'.format(ret))
 
-    # run update after successfully entering data
-    # what does ret look like?
-    # subprocess.Popen(['sudo', '/usr/local/bin/python3', 'table_aggregator.py'])
+    subprocess.Popen(['sudo', '/usr/local/bin/python3', 'table_aggregator.py'])
 
     return ''
 
@@ -576,8 +575,12 @@ def banking_history_personal():
 @login_required
 def sotw():
     df_scripture = pd.DataFrame(list(db_forms.db['Scriptures'].find())).sort_values('week_start_date').values[-1, :]
-    return render_template('sotw.html', scripture_ref=df_scripture[2], scripture=df_scripture[1], page_name='Scripture of the Week', access=current_user.access)
+    if df_scripture[1] == 'Review Time!':
+        script = pd.DataFrame(list(db_forms.db['Scriptures'].find({}, {'_id': False}))).sort_values('week_start_date').iloc[-4:-1].to_dict('records')
+        return render_template('sotw.html', scripture=script, page_name='Scripture of the Week', access=current_user.access)
 
+    script = pd.DataFrame(list(db_forms.db['Scriptures'].find({}, {'_id': False}))).sort_values('week_start_date').iloc[-1:].to_dict('records')
+    return render_template('sotw.html', scripture=script, page_name='Scripture of the Week', access=current_user.access)
 
 
 @app.route("/database_viewer", methods=['POST', 'GET'])
@@ -588,5 +591,5 @@ def database_viewer():
 
 
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=8001, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8001, debug=True)
