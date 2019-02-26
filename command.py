@@ -156,8 +156,8 @@ def add_missed_problems():
     ret = db_performance.db[js['book']].insert_one(js)
     print('data inserted: {}'.format(ret))
 
-    subprocess.Popen(['sudo', '/usr/local/bin/python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_performance.py'])
-    subprocess.Popen(['sudo', '/usr/local/bin/python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_time.py'])
+    subprocess.Popen(['/usr/local/bin/python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_performance.py'])
+    subprocess.Popen(['/usr/local/bin/python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_time.py'])
 
     return ''
 
