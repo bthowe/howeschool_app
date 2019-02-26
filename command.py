@@ -156,8 +156,8 @@ def add_missed_problems():
     ret = db_performance.db[js['book']].insert_one(js)
     print('data inserted: {}'.format(ret))
 
-    subprocess.Popen(['sudo', '/usr/local/bin/python3', 'aggregator_math_performance.py'])
-    subprocess.Popen(['sudo', '/usr/local/bin/python3', 'aggregator_math_time.py'])
+    subprocess.Popen(['sudo', '/usr/local/bin/python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_performance.py'])
+    subprocess.Popen(['sudo', '/usr/local/bin/python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_time.py'])
 
     return ''
 
@@ -563,8 +563,6 @@ def banking_history_personal():
 @login_required
 def sotw():
     df_scripture = pd.DataFrame(list(db_forms.db['Scriptures'].find())).sort_values('week_start_date').values[-1, :]
-    print(df_scripture)
-    print(df_scripture[1])
     if df_scripture[1] == 'Review Time!':
         script = pd.DataFrame(list(db_forms.db['Scriptures'].find({}, {'_id': False}))).sort_values('week_start_date').iloc[-4:-1].to_dict('records')
         return render_template('sotw.html', scripture=script, page_name='Scripture of the Week', access=current_user.access)
