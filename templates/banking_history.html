@@ -46,6 +46,7 @@
                 request.open("POST", "/query_bank", true);
                 request.onload = function () {
                     var history = request.response;
+                    console.log(history)
                     make_total(history['total']);
                     make_table(history['itemized']);
                 };
@@ -74,7 +75,7 @@
             function make_table(history) {
                 document.getElementById('table_div').remove();
 
-                var table_div = document.createElement('div')
+                var table_div = document.createElement('div');
                 table_div.id = 'table_div';
                 table_div.className = 'col-12';
 
@@ -93,16 +94,20 @@
                 th2.className = "col-6";
                 th2.innerText = "Description";
                 var th3 = document.createElement('th');
-                th3.className = "col-3";
+                th3.className = "col-2";
                 th3.innerText = "Deposit";
                 var th4 = document.createElement('th');
-                th4.className = "col-3";
+                th4.className = "col-2";
                 th4.innerText = "Withdrawal";
+                var th5 = document.createElement('th');
+                th5.className = "col-2";
+                th5.innerText = "Cumulative";
 
                 tr.appendChild(th1);
                 tr.appendChild(th2);
                 tr.appendChild(th3);
                 tr.appendChild(th4);
+                tr.appendChild(th5);
                 thead.appendChild(tr);
                 table.appendChild(thead);
 
@@ -119,21 +124,27 @@
                     td2.innerText = history[i]['description'];
 
                     var td3 = document.createElement('td');
-                    td3.className = "col-3";
+                    td3.className = "col-2";
                     if (history[i]['type'] == 'deposit') {
                         td3.innerText = history[i]['amount'];
                     }
 
                     var td4 = document.createElement('td');
-                    td4.className = "col-3";
+                    td4.className = "col-2";
                     if (history[i]['type'] != 'deposit') {
                         td4.innerText = history[i]['amount'];
                     }
+
+                    var td5 = document.createElement('td');
+                    td5.className = "col-2";
+                    td5.innerText = history[i]['cumulative'];
+
 
                     tr.appendChild(td1);
                     tr.appendChild(td2);
                     tr.appendChild(td3);
                     tr.appendChild(td4);
+                    tr.appendChild(td5);
 
                     tbody.appendChild(tr);
                 }

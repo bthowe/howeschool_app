@@ -207,7 +207,8 @@ def query_bank():
                 'type': entry['type'],
                 'amount': '{0:.2f}'.format(entry['amount']),
                 'description': entry['description'],
-                'date': entry['date']
+                'date': entry['date'],
+                'cumulative': '{0:.2f}'.format(sum)
             }
         )
     output = {'itemized': itemized, 'total': '{0:.2f}'.format(sum)}
