@@ -571,6 +571,14 @@ def sotw():
     return render_template('sotw.html', scripture=script, page_name='Scripture of the Week', access=current_user.access)
 
 
+@app.route("/qotw", methods=['POST', 'GET'])
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
+@login_required
+def qotw():
+    questions = pd.DataFrame(list(db_forms.db['Weekly'].find())).sort_values('week_start_date')[['mon_question', 'tue_question', 'wed_question', 'thu_question', 'fri_question', 'sat_question']].iloc[-2:-1].to_dict('records')
+    return render_template('qotw.html', questions=questions, page_name='Questions of the Week', access=current_user.access)
+
+
 @app.route("/database_viewer", methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
 @login_required

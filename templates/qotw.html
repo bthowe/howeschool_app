@@ -1,0 +1,95 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main">
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+        <script>
+            questions = {{ questions | tojson }};
+            console.log(questions[0]);
+
+            var main = document.getElementById('main');
+
+            var table_div = document.createElement('div');
+            table_div.id = 'table_div';
+            table_div.className = 'col table-responsive';
+
+            var table = document.createElement('table');
+            table.className = "table table-striped table-bordered";
+            var thead = document.createElement('thead');
+            thead.className = "thead-dark";
+
+            var tr = document.createElement('tr');
+            tr.className = "d-flex";
+
+            var th_day = document.createElement('th');
+            th_day.scope = 'col';
+            th_day.innerText = 'Weekday';
+            th_day.className = 'col-2';
+            tr.appendChild(th_day);
+
+            var th_quest = document.createElement('th');
+            th_quest.scope = 'col';
+            th_quest.innerText = 'Question';
+            th_quest.className = 'col-10';
+            tr.appendChild(th_quest);
+
+            thead.appendChild(tr);
+            table.appendChild(thead);
+
+            var tbody = document.createElement('tbody');
+
+            function table_populate(dict_key, day) {
+                var tr_mon = document.createElement('tr');
+                tr_mon.className = "d-flex";
+
+                var th_dayname = document.createElement('th');
+                th_dayname.scope = 'col';
+                th_dayname.innerText = day;
+                th_dayname.className = 'col-2';
+                tr_mon.appendChild(th_dayname);
+
+                var td_quest = document.createElement('td');
+                td_quest.className = 'col-10';
+                var td_div = document.createElement('div');
+                td_div.setAttribute("style", "word-break:break-all;");
+                td_div.innerHTML = questions[0][dict_key];
+                td_quest.appendChild(td_div);
+
+                tr_mon.appendChild(td_quest);
+                tbody.appendChild(tr_mon);
+                table.appendChild(tbody);
+            }
+            table_populate('mon_question', 'Monday');
+            table_populate('tue_question', 'Tuesday');
+            table_populate('wed_question', 'Wednesday');
+            table_populate('thu_question', 'Thursday');
+            table_populate('fri_question', 'Friday');
+            table_populate('sat_question', 'Saturday');
+            table_div.appendChild(table);
+            main.appendChild(table_div);
+
+        </script>
+    {% endblock scripts %}
+
+{% endblock body %}
