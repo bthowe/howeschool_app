@@ -575,7 +575,7 @@ def sotw():
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
 @login_required
 def qotw():
-    questions = pd.DataFrame(list(db_forms.db['Weekly'].find())).sort_values('week_start_date')[['mon_question', 'tue_question', 'wed_question', 'thu_question', 'fri_question', 'sat_question']].iloc[-2:-1].to_dict('records')
+    questions = pd.DataFrame(list(db_forms.db['Weekly'].find())).sort_values('week_start_date')[['mon_question', 'tue_question', 'wed_question', 'thu_question', 'fri_question', 'sat_question']].iloc[[-1]].to_dict('records')
     return render_template('qotw.html', questions=questions, page_name='Questions of the Week', access=current_user.access)
 
 
