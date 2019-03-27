@@ -37,5 +37,10 @@
         *     0 22 * * * bash /home/pi/PythonProjects/howeschool_app/db_backup.sh
         *     58 21 * * SAT /usr/bin/python3 /home/pi/PythonProjects/howeschool_app/weekly_bank_deposit.py
     * don't need daily performance db create
+* SSH
+    * sudo raspi-config
+        - Interface Settings
+        - SSH
+        - Enable
     
     
