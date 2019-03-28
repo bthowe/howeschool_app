@@ -1,0 +1,13 @@
+type,amount,kid,date,description
+"deposit",188.0,"Samuel","2019-01-23","Initial deposit"
+"deposit",3.1,"Samuel","2019-02-02","Math book information help."
+"deposit",6.0,"Samuel","2019-02-02","School and house work"
+"deposit",1.5,"Samuel","2019-02-07","Math book input help."
+"deposit",1.0,"Samuel","2019-02-08","Math book origin input help."
+"deposit",6.0,"Samuel","2019-02-09","School and house work"
+"withdrawal",1.0,"Samuel","2019-02-11","Being a dork and not folding up the air mattress."
+"deposit",6.0,"Samuel","2019-02-16","School and house work"
+"deposit",6.0,"Samuel","2019-02-23","school and house work"
+"deposit",6.0,"Samuel","2019-03-02","School and house work"
+"deposit",6.0,"Samuel","2019-03-09","School and house work"
+"deposit",6.0,"Samuel","2019-03-23","School and house work"
