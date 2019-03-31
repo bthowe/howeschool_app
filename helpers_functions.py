@@ -178,7 +178,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
             \\end{{table}}
             '''.format(i[0][0], sunday_date)
 
-    if scripture[0] == 'Review Time!':
+    if scripture[1] == 'Review Time!':
         scrip = 'Review Time!'
     else:
         scrip = '``{0}" ({1})'.format(scripture[1], scripture[0])  # 13
@@ -292,7 +292,7 @@ def scriptures_latex_create(df):
     \hline\hline
     '''
     for scripture in df.values:
-        if scripture[0] == 'Review Time!':
+        if scripture[1] == 'Review Time!':
             scriptures_table += r'''{date} & Review &  \\ \hline'''.format(date=scripture[2])
         else:
             scriptures_table += r'''{date} & {ref} & {scripture} \\ \hline'''.format(date=scripture[2], ref=scripture[1], scripture=scripture[0])
