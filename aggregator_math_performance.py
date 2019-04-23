@@ -1,3 +1,5 @@
+import ast
+import sys
 import datetime
 import numpy as np
 import pandas as pd
@@ -46,9 +48,13 @@ def the_big_one(book, df_number, df_origin, df_performance):
     # assignments
     start_chapter_ass = df_performance_ass['start_chapter'].iloc[0]
     start_problem_ass = df_performance_ass['start_problem'].iloc[0]
+    if isinstance(start_problem_ass, int):
+        start_problem_ass = str(start_problem_ass)
 
     end_chapter_ass = df_performance_ass['end_chapter'].iloc[-1]
     end_problem_ass = df_performance_ass['end_problem'].iloc[-1]
+    if isinstance(end_problem_ass, int):
+        end_problem_ass = str(end_problem_ass)
 
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
     df_grande_ass = pd.DataFrame()
@@ -57,6 +63,8 @@ def the_big_one(book, df_number, df_origin, df_performance):
         lesson_probs = df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_lesson_probs']
         mixed_probs = int(df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_mixed_probs'])
         origin_probs = df_origin.query('chapter == {}'.format(chapter)).iloc[0]['origin_list']
+        if isinstance(origin_probs, str):
+            origin_probs = ast.literal_eval(origin_probs)
         missed_probs = []
         for dic in df_performance_ass.query('start_chapter == {}'.format(chapter))['miss_lst'].values.tolist() + df_performance_ass.query('end_chapter == {}'.format(chapter))['miss_lst'].values.tolist():
             try:
@@ -137,8 +145,14 @@ def the_big_one(book, df_number, df_origin, df_performance):
         df_temp['chapter'] = row['end_chapter']
         df_temp['date'] = row['date']
 
-        if row['miss_lst']:
-            missed_probs = row['miss_lst'][row['end_chapter']]
+        if isinstance(row['miss_lst'], str):
+            miss_lst = ast.literal_eval(row['miss_lst'])
+        else:
+            miss_lst = row['miss_lst']
+        # if row['miss_lst']:
+        if miss_lst:
+            # missed_probs = row['miss_lst'][row['end_chapter']]
+            missed_probs = miss_lst[row['end_chapter']]
         else:
             missed_probs = []
 
@@ -155,6 +169,7 @@ def query_performance(name):
 
     for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
         perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
+
         numb_temp = pd.DataFrame(list(db_number[book].find()))
         orig_temp = pd.DataFrame(list(db_origin[book].find()))
         if perf_temp.shape[0] > 0:
@@ -171,7 +186,6 @@ def query_performance(name):
 def db_writer(user, df):
     db_math_aggregate[user].drop()
     ret = db_math_aggregate[user].insert_many(df)
-    # print(ret.inserted_ids)
 
 def main():
     for user in ['Calvin', 'Samuel']:

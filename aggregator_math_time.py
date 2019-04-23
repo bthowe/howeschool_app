@@ -30,7 +30,7 @@ def main():
         for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
             df = df.append(pd.DataFrame(list(db_performance[book].find({'kid': name}))))
 
-        df = df.iloc[2:].drop(['chapter', 'miss_list'], 1)
+        # df = df.iloc[2:].drop(['chapter', 'miss_list'], 1)
         df['date'] = pd.to_datetime(df['date'])
         df.sort_values('date', inplace=True)
         df['date'] = df['date'].astype(str)
