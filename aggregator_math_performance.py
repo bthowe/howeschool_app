@@ -127,10 +127,12 @@ def the_big_one(book, df_number, df_origin, df_performance):
 
     df_grande_ass['date'] = ''
     df_p_g = df_performance_ass.sort_values('date').iterrows()
+
     row_p = next(df_p_g)[1]
     for ind, row in df_grande_ass.iterrows():
         df_grande_ass.set_value(ind, 'date', row_p['date'])  # FutureWarning: set_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
-        if (row['chapter'] == int(float(row_p['end_chapter']))) and (str(row['problem']) == row_p['end_problem']):
+
+        if (row['chapter'] == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
             try:
                 row_p = next(df_p_g)[1]
             except:
@@ -170,6 +172,7 @@ def query_performance(name):
     for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
         perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
 
+
         numb_temp = pd.DataFrame(list(db_number[book].find()))
         orig_temp = pd.DataFrame(list(db_origin[book].find()))
         if perf_temp.shape[0] > 0:
@@ -194,7 +197,6 @@ def main():
         qp['date'] = qp['date'].dt.date.astype(str)
         qp['meta__insert_time'] = str(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
-        # [{'name': 'Calvin', 'time': str(datetime.datetime.today())}]
         db_writer(user, qp.to_dict(orient='records'))
 
 if __name__ == '__main__':
