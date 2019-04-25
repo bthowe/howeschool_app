@@ -1,5 +1,6 @@
 import ast
 import sys
+import json
 import datetime
 import numpy as np
 import pandas as pd
@@ -171,7 +172,12 @@ def query_performance(name):
 
     for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
         perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
-
+        if not perf_temp.empty:
+            def to_dict(x):
+                if isinstance(x, str):
+                    return json.loads(x)
+                return x
+            perf_temp['miss_lst'] = perf_temp['miss_lst'].apply(to_dict)
 
         numb_temp = pd.DataFrame(list(db_number[book].find()))
         orig_temp = pd.DataFrame(list(db_origin[book].find()))
