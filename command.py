@@ -156,9 +156,6 @@ def add_missed_problems():
     ret = db_performance.db[js['book']].insert_one(js)
     print('data inserted: {}'.format(ret))
 
-    # subprocess.Popen(['python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_performance.py'])
-    # subprocess.Popen(['python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_time.py'])
-
     return ''
 
 
@@ -255,6 +252,13 @@ def query_dbs():
     return jsonify(items=docs)
 
 
+@app.route('/aggregate_kickoff', methods=['GET'])
+def aggregate_kickoff():
+    subprocess.Popen(['python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_performance.py'])
+    subprocess.Popen(['python3', '/home/pi/PythonProjects/howeschool_app/aggregator_math_time.py'])
+    # subprocess.Popen(['python3', '/Users/thowe/PycharmProjects/resources_repos/howeschool_app/aggregator_math_performance.py'])
+    # subprocess.Popen(['python3', '/Users/thowe/PycharmProjects/resources_repos/howeschool_app/aggregator_math_time.py'])
+    return ''
 
 
 

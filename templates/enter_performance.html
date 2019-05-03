@@ -91,8 +91,8 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                {#                    <div class="form-group col-md-2">#}
                                 <button id="button" type="submit" class="btn btn-primary">Submit</button>
+                                <button id="agg_button" type="submit" class="btn btn-secondary" onclick=aggKickoff()>Update Agg Tables</button>
                             </div>
                         </div>
                     </form>
@@ -347,6 +347,16 @@
                 button_submit.addEventListener('click', submit, true);
             }
 
+            function aggKickoff() {
+                var request = new XMLHttpRequest();
+                request.responseType = 'json';
+                request.open("GET", "/aggregate_kickoff", true);
+                request.onload = function () {
+                    alert("Aggregate tables update in progress")
+                };
+                request.send();
+
+            }
 
         </script>
     {% endblock scripts %}
