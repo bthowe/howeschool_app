@@ -307,6 +307,7 @@
                     test = document.getElementById('testCheck').checked;
 
                     var button = document.getElementById("button").style.visibility = 'hidden';
+                    var agg_button = document.getElementById("agg_button").style.visibility = 'hidden';
 
                     if ((kid == 'choose kid') || (book == 'choose book') || (isNaN(start_chapter)) || (start_problem == "") || (isNaN(end_chapter)) || (end_problem == "")){
                         alert('Fill in all fields, dummy.')
@@ -342,6 +343,7 @@
                         );
                     }
                     document.getElementById('button').className = "hidden"
+                    document.getElementById('agg_button').className = "hidden"
                 }
                 var button_submit = document.getElementById('button');
                 button_submit.addEventListener('click', submit, true);
