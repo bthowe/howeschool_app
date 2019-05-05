@@ -129,7 +129,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
         \\hline
         \\multicolumn{{2}}{{|p{{6.33cm}}|}}{{Date: {2}}} & \\multicolumn{{2}}{{|p{{6.33cm}}|}}{{Start Time: }} & \\multicolumn{{2}}{{|p{{6.33cm}}|}}{{End Time: }} \\\\[20pt]
         \\hline
-        \\multicolumn{{6}}{{|p{{19cm}}|}}{{Problems Missed: }} \\\\[20pt]
+        \\multicolumn{{6}}{{|l|}}{{Problems Missed: }} \\\\[20pt]
         \\hline
         \\end{{tabular}}
         \\end{{table}}
