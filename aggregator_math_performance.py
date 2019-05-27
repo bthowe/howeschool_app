@@ -172,6 +172,7 @@ def query_performance(name):
 
     for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
         perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
+        print(perf_temp.info())
         if not perf_temp.empty:
             def to_dict(x):
                 if isinstance(x, str):
@@ -194,7 +195,6 @@ def query_performance(name):
 
 def db_writer(user, df):
     db_math_aggregate[user].drop()
-    ret = db_math_aggregate[user].insert_many(df)
 
 def main():
     for user in ['Calvin', 'Samuel']:
