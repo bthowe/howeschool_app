@@ -199,6 +199,7 @@ def db_writer(user, df):
 def main():
     for user in ['Calvin', 'Samuel']:
         qp = query_performance(user).reset_index(drop=True)
+        qp['chapter'] = qp['chapter'].astype(str)
         qp['name'] = user
         qp['date'] = qp['date'].dt.date.astype(str)
         qp['meta__insert_time'] = str(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
