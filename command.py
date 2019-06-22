@@ -319,7 +319,7 @@ def math_daily_create(name):
     df['date'] = pd.to_datetime(df['date'])
     df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
     df.sort_values('date', ascending=True, inplace=True)
-    print(str(df['meta__insert_time'].iloc[0]))
+    print(df['meta__insert_time'])
     return performance_over_time(df, 'correct').to_dict('records'), str(df['meta__insert_time'].iloc[0])
 
 
