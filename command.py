@@ -320,7 +320,7 @@ def math_daily_create(name):
     df = pd.DataFrame(list(db_aggregate.db[name].find()))
     df['date'] = pd.to_datetime(df['date'])
     print(df.info())
-    print(df.head())
+    print(df.tail())
     df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
     df.sort_values('date', ascending=True, inplace=True)
     print(df.head())
