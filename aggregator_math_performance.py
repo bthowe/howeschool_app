@@ -194,6 +194,8 @@ def query_performance(name):
 
 def db_writer(user, df):
     db_math_aggregate[user].drop()
+    ret = db_math_aggregate[user].insert_many(df)
+    print(ret)
 
 def main():
     for user in ['Calvin', 'Samuel']:
