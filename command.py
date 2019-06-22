@@ -315,11 +315,13 @@ def performance_over_time(df, varname):
 
 
 def math_daily_create(name):
+    print(name)
+
     df = pd.DataFrame(list(db_aggregate.db[name].find()))
+    print(df.head())
     df['date'] = pd.to_datetime(df['date'])
     df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
     df.sort_values('date', ascending=True, inplace=True)
-    print(name)
     print(df.head())
     print('\n')
     return performance_over_time(df, 'correct').to_dict('records'), str(df['meta__insert_time'].iloc[0])
