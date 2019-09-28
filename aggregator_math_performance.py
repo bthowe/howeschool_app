@@ -142,6 +142,8 @@ def the_big_one(book, df_number, df_origin, df_performance):
         print(row['chapter'], row_p['end_chapter'])
         print(row['problem'], row_p['end_problem'])
         print('\n')
+        if row['chapter'] == 38:
+            sys.exit()
         if (int(row['chapter']) == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
             try:
                 row_p = next(df_p_g)[1]
