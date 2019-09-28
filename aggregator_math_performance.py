@@ -130,25 +130,12 @@ def the_big_one(book, df_number, df_origin, df_performance):
 
     df_grande_ass['date'] = ''
     df_p_g = df_performance_ass.sort_values('date').iterrows()
-    print(df_performance_ass.sort_values('date').head(2))
-    print(df_performance_ass.sort_values('date').tail(2))
 
     row_p = next(df_p_g)[1]
     for ind, row in df_grande_ass.iterrows():
         df_grande_ass.set_value(ind, 'date', row_p['date'])  # FutureWarning: set_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
 
-
-        print(row['book'], row['date'])
-        print(row['chapter'], row_p['end_chapter'])
-        print(row['problem'], row_p['end_problem'])
-        print('\n')
-        if row['chapter'] == 38:
-            sys.exit()
-
-
-
         if (int(row['chapter']) == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
-            print(row_p)
             try:
                 row_p = next(df_p_g)[1]
             except:
@@ -185,8 +172,7 @@ def query_performance(name):
     df_assignment = pd.DataFrame()
     df_test = pd.DataFrame()
 
-    for book in ['Math_8_7']:
-    # for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:  # todo: here
+    for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
         perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
         if not perf_temp.empty:
             def to_dict(x):
@@ -210,12 +196,11 @@ def query_performance(name):
 
 def db_writer(user, df):
     db_math_aggregate[user].drop()
-    # ret = db_math_aggregate[user].insert_many(df)  # todo: here
-    # print(ret)
+    ret = db_math_aggregate[user].insert_many(df)
+    print(ret)
 
 def main():
-    for user in ['Samuel']:
-    # for user in ['Calvin', 'Samuel']:  # todo: here
+    for user in ['Calvin', 'Samuel']:
         qp = query_performance(user).reset_index(drop=True)
         qp['chapter'] = qp['chapter'].astype(str)
         qp['name'] = user
