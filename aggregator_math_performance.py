@@ -137,14 +137,11 @@ def the_big_one(book, df_number, df_origin, df_performance):
     for ind, row in df_grande_ass.iterrows():
         df_grande_ass.set_value(ind, 'date', row_p['date'])  # FutureWarning: set_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
 
-        if (int(row['chapter']) != int(float(row_p['end_chapter']))) or (str(row['problem']) != str(row_p['end_problem'])):
-            print('\nAAAAAAAAAAAH!')
-            print(row_p)
-            print((int(row['chapter']) != int(float(row_p['end_chapter']))))
-            print(str(row['problem']) != str(row_p['end_problem']))
-            print('\n')
 
-
+        print(row['book'], row['date'])
+        print(row['chapter'], row_p['end_chapter'])
+        print(row['problem'], row_p['end_problem'])
+        print('\n')
         if (int(row['chapter']) == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
             try:
                 row_p = next(df_p_g)[1]
