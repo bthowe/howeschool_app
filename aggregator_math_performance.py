@@ -63,6 +63,8 @@ def the_big_one(book, df_number, df_origin, df_performance):
         df_temp = pd.DataFrame()
         lesson_probs = df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_lesson_probs']
         mixed_probs = int(df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_mixed_probs'])
+
+        print(book, chapter)
         origin_probs = df_origin.query('chapter == {}'.format(chapter)).iloc[0]['origin_list']
         if isinstance(origin_probs, str):
             origin_probs = ast.literal_eval(origin_probs)
