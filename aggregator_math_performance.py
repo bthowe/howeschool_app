@@ -66,8 +66,6 @@ def the_big_one(book, df_number, df_origin, df_performance):
 
         print(book, chapter)
         origin_probs = df_origin.query('chapter == {}'.format(chapter)).iloc[0]['origin_list']
-        print(origin_probs)
-        print('\n')
         if isinstance(origin_probs, str):
             origin_probs = ast.literal_eval(origin_probs)
         missed_probs = []
@@ -127,6 +125,7 @@ def the_big_one(book, df_number, df_origin, df_performance):
         df_temp['chapter'] = chapter
         df_temp['correct'] = df_temp.apply(lambda x: 0 if str(x['problem']) in missed_probs else 1, axis=1)
 
+        print(df_temp.head(2))
         df_grande_ass = df_grande_ass.append(df_temp)
     df_grande_ass.reset_index(drop=True, inplace=True)
 
