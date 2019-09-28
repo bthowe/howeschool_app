@@ -14,7 +14,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     # access = SelectField('Access Level', choices=[(0, 'guest'), (1, 'user'), (2, 'admin')], coerce=int)
     access = SelectField('Access Level', choices=[(1, 'user'), (2, 'admin')], coerce=int)
-    username = StringField('First Name', validators=[InputRequired(), Length(min=4, max=15)], render_kw={'autofocus': True})
+    username = StringField('First Name', validators=[InputRequired(), Length(min=3, max=15)], render_kw={'autofocus': True})
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
 
 class VocabForm(FlaskForm):
