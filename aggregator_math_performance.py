@@ -125,12 +125,13 @@ def the_big_one(book, df_number, df_origin, df_performance):
         df_temp['chapter'] = chapter
         df_temp['correct'] = df_temp.apply(lambda x: 0 if str(x['problem']) in missed_probs else 1, axis=1)
 
-        print(df_temp.head(2))
         df_grande_ass = df_grande_ass.append(df_temp)
     df_grande_ass.reset_index(drop=True, inplace=True)
 
     df_grande_ass['date'] = ''
     df_p_g = df_performance_ass.sort_values('date').iterrows()
+    print(df_performance_ass.sort_values('date').head(2))
+    print(df_performance_ass.sort_values('date').tail(2))
 
     row_p = next(df_p_g)[1]
     for ind, row in df_grande_ass.iterrows():
