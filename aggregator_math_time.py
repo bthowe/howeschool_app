@@ -25,7 +25,7 @@ def db_writer(user, df):
     print(ret.inserted_ids)
 
 def main():
-    for name in ['Calvin', 'Samuel']:
+    for name in ['Calvin', 'Samuel', 'Kay']:
         df = pd.DataFrame()
         for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
             df = df.append(pd.DataFrame(list(db_performance[book].find({'kid': name}))))
