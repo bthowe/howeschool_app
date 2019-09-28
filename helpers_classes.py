@@ -7,7 +7,7 @@ from wtforms.widgets import TextArea
 import helpers_constants
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=15)], render_kw={'autofocus': True})
+    username = StringField('Username', validators=[InputRequired(), Length(min=3, max=15)], render_kw={'autofocus': True})
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
     # remember = BooleanField('remember me')
 
