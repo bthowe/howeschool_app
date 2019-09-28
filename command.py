@@ -342,6 +342,7 @@ def math_daily_time(name):
 def main_menu():
     df_calvin_ass, update_calvin = math_daily_create('Calvin')
     df_samuel_ass, update_samuel = math_daily_create('Samuel')
+    df_kay_ass, update_kay = math_daily_create('Kay')
     return render_template(
         'main_menu.html',
         name=current_user.username,
@@ -349,10 +350,13 @@ def main_menu():
         page_name='Main Menu',
         df_calvin=df_calvin_ass,
         df_samuel=df_samuel_ass,
+        df_kay=df_kay_ass,
         df_calvin_time=math_daily_time('Calvin'),
         df_samuel_time=math_daily_time('Samuel'),
+        df_kay_time=math_daily_time('Kay'),
         update_calvin=update_calvin,
-        update_samuel=update_samuel
+        update_samuel=update_samuel,
+        update_kay=update_kay
     )
 
 @app.route('/register', methods=['POST', 'GET'])

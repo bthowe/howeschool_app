@@ -96,6 +96,17 @@
     {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
 {#            </div>#}
 {#        {% endif %}#}
+{#        {% if (name == 'Kay') or (name == 'Travis') %}#}
+{#            <div class="card mb-3">#}
+{#                <div class="card-header">#}
+{#                    <i class="fas fa-chart-area"></i>#}
+{#                    Kay Math Daily#}
+{#                </div>#}
+{#                <div class="card-body" id="KayAssScores">#}
+{#                </div>#}
+    {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
+{#            </div>#}
+{#        {% endif %}#}
 
 {#        <div class="row">#}
 {#            <div class="col-lg-8">#}
@@ -139,12 +150,15 @@
 
             df_calvin = timeTransform({{ df_calvin | tojson }});
             df_samuel = timeTransform({{ df_samuel | tojson }});
+            df_kay = timeTransform({{ df_kay | tojson }});
 
             df_calvin_time = timeTransform({{ df_calvin_time | tojson }});
             df_samuel_time = timeTransform({{ df_samuel_time | tojson }});
+            df_kay_time = timeTransform({{ df_kay_time | tojson }});
 
             update_calvin = "{{ update_calvin }}";
             update_samuel = "{{ update_samuel }}";
+            update_kay = "{{ update_kay }}";
 
             function parse(str) {
                 var y = str.substr(0, 4),
@@ -191,10 +205,15 @@
                     renderAssPlot(df_calvin, 'Calvin');
                     renderTimePlot(df_calvin_time, 'Calvin');
                 }
-                else {
+                else if (name == "Samuel") {
 {#                    document.getElementById("SamuelAssUpdate").innerHTML = 'Last Update: ' + update_samuel;#}
                     renderAssPlot(df_samuel, 'Samuel');
                     renderTimePlot(df_samuel_time, 'Samuel');
+                }
+                else {
+{#                    document.getElementById("KayAssUpdate").innerHTML = 'Last Update: ' + update_kay;#}
+                    renderAssPlot(df_kay, 'Kay');
+                    renderTimePlot(df_kay_time, 'Kay');
                 }
             }
 
