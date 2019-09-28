@@ -43,6 +43,20 @@
         <script>
             document.getElementById('choose_dbs').focus();
 
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+
             function clearDivs(submitBool) {
                 if (!submitBool)
                 {
@@ -139,8 +153,8 @@
                 var input = document.createElement('input');
                 input.id = 'date_input';
                 input.className = 'form-control';
-                input.placeholder = 'yyyy-mm-dd';
-
+                input.placeholder = yyyy + '-' + mm + '-' + dd;
+                
                 var label = document.createElement('Label');
                 label.id = 'date_label';
                 label.setAttribute("for", 'date_input');
