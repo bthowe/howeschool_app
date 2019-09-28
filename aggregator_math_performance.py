@@ -179,7 +179,8 @@ def query_performance(name):
     df_assignment = pd.DataFrame()
     df_test = pd.DataFrame()
 
-    for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
+    for book in ['Math_8_7']:
+    # for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:  # todo: here
         perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
         if not perf_temp.empty:
             def to_dict(x):
@@ -203,11 +204,12 @@ def query_performance(name):
 
 def db_writer(user, df):
     db_math_aggregate[user].drop()
-    ret = db_math_aggregate[user].insert_many(df)
-    print(ret)
+    # ret = db_math_aggregate[user].insert_many(df)  # todo: here
+    # print(ret)
 
 def main():
-    for user in ['Calvin', 'Samuel']:
+    for user in ['Samuel']:
+    # for user in ['Calvin', 'Samuel']:  # todo: here
         qp = query_performance(user).reset_index(drop=True)
         qp['chapter'] = qp['chapter'].astype(str)
         qp['name'] = user
