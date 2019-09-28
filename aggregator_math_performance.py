@@ -200,7 +200,7 @@ def db_writer(user, df):
     print(ret)
 
 def main():
-    for user in ['Calvin', 'Samuel']:
+    for user in ['Calvin', 'Samuel', 'Kay']:
         qp = query_performance(user).reset_index(drop=True)
         qp['chapter'] = qp['chapter'].astype(str)
         qp['name'] = user
