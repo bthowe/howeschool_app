@@ -66,6 +66,8 @@ def the_big_one(book, df_number, df_origin, df_performance):
 
         print(book, chapter)
         origin_probs = df_origin.query('chapter == {}'.format(chapter)).iloc[0]['origin_list']
+        print(origin_probs)
+        print('\n')
         if isinstance(origin_probs, str):
             origin_probs = ast.literal_eval(origin_probs)
         missed_probs = []
