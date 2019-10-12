@@ -30,7 +30,6 @@ def main():
         for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
             df = df.append(pd.DataFrame(list(db_performance[book].find({'kid': name}))))
 
-        # df = df.iloc[2:].drop(['chapter', 'miss_list'], 1)
         df['date'] = pd.to_datetime(df['date'])
         df.sort_values('date', inplace=True)
         df['date'] = df['date'].astype(str)
@@ -38,11 +37,11 @@ def main():
         df['start_time'] = df.apply(
             lambda x: datetime.datetime.strptime('{0} {1}'.format(x['date'], x['start_time']), '%Y-%m-%d %H:%M'),
             axis=1)
-        df['start_time'] = df['start_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 7 else x)
+        df['start_time'] = df['start_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 6 else x)
 
         df['end_time'] = df.apply(
             lambda x: datetime.datetime.strptime('{0} {1}'.format(x['date'], x['end_time']), '%Y-%m-%d %H:%M'), axis=1)
-        df['end_time'] = df['end_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 7 else x)
+        df['end_time'] = df['end_time'].apply(lambda x: x + datetime.timedelta(hours=12) if x.hour < 6 else x)
 
         df['duration'] = (df['end_time'] - df['start_time']).astype('timedelta64[m]')
 
