@@ -40,4 +40,4 @@ mongoexport --host localhost --db vocab --collection Main --csv --out /media/pi/
 mongoexport --host localhost --db vocab --collection Practice --csv --out /media/pi/HOWESCHOOL/database_files_csv/vocab/vocab_Practice.csv --fields card_front,page,card_back,num_batches,index,batch_index,batch_size,button,timestamp
 mongoexport --host localhost --db vocab --collection Quiz --csv --out /media/pi/HOWESCHOOL/database_files_csv/vocab/vocab_Quiz.csv --fields completed,chosen_card,timestamp,alternatives,answer_card,page,button,correct,index,prompt,radio_button_chosen
 
-sudo supervisorctl stop mongod
+# sudo supervisorctl stop mongod
