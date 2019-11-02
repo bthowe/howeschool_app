@@ -70,7 +70,7 @@ class NumberofExercisesForm(FlaskForm):
     chapter = IntegerField('Chapter', validators=[InputRequired()], id='chapter')
     num_lesson_probs = StringField('Number of Lesson Problems', validators=[InputRequired()], id='num_lesson_probs')
     num_mixed_probs = StringField('Number of Mixed Problems', validators=[InputRequired()], id='num_mixed_probs')
-    test = BooleanField('Test')
+    # test = BooleanField('Test')
 
 class CreditDebit(FlaskForm):
     choose_kid = SelectField('Name', choices=[('choose', 'Choose...'), ('Calvin', 'Calvin'), ('Samuel', 'Samuel'), ('Kay', 'Kay')], validators=[InputRequired()], id='choose_kid')
