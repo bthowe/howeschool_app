@@ -154,6 +154,12 @@ def add_missed_problems():
     del js['test']
 
     ret = db_performance.db[js['book']].insert_one(js)
+
+    # todo: make call here with js
+
+
+
+
     print('data inserted: {}'.format(ret))
 
     return ''

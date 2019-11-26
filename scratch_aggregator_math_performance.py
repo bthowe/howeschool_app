@@ -1,7 +1,3 @@
-import os
-import pandas as pd
-from pymongo import MongoClient
-from sshtunnel import SSHTunnelForwarder
 import ast
 import sys
 import json
@@ -18,10 +14,16 @@ pd.set_option('max_colwidth', 4000)
 pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
 client = MongoClient()
-# db_number = client['math_book_info']
-# db_origin = client['math_exercise_origins']
-# db_performance = client['math_performance']
+db_number = client['math_book_info']
+db_origin = client['math_exercise_origins']
+db_performance = client['math_performance']
+db_users = client['users']
+db_math_aggregate = client['math_aggregate']
 
+
+def user_list():
+    users = [dic['name'] for dic in list(db_users['users'].find({'access': 1}))]
+    return users
 
 
 def the_big_one(book, df_number, df_origin, df_performance):
@@ -61,6 +63,8 @@ def the_big_one(book, df_number, df_origin, df_performance):
         df_temp = pd.DataFrame()
         lesson_probs = df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_lesson_probs']
         mixed_probs = int(df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_mixed_probs'])
+
+        print(book, chapter)
         origin_probs = df_origin.query('chapter == {}'.format(chapter)).iloc[0]['origin_list']
         if isinstance(origin_probs, str):
             origin_probs = ast.literal_eval(origin_probs)
@@ -122,30 +126,20 @@ def the_big_one(book, df_number, df_origin, df_performance):
         df_temp['correct'] = df_temp.apply(lambda x: 0 if str(x['problem']) in missed_probs else 1, axis=1)
 
         df_grande_ass = df_grande_ass.append(df_temp)
-
     df_grande_ass.reset_index(drop=True, inplace=True)
 
     df_grande_ass['date'] = ''
     df_p_g = df_performance_ass.sort_values('date').iterrows()
 
     row_p = next(df_p_g)[1]
-
-
-    # todo: here
-    # print(df_performance_ass)
-
-
-
     for ind, row in df_grande_ass.iterrows():
         df_grande_ass.set_value(ind, 'date', row_p['date'])  # FutureWarning: set_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
 
-        if (row['chapter'] == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
-        # if (int(float(row['chapter'])) == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
+        if (int(row['chapter']) == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
             try:
                 row_p = next(df_p_g)[1]
             except:
                 print('boom!')
-
 
     # tests
     df_grande_test = pd.DataFrame()
@@ -174,107 +168,53 @@ def the_big_one(book, df_number, df_origin, df_performance):
     return df_grande_ass, df_grande_test
 
 
-def query_performance(name):
+def query_performance(name, book):
+    # pass chapter, start and end
     df_assignment = pd.DataFrame()
     df_test = pd.DataFrame()
 
     # for book in ['Math_5_4', 'Math_6_5', 'Math_7_6', 'Math_8_7', 'Algebra_1_2', 'Algebra_1', 'Algebra_2']:
-    if name == 'Calvin':
-        book = 'Algebra_1_2'
-    else:
-        book = 'Math_8_7'
+    perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
+    # todo: I need to instead pass the entered assignment in the same form as getting here.
+    if not perf_temp.empty:
+        def to_dict(x):
+            if isinstance(x, str):
+                return json.loads(x)
+            return x
+        perf_temp['miss_lst'] = perf_temp['miss_lst'].apply(to_dict)
 
-    if name:
-
-        # perf_temp = pd.DataFrame(list(db_performance[book].find({'kid': name})))
-        perf_temp = pi_data_fetch('math_performance', book)  #, {'kid': name})
-        print(perf_temp); sys.exit()
-
-        if not perf_temp.empty:
-            def to_dict(x):
-                if isinstance(x, str):
-                    return json.loads(x)
-                return x
-            perf_temp['miss_lst'] = perf_temp['miss_lst'].apply(to_dict)
-
-        # numb_temp = pd.DataFrame(list(db_number[book].find()))
-        numb_temp = pi_data_fetch('math_book_info', book, None)
-
-        # orig_temp = pd.DataFrame(list(db_origin[book].find()))
-        orig_temp = pi_data_fetch('math_exercise_origins', book, None)
-
-        if perf_temp.shape[0] > 0:
-            df_grande_ass, df_grande_test = the_big_one(
-                book,
-                numb_temp,
-                orig_temp,
-                perf_temp
-            )
-            df_assignment = df_assignment.append(df_grande_ass)
-            df_test = df_test.append(df_grande_test)
+    numb_temp = pd.DataFrame(list(db_number[book].find()))
+    orig_temp = pd.DataFrame(list(db_origin[book].find()))
+    if perf_temp.shape[0] > 0:
+        df_grande_ass, df_grande_test = the_big_one(
+            book,
+            numb_temp,
+            orig_temp,
+            perf_temp
+        )
+        df_assignment = df_assignment.append(df_grande_ass)
+        df_test = df_test.append(df_grande_test)
     return df_assignment.append(df_test)
 
-
-def pi_data_fetch(dbs, collection):
-    ssh_host = os.getenv('raspberry_pi_ip')
-    ssh_user = os.getenv('raspberry_pi_username')
-    ssh_password = os.getenv('raspberry_pi_password')
-
-    with SSHTunnelForwarder(
-            ssh_host,
-            ssh_username=ssh_user,
-            ssh_password=ssh_password,
-            remote_bind_address=('127.0.0.1', 27017)
-    ) as server:
-        with MongoClient(
-                host='127.0.0.1',
-                port=server.local_bind_port
-        ) as client:
-            db = pd.DataFrame(list(client[dbs][collection].find()))
-
-
-            # for ind, row in enumerate(list(client[dbs][collection].find())):
-            #     try:
-            #         row['chapter']
-            #     except:
-            #         print({'_id': row['_id']})
-            #         client[dbs][collection].update({'_id': row['_id']}, {'book': collection, 'origin_list': row['origin_list'], 'chapter': ind + 1, })
-            #         print('\n')
-
-
-            # import ast
-            # for row in list(client[dbs][collection].find()):
-            #     if type(row['origin_list']) == str:
-            #         print({'_id': row['_id']})
-            #         print({'origin_list': ast.literal_eval(row['origin_list'])})
-            #         client[dbs][collection].update({'_id': row['_id']}, {'book': collection, 'origin_list': ast.literal_eval(row['origin_list']), 'chapter': row['chapter']})
-            #         print('\n')
-
-
-            # sys.exit()
-    return db
-
-def p_main():
-    db = pi_data_fetch('math_exercise_origins', 'Math_5_4')
-    # db = pi_data_fetch('math_exercise_origins', 'Algebra_1_2')
-    # db = pi_data_fetch('math_exercise_origins', 'Math_7_6')
-    # db = pi_data_fetch('math_exercise_origins', 'Algebra_1')
-    # db = pi_data_fetch('math_exercise_origins', 'Math_8_7')
-    print(db)
+def db_writer(user, df):
+    db_math_aggregate[user].drop()
+    ret = db_math_aggregate[user].insert_many(df)
+    print(ret)
 
 def main():
-    for user in ['Calvin', 'Samuel']:
-        qp = query_performance(user).reset_index(drop=True)
-        qp['chapter'] = qp['chapter'].astype(str)
-        # print(qp.info())
-    # sys.exit()
+    user = 'Calvin'
+    book = 'Algebra_2'
 
-        qp['name'] = user
-        qp['date'] = qp['date'].dt.date.astype(str)
-        qp['meta__insert_time'] = str(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
-        # print(qp.head(100))
+    qp = query_performance(user, book).reset_index(drop=True)
+    qp['chapter'] = qp['chapter'].astype(str)
+    qp['name'] = user
+    qp['date'] = qp['date'].dt.date.astype(str)
+    qp['meta__insert_time'] = str(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
+
+    db_writer(user, qp.to_dict(orient='records'))
+
+# todo: have the batch aggregator write to a different database
+# todo:
 
 if __name__ == '__main__':
     main()
-    # p_main()
-# todo: this is cool, but need to fetch the data and use it to figure out what is wrong with aggregator_math_performance.py
