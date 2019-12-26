@@ -127,6 +127,7 @@ def query_book():
 @app.route('/add_missed_problems', methods=['POST'])
 def add_missed_problems():
     js = json.loads(request.data.decode('utf-8'))
+    print(js)
 
     miss_lst = defaultdict(list)
 
