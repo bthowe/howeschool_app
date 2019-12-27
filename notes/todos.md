@@ -1,3 +1,8 @@
+TODO:
+2019/12/27
+* remove nightly running of aggregate_math_performance.py and time on pi
+* need to provide documentation about when to use scripts in db_mgmt_scripts
+
 server:
 1. set up supervisor
     1. https://www.vultr.com/docs/installing-and-configuring-supervisor-on-ubuntu-16-04
