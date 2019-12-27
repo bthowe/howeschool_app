@@ -127,39 +127,32 @@ def query_book():
 @app.route('/add_missed_problems', methods=['POST'])
 def add_missed_problems():
     js = json.loads(request.data.decode('utf-8'))
-    print(js)
-
-    miss_lst = defaultdict(list)
-
-    for prob in js['add_miss_list']:
-        if js['test']:
-            miss_lst['test {}'.format(prob['chapter'])].append(prob['problem'])
-        else:
-            miss_lst[prob['chapter']].append(prob['problem'])
-    for prob in js['rem_miss_list']:
-        if js['test']:
-            miss_lst['test {}'.format(prob['chapter'])].remove(prob['problem'])
-        else:
-            miss_lst[prob['chapter']].remove(prob['problem'])
-    k_to_del = [k for k, v in miss_lst.items() if not miss_lst[k]]
-    for k in k_to_del:
-        del miss_lst[k]
-    js['miss_lst'] = dict(miss_lst)
 
     if js['test']:
         js['start_chapter'] = 'test {}'.format(js['start_chapter'])
         js['end_chapter'] = 'test {}'.format(js['end_chapter'])
 
+    js['miss_lst'] = helpers_functions.miss_lst_create(js)
+
+    # update aggregate performance and time databases
+    if js['test']:
+        record = helpers_functions._test_atomize(js).to_dict(orient='records')
+        db_aggregate.db[js['kid']].insert_many(record)
+    else:
+        record = helpers_functions._ass_atomize(
+                db_origin.db[js['book']],
+                db_number.db[js['book']],
+                js
+            ).to_dict(orient='records')
+        db_aggregate.db[js['kid']].insert_many(record)
+    db_time.db[js['kid']].insert_one(helpers_functions._elapsed_time(js)[0])
+
     del js['add_miss_list']
     del js['rem_miss_list']
     del js['test']
 
+    # update performance database
     ret = db_performance.db[js['book']].insert_one(js)
-
-    # todo: make call here with js
-
-
-
 
     print('data inserted: {}'.format(ret))
 
@@ -169,7 +162,6 @@ def add_missed_problems():
 @app.route('/add_problem_origin', methods=['POST'])
 def add_problem_origin():
     js = json.loads(request.data.decode('utf-8'))
-    print(js)
 
     if js['flag'] == 0:
         ret = db_origin.db[js['book']].update({'book': js['book'], 'chapter': js['chapter']}, {'book': js['book'], 'chapter': js['chapter'], 'origin_list': js['origin_list']}, upsert=True)
@@ -183,7 +175,6 @@ def add_problem_origin():
 @app.route('/query_chapter2', methods=['POST', 'GET'])
 def query_chapter2():
     js = json.loads(request.data.decode('utf-8'))
-    print(js)
 
     book = js['book']
 
@@ -248,7 +239,6 @@ def query_dbs():
 
     docs = []
     for col in collections:
-        print(col)
         if js['date'] != '':
             docs += list(database.db[col].find({date: js['date']}, {'_id': False}))
         else:
@@ -322,16 +312,10 @@ def performance_over_time(df, varname):
 
 
 def math_daily_create(name):
-    print(name)
-
     df = pd.DataFrame(list(db_aggregate.db[name].find()))
     df['date'] = pd.to_datetime(df['date'])
-    print(df.info())
-    print(df.tail())
     df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
     df.sort_values('date', ascending=True, inplace=True)
-    print(df.head())
-    print('\n')
     return performance_over_time(df, 'correct').to_dict('records'), str(df['meta__insert_time'].iloc[0])
 
 

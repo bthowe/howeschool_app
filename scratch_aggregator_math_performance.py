@@ -23,157 +23,6 @@ db_users = client['users']
 db_math_aggregate = client['math_aggregate']
 
 
-def user_list():
-    users = [dic['name'] for dic in list(db_users['users'].find({'access': 1}))]
-    return users
-
-
-def the_big_one(book, df_number, df_origin, df_performance):
-    # todo: maybe just remove the offending documents from the database
-    if 'chapter' in df_performance.columns.tolist():
-        df_performance.drop('chapter', 1, inplace=True)
-    if 'miss_list' in df_performance.columns.tolist():
-        df_performance.drop('miss_list', 1, inplace=True)
-
-    df_performance = df_performance. \
-        query('date == date'). \
-        assign(date=pd.to_datetime(df_performance['date'])). \
-        sort_values(['date', 'start_chapter', 'start_problem'])
-
-    df_performance['end_chapter'] = df_performance['end_chapter'].astype(str)
-    df_performance_test = df_performance.loc[df_performance['end_chapter'].str.contains('test', na=False)]
-    df_performance_ass = df_performance.loc[~df_performance['end_chapter'].str.contains('test', na=False)]
-
-    # these columns have different types across the various collections, which makes for a bit of a headache
-    df_performance_ass['start_chapter'] = df_performance_ass['start_chapter'].astype(float).astype(int)
-    df_performance_ass['end_chapter'] = df_performance_ass['end_chapter'].astype(float).astype(int)
-
-    # assignments
-    if df_performance_ass.shape[0] != 0:
-        start_chapter_ass = df_performance_ass['start_chapter'].iloc[0]
-        start_problem_ass = df_performance_ass['start_problem'].iloc[0]
-        if isinstance(start_problem_ass, int):
-            start_problem_ass = str(start_problem_ass)
-
-        end_chapter_ass = df_performance_ass['end_chapter'].iloc[-1]
-        end_problem_ass = df_performance_ass['end_problem'].iloc[-1]
-        if isinstance(end_problem_ass, int):
-            end_problem_ass = str(end_problem_ass)
-
-        alphabet = 'abcdefghijklmnopqrstuvwxyz'
-        df_grande_ass = pd.DataFrame()
-        for chapter in range(int(float(start_chapter_ass)), int(float(end_chapter_ass)) + 1):
-            df_temp = pd.DataFrame()
-            lesson_probs = df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_lesson_probs']
-            mixed_probs = int(df_number.query('chapter == {}'.format(chapter)).iloc[0]['num_mixed_probs'])
-
-            print(book, chapter)
-            origin_probs = df_origin.query('chapter == {}'.format(chapter)).iloc[0]['origin_list']
-            if isinstance(origin_probs, str):
-                origin_probs = ast.literal_eval(origin_probs)
-            missed_probs = []
-            for dic in df_performance_ass.query('start_chapter == {}'.format(chapter))['miss_lst'].values.tolist() + df_performance_ass.query('end_chapter == {}'.format(chapter))['miss_lst'].values.tolist():
-                try:
-                    missed_probs += dic[str(chapter)]
-                except:
-                    pass
-            missed_probs = list(set(missed_probs))
-
-            if start_chapter_ass == end_chapter_ass:
-                if start_problem_ass.isdigit():
-                    problem_lst = range(int(start_problem_ass), int(end_problem_ass) + 1)
-                    origin_lst = origin_probs[int(start_problem_ass): int(end_problem_ass) + 1]
-
-                else:
-                    # I'm assuming the end_problem would not also be a letter
-                    start_ind = alphabet.find(start_problem_ass)
-                    end_ind = alphabet.find(lesson_probs)
-                    problem_lst = list(alphabet[start_ind: end_ind + 1]) + list(range(1, int(end_problem_ass) + 1))
-                    origin_lst = (end_ind - start_ind + 1) * [np.nan] + origin_probs[: int(end_problem_ass)]
-
-            else:
-                if chapter == start_chapter_ass:
-                    if start_problem_ass.isdigit():
-                        problem_lst = list(range(int(start_problem_ass), mixed_probs + 1))
-                        origin_lst = origin_probs[int(start_problem_ass) - 1:]
-
-                    else:
-                        start_ind = alphabet.find(start_problem_ass)
-                        end_ind = alphabet.find(lesson_probs)
-                        problem_lst = list(alphabet[start_ind: end_ind + 1]) + list(range(1, mixed_probs + 1))
-                        origin_lst = (end_ind - start_ind + 1) * [np.nan] + origin_probs
-
-                elif chapter == end_chapter_ass:
-                    if end_problem_ass.isdigit():
-                        start_ind = 0
-                        end_ind = alphabet.find(lesson_probs)
-                        problem_lst = list(alphabet[start_ind: end_ind + 1]) + list(range(1, int(end_problem_ass) + 1))
-                        origin_lst = (end_ind - start_ind + 1) * [np.nan] + origin_probs[: int(end_problem_ass)]
-
-                    else:
-                        start_ind = 0
-                        end_ind = alphabet.find(end_problem_ass)
-                        problem_lst = list(alphabet[start_ind: end_ind + 1])
-                        origin_lst = (end_ind - start_ind + 1) * [np.nan]
-
-                else:
-                    start_ind = 0
-                    end_ind = alphabet.find(lesson_probs)
-                    problem_lst = list(alphabet[start_ind: end_ind + 1]) + list(range(1, mixed_probs + 1))
-                    origin_lst = (end_ind - start_ind + 1) * [np.nan] + origin_probs
-
-            df_temp['problem'] = problem_lst
-            df_temp['origin'] = origin_lst
-            df_temp['book'] = book
-            df_temp['chapter'] = chapter
-            df_temp['correct'] = df_temp.apply(lambda x: 0 if str(x['problem']) in missed_probs else 1, axis=1)
-
-            df_grande_ass = df_grande_ass.append(df_temp)
-        df_grande_ass.reset_index(drop=True, inplace=True)
-
-        df_grande_ass['date'] = ''
-        df_p_g = df_performance_ass.sort_values('date').iterrows()
-
-        row_p = next(df_p_g)[1]
-        for ind, row in df_grande_ass.iterrows():
-            df_grande_ass.set_value(ind, 'date', row_p['date'])  # FutureWarning: set_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
-
-            if (int(row['chapter']) == int(float(row_p['end_chapter']))) and (str(row['problem']) == str(row_p['end_problem'])):
-                try:
-                    row_p = next(df_p_g)[1]
-                except:
-                    print('boom!')
-
-    else:
-        df_grande_ass = pd.DataFrame()
-
-    # tests
-    df_grande_test = pd.DataFrame()
-    for ind, row in df_performance_test.iterrows():
-        df_temp = pd.DataFrame()
-        df_temp['problem'] = range(1, 21)
-        df_temp['book'] = book
-        df_temp['chapter'] = row['end_chapter']
-        df_temp['date'] = row['date']
-
-        if isinstance(row['miss_lst'], str):
-            miss_lst = ast.literal_eval(row['miss_lst'])
-        else:
-            miss_lst = row['miss_lst']
-        # if row['miss_lst']:
-        if miss_lst:
-            # missed_probs = row['miss_lst'][row['end_chapter']]
-            missed_probs = miss_lst[row['end_chapter']]
-        else:
-            missed_probs = []
-
-        df_temp['correct'] = df_temp.apply(lambda x: 0 if str(x['problem']) in missed_probs else 1, axis=1)
-
-        df_grande_test = df_grande_test.append(df_temp)
-
-    return df_grande_ass, df_grande_test
-
-
 def miss_lst_create(record):
     dict_out = defaultdict(list)
 
@@ -257,26 +106,33 @@ def db_writer(user, df):
     print(ret)
 
 
+def timer(record):
+    start_time = datetime.datetime.strptime('{0} {1}'.format(record['date'], record['start_time']), '%Y-%m-%d %H:%M')
+    if start_time.hour < 6:
+        start_time = start_time + datetime.timedelta(hours=12)
+
+    end_time = datetime.datetime.strptime('{0} {1}'.format(record['date'], record['end_time']), '%Y-%m-%d %H:%M')
+    if end_time.hour < 6:
+        end_time = end_time + datetime.timedelta(hours=12)
+
+    return [{'date': record['date'], 'kid': record['kid'], 'duration': int((end_time - start_time).seconds / 60)}]
+
+
 def main():
-    record = {'kid': 'Calvin', 'book': 'Algebra_2', 'start_chapter': 40, 'start_problem': '4', 'end_chapter': 42, 'end_problem': '11', 'date': '2019-12-23', 'start_time': '12:00', 'end_time': '01:00', 'add_miss_list': [{'chapter': '41', 'problem': 'b'}, {'chapter': '41', 'problem': '3'}], 'rem_miss_list': [], 'test': False}
-    df = _ass_atomize(record)
-    print(df.head())
+    # record = {'kid': 'Calvin', 'book': 'Algebra_2', 'start_chapter': 40, 'start_problem': '4', 'end_chapter': 42, 'end_problem': '11', 'date': '2019-12-23', 'start_time': '12:00', 'end_time': '01:00', 'add_miss_list': [{'chapter': '41', 'problem': 'b'}, {'chapter': '41', 'problem': '3'}], 'rem_miss_list': [], 'test': False}
+    # df = _ass_atomize(record)
+    # print(df.head())
+    #
+    # record = {'kid': 'Calvin', 'book': 'Algebra_2', 'start_chapter': 4, 'start_problem': '1', 'end_chapter': 4, 'end_problem': '20', 'date': '2019-12-23', 'start_time': '11:00', 'end_time': '12:00', 'add_miss_list': [{'chapter': '4', 'problem': '1'}, {'chapter': '4', 'problem': '13'}], 'rem_miss_list': [], 'test': True}
+    # df = _test_atomize(record)
+    # print(df)
 
-    record = {'kid': 'Calvin', 'book': 'Algebra_2', 'start_chapter': 4, 'start_problem': '1', 'end_chapter': 4, 'end_problem': '20', 'date': '2019-12-23', 'start_time': '11:00', 'end_time': '12:00', 'add_miss_list': [{'chapter': '4', 'problem': '1'}, {'chapter': '4', 'problem': '13'}], 'rem_miss_list': [], 'test': True}
-    df = _test_atomize(record)
-    print(df)
-
-    sys.exit()
-
-    db_writer(record['kid'], df.to_dict(orient='records'))
+    record = {'kid': 'Calvin', 'book': 'Algebra_2', 'start_chapter': 4, 'start_problem': '1', 'end_chapter': 4, 'end_problem': '20', 'date': '2019-12-23', 'start_time': '11:00', 'end_time': '03:13', 'add_miss_list': [{'chapter': '4', 'problem': '1'}, {'chapter': '4', 'problem': '13'}], 'rem_miss_list': [], 'test': True}
+    print(timer(record))
 
 
 if __name__ == '__main__':
     main()
 
 # todo:
-#   (x)1. refactor code
-#   2. switch to develop branch
-#   3. implement in command.py
-#   4. do the same for the time script
-#   5. problems that still had problems with capabilities
+#   1. merge with master

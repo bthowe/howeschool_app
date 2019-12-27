@@ -1,7 +1,16 @@
 source ~/Virtualenvs/howeschool_app/bin/activate
 
-mongod --dbpath=/Users/thowe/data/db
+#mongod --dbpath=/Users/thowe/data/db
 #scp -r pi@192.168.1.74:/media/pi/HOWESCHOOL/database_files /Users/thowe/data/
+
+mongo users --eval "db.dropDatabase()"
+mongo math_book_info --eval "db.dropDatabase()"
+mongo math_exercise_origins --eval "db.dropDatabase()"
+mongo math_performance --eval "db.dropDatabase()"
+mongo vocab --eval "db.dropDatabase()"
+mongo scripture_commentary --eval "db.dropDatabase()"
+mongo forms --eval "db.dropDatabase()"
+mongo banking --eval "db.dropDatabase()"
 
 cd ~/data/database_files
 mongorestore --db users --verbose users
