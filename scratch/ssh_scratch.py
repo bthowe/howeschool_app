@@ -1,3 +1,5 @@
+"""This is interesting because it ssh connects to a remote server. I used it for prototyping, but it wasn't very
+helpful because of how the databases were being managed within the script. I couldn't use this in command, that is. """
 import os
 import pandas as pd
 from pymongo import MongoClient
