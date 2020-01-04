@@ -126,6 +126,7 @@
             var alphabet = 'abcdefghijklmnopqrstuvwxyz';
             var miss_list = [];
             var add_miss_list = [];
+            var hard_miss_list = [];
             var rem_miss_list = [];
             var test;
 
@@ -173,7 +174,23 @@
 
                     btn.addEventListener('click', function (event) {
                         if (event.target.style.background === "red") {
-                            event.target.style.background = "green";
+                            event.target.style.background = "maroon";
+
+<!--                            if (/[a-z]/.test(event.target.innerHTML)) {-->
+<!--                                event.target.style.background = '#AED6F1';-->
+<!--                            }-->
+<!--                            else {-->
+<!--                                event.target.style.background = '#A9DFBF';-->
+<!--                            }-->
+
+                            var jsonData_miss = {}
+
+                            jsonData_miss['chapter'] = event.target.value.split('_')[0].toString()
+                            jsonData_miss['problem'] = event.target.value.split('_')[1].toString()
+                            hard_miss_list.push(jsonData_miss)
+                        }
+                        else if (event.target.style.background === "maroon") {
+<!--                            event.target.style.background = "green";-->
 
                             if (/[a-z]/.test(event.target.innerHTML)) {
                                 event.target.style.background = '#AED6F1';
@@ -253,6 +270,7 @@
                             "start_time": start_time,
                             "end_time": end_time,
                             "add_miss_list": add_miss_list,
+                            "hard_miss_list": hard_miss_list,
                             "rem_miss_list": rem_miss_list,
                             "test": test
                         }

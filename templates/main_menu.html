@@ -29,18 +29,31 @@
     {% block main %}
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="#calvin" id="one" data-toggle="tab" onclick=rend("Calvin")>Calvin</a>
+                <a class="nav-link active" href="" id="zero" data-toggle="tab" onclick=rend("Indicators")>Indicators</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#calvin" id="one" data-toggle="tab" onclick=rend("Calvin")>Calvin</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#samuel"  id="two" data-toggle="tab" onclick=rend("Samuel")>Samuel</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#kay"  id="two" data-toggle="tab" onclick=rend("Kay")>Kay</a>
+                <a class="nav-link" href="#kay"  id="three" data-toggle="tab" onclick=rend("Kay")>Kay</a>
             </li>
         </ul>
 
         <div class="tab-content">
-            <div id="calvin" class="row-12 tab-pane fade show active">
+            <div id="indicators" class="row-12 tab-pane fade show active">
+                <div class="card mb-3" id="IndDiv">
+                    <div class="card-header" id="IndHead">
+                        <i class="fas fa-chart-area"></i>
+                        Indicators
+                    </div>
+                    <div class="card-body" id="IndScores">
+                    </div>
+                </div>
+            </div>
+            <div id="calvin" class="row-12 tab-pane fade">
                 <div class="card mb-3" id="CalvinAssDiv">
                     <div class="card-header" id="CalvinAssHead">
                         <i class="fas fa-chart-area"></i>
@@ -93,66 +106,6 @@
 
             </div>
         </div>
-{#        {% if (name == 'Calvin') or (name == 'Travis') %}#}
-{#            <div class="card mb-3">#}
-{#                <div class="card-header">#}
-{#                    <i class="fas fa-chart-area"></i>#}
-{#                    Calvin Math Daily#}
-{#                </div>#}
-{#                <div class="card-body" id="CalvinAssScores">#}
-{#                </div>#}
-    {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
-{#            </div>#}
-{#        {% endif %}#}
-{#        {% if (name == 'Samuel') or (name == 'Travis') %}#}
-{#            <div class="card mb-3">#}
-{#                <div class="card-header">#}
-{#                    <i class="fas fa-chart-area"></i>#}
-{#                    Samuel Math Daily#}
-{#                </div>#}
-{#                <div class="card-body" id="SamuelAssScores">#}
-{#                </div>#}
-    {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
-{#            </div>#}
-{#        {% endif %}#}
-{#        {% if (name == 'Kay') or (name == 'Travis') %}#}
-{#            <div class="card mb-3">#}
-{#                <div class="card-header">#}
-{#                    <i class="fas fa-chart-area"></i>#}
-{#                    Kay Math Daily#}
-{#                </div>#}
-{#                <div class="card-body" id="KayAssScores">#}
-{#                </div>#}
-    {#            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
-{#            </div>#}
-{#        {% endif %}#}
-
-{#        <div class="row">#}
-{#            <div class="col-lg-8">#}
-{#                <div class="card mb-3">#}
-{#                    <div class="card-header">#}
-{#                        <i class="fas fa-chart-bar"></i>#}
-{#                        Bar Chart Example#}
-{#                    </div>#}
-{#                    <div class="card-body">#}
-{#                        <canvas id="myBarChart" width="100%" height="50"></canvas>#}
-{#                    </div>#}
-{#                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
-{#                </div>#}
-{#            </div>#}
-{#            <div class="col-lg-4">#}
-{#                <div class="card mb-3">#}
-{#                    <div class="card-header">#}
-{#                        <i class="fas fa-chart-pie"></i>#}
-{#                        Pie Chart Example#}
-{#                    </div>#}
-{#                    <div class="card-body">#}
-{#                        <canvas id="myPieChart" width="100%" height="100"></canvas>#}
-{#                    </div>#}
-{#                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
     {% endblock main %}
 
     {% block content2 %}
@@ -164,8 +117,10 @@
 
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script>
-            var current_tab = "Calvin";
-            var tab_width = document.getElementById("CalvinAssScores").offsetWidth;
+            var current_tab = "Indicators";
+            var tab_width = document.getElementById("IndScores").offsetWidth;
+            document.getElementById("IndScores").offsetHeight = tab_width / 2;
+<!--            todo: make tab height the same-->
 
             df_calvin = timeTransform({{ df_calvin | tojson }});
             df_samuel = timeTransform({{ df_samuel | tojson }});
@@ -178,6 +133,8 @@
             update_calvin = "{{ update_calvin }}";
             update_samuel = "{{ update_samuel }}";
             update_kay = "{{ update_kay }}";
+
+            indicators = {{ indicator_dic | tojson }};
 
             function parse(str) {
                 var y = str.substr(0, 4),
@@ -192,45 +149,210 @@
                 return df
             };
 
-            if (document.getElementById('CalvinAssScores')) {
-{#                document.getElementById("CalvinAssUpdate").innerHTML = 'Last Update: ' + update_calvin;#}
-                renderAssPlot(df_calvin, 'Calvin');
-                renderTimePlot(df_calvin_time, 'Calvin');
+            if (document.getElementById('IndScores')) {
+                renderIndPlot();
+<!--                renderIndPlot(indicators);-->
+            }
+<!--            if (document.getElementById('CalvinAssScores')) {-->
+<!--                renderAssPlot(df_calvin, 'Calvin');-->
+<!--                renderTimePlot(df_calvin_time, 'Calvin');-->
+<!--            }-->
+
+
+            function indCreate(svg, name, svg_height, svg_width, margin, position) {
+                var height = svg_height,
+                    width = svg_width / 3
+
+                var g = svg.append("g")
+                    .attr("width", width - 2 * margin)
+                    .attr("height", height - 2 * margin)
+                    .attr("transform", "translate(" + (width * position + margin) + "," + (margin) + ")")
+
+                var mid_x = (width - 2 * margin) / 2,
+                    mid_y = (height - 2 * margin) / 2,
+                    pcorr_y = mid_y * (1 - indicators[name]['perc_correct']),
+                    pnhard_y = mid_y * (1 + indicators[name]['perc_nothard']),
+                    dur_x = mid_x * (1 - indicators[name]['duration']),
+                    prob_x = mid_x * (1 + indicators[name]['total_probs'])
+
+                g.append("polyline")
+                    .style("fill", "lightgray")
+                    .style("stroke", "lightgray")
+                    .attr("points", mid_x + ",0 " + "0," + mid_y + " " + mid_x + "," + mid_y * 2 + " " + mid_x * 2 + "," + mid_y);
+                g.append("polyline")
+                    .style("fill", "white")
+                    .style("stroke", "white")
+                    .attr("points", mid_x + "," + .1 * mid_y + " " + .25 * mid_x + "," + mid_y + " " + mid_x + "," + mid_y * 2 + " " + (5 / 3) * mid_x + "," + mid_y);
+                g.append("polyline")
+                    .style("fill", "None")
+                    .style("stroke", "black")
+                    .attr("points", mid_x + "," + pcorr_y + " " + dur_x + "," + mid_y + " " + mid_x + "," + pnhard_y + " " + prob_x + "," + mid_y + " " + mid_x + "," + pcorr_y);
+                g.append("text")
+                    .attr("x", mid_x - 20)
+                    .attr("y", mid_y)
+                    .attr("dy", ".35em")
+                    .text(name);
+
+                g.append("circle")
+                    .style("fill", "gold")
+                    .style("stroke", "black")
+                    .attr("cx", mid_x)
+                    .attr("cy", pcorr_y)
+                    .attr("r", "5")
+
+                g.append("circle")
+                    .style("fill", "purple")
+                    .style("stroke", "black")
+                    .attr("cx", mid_x)
+                    .attr("cy", pnhard_y)
+                    .attr("r", "5")
+
+                g.append("circle")
+                    .style("fill", "green")
+                    .style("stroke", "black")
+                    .attr("cx", dur_x)
+                    .attr("cy", mid_y)
+                    .attr("r", "5")
+
+                g.append("circle")
+                    .style("fill", "red")
+                    .style("stroke", "black")
+                    .attr("cx", prob_x)
+                    .attr("cy", mid_y)
+                    .attr("r", "5")
             }
 
+            function legendCreate(svg, width, height, margin, legendMargin) {
+                var g_legend = svg.append("g")
+                    .attr("width", width - 2 * margin)
+                    .attr("height", legendMargin)
+                    .attr("transform", "translate(" + (margin) + "," + (height - margin) + ")")
+
+<!--                g_legend.append("rect")-->
+<!--                    .style("fill", "None")-->
+<!--                    .style("stroke", "black")-->
+<!--                    .attr("x", 0)-->
+<!--                    .attr("y", 0)-->
+<!--                    .attr("width", width - 2 * margin)-->
+<!--                    .attr("height", legendMargin)-->
+
+                r = 5
+                g_legend.append("text")
+                    .attr("x", r * 2)
+                    .attr("y", legendMargin / 2)
+                    .attr("dy", ".35em")
+                    .text('Correct');
+                g_legend.append("circle")
+                    .style("fill", "gold")
+                    .style("stroke", "black")
+                    .attr("cx", 0)
+                    .attr("cy", legendMargin / 2)
+                    .attr("r", r)
+
+                g_legend.append("text")
+                    .attr("x", ((width - 2 * margin) / 4) + (r * 2))
+                    .attr("y", legendMargin / 2)
+                    .attr("dy", ".35em")
+                    .text('Time');
+                g_legend.append("circle")
+                    .style("fill", "green")
+                    .style("stroke", "black")
+                    .attr("cx", (width - 2 * margin) / 4)
+                    .attr("cy", legendMargin / 2)
+                    .attr("r", r)
+
+                g_legend.append("text")
+                    .attr("x", ((width - 2 * margin) / 2) + (r * 2))
+                    .attr("y", legendMargin / 2)
+                    .attr("dy", ".35em")
+                    .text('Too Hard');
+                g_legend.append("circle")
+                    .style("fill", "purple")
+                    .style("stroke", "black")
+                    .attr("cx", (width - 2 * margin) / 2)
+                    .attr("cy", legendMargin / 2)
+                    .attr("r", r)
+
+                g_legend.append("text")
+                    .attr("x", (3 * (width - 2 * margin) / 4) + (r * 2))
+                    .attr("y", legendMargin / 2)
+                    .attr("dy", ".35em")
+                    .text('Completed');
+                g_legend.append("circle")
+                    .style("fill", "red")
+                    .style("stroke", "black")
+                    .attr("cx", 3 * (width - 2 * margin) / 4)
+                    .attr("cy", legendMargin / 2)
+                    .attr("r", r)
+            }
+
+            function renderIndPlot(indicators) {
+                if (current_tab != "Indicators") {
+                    document.getElementById(current_tab + "AssDiv").remove();
+                    document.getElementById(current_tab + "TimeDiv").remove();
+                }
+                current_tab = "Indicators";
+
+                var divIndHead = document.createElement('div');
+                divIndHead.id = 'IndHead';
+                divIndHead.className = 'card-body';
+                divIndHead.innerHtml = 'Indicators';
+                var divIndScores = document.createElement('div');
+                divIndScores.id = 'IndScores';
+                divIndScores.className = 'card-body';
+
+                document.getElementById("IndDiv").appendChild(divIndHead);
+                document.getElementById("IndDiv").appendChild(divIndScores);
+
+
+                var svg = d3.select("div#IndScores").append("svg")
+                var height = tab_width / 3,
+                    width = tab_width,
+                    legendMargin = 30,
+                    margin = 20
+
+                svg
+                    .attr("width", width)
+                    .attr("height", height + legendMargin)
+
+                indCreate(svg, 'Calvin', height, width, margin, 0)
+                indCreate(svg, 'Samuel', height, width, margin, 1)
+                indCreate(svg, 'Kay', height, width, margin, 2)
+
+                legendCreate(svg, width, height, margin, legendMargin)
+            }
+
+
             function rend(name) {
-                document.getElementById(current_tab + "AssScores").remove();
-{#                document.getElementById(current_tab + "AssUpdate").remove();#}
-                document.getElementById(current_tab + "TimeScores").remove();
+                if (current_tab == "Indicators") {
+                    document.getElementById("IndHead").remove();
+                    document.getElementById("IndScores").remove();
+                }
+                else {
+                    document.getElementById(current_tab + "AssScores").remove();
+                    document.getElementById(current_tab + "TimeScores").remove();
+                }
                 current_tab = name;
 
                 var divAss = document.createElement('div');
                 divAss.id = name + 'AssScores';
                 divAss.className = 'card-body';
-{#                var divUpdate = document.createElement('div');#}
-{#                divUpdate.id = name + 'AssUpdate';#}
-{#                divUpdate.className = 'card-footer small text-muted';#}
                 var divTime = document.createElement('div');
                 divTime.id = name + 'TimeScores';
                 divTime.className = 'card-body';
 
-
                 document.getElementById(name + "AssDiv").appendChild(divAss);
-{#                document.getElementById(name + "AssDiv").appendChild(divUpdate);#}
                 document.getElementById(name + "TimeDiv").appendChild(divTime);
 
                 if (name == "Calvin") {
-{#                    document.getElementById("CalvinAssUpdate").innerHTML = 'Last Update: ' + update_calvin;#}
                     renderAssPlot(df_calvin, 'Calvin');
                     renderTimePlot(df_calvin_time, 'Calvin');
                 }
                 else if (name == "Samuel") {
-{#                    document.getElementById("SamuelAssUpdate").innerHTML = 'Last Update: ' + update_samuel;#}
                     renderAssPlot(df_samuel, 'Samuel');
                     renderTimePlot(df_samuel_time, 'Samuel');
                 }
                 else {
-{#                    document.getElementById("KayAssUpdate").innerHTML = 'Last Update: ' + update_kay;#}
                     renderAssPlot(df_kay, 'Kay');
                     renderTimePlot(df_kay_time, 'Kay');
                 }
@@ -253,7 +375,6 @@
 
                 svg.selectAll("*").remove();
                 svg.attr("width", "100%").attr("height", "290px");
-                console.log(svg);
 
                 var g_translate_plot = svg.append("g")
                     .attr("transform", translateText);

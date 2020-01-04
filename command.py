@@ -132,7 +132,8 @@ def add_missed_problems():
         js['start_chapter'] = 'test {}'.format(js['start_chapter'])
         js['end_chapter'] = 'test {}'.format(js['end_chapter'])
 
-    js['miss_lst'] = helpers_functions.miss_lst_create(js)
+    js['miss_lst'] = helpers_functions.miss_lst_create(js, 'add_miss_list')
+    js['hard_lst'] = helpers_functions.miss_lst_create(js, 'hard_miss_list')
 
     # update aggregate performance and time databases
     if js['test']:
@@ -148,6 +149,7 @@ def add_missed_problems():
     db_time.db[js['kid']].insert_one(helpers_functions._elapsed_time(js)[0])
 
     del js['add_miss_list']
+    del js['hard_miss_list']
     del js['rem_miss_list']
     del js['test']
 
@@ -327,6 +329,47 @@ def math_daily_time(name):
     return performance_over_time(df[['date', 'duration']], 'duration').to_dict('records')
 
 
+def _num_practice_probs(x):
+    alpha = 'abcdefghijklmnopqrstuvwxyz'
+    if x != 'none':
+        return alpha.index(x)
+    return 0
+
+
+def _avg_num_probs_in_book(book):
+    df = pd.DataFrame(list(db_number.db[book].find())).dropna()
+    df['num_of_probs'] = df.apply(lambda x: int(x['num_mixed_probs']) + _num_practice_probs(x['num_lesson_probs']) + 1, axis=1)
+    return df['num_of_probs'].mean()
+
+def _indicator_dic():
+    dict_out = {}
+    for kid in ['Calvin', 'Samuel', 'Kay']:
+        df1 = pd.DataFrame(list(db_aggregate.db[kid].find()))
+        df1['date'] = pd.to_datetime(df1['date'])
+        df1.sort_values('date', ascending=True, inplace=True)
+
+        last_date = df1.iloc[-1]['date'].date()
+        df1.query('date == "{}"'.format(last_date), inplace=True)
+
+        df2 = pd.DataFrame(list(db_time.db[kid].find()))
+        df2.query('date == "{}"'.format(last_date), inplace=True)
+
+        book = df1.iloc[-1]['book']
+
+        total_probs = df1.shape[0] / _avg_num_probs_in_book(book)
+        duration = int(df2['duration']) / 120
+        perc_correct = df1['correct'].mean()
+        perc_nothard = 1 - df1['hard'].mean()
+
+
+        dict_out[kid] = {
+            'total_probs': total_probs,
+            'duration': duration,
+            'perc_correct': perc_correct,
+            'perc_nothard': perc_nothard
+        }
+    return dict_out
+
 @app.route('/main_menu')
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
 @login_required
@@ -347,7 +390,8 @@ def main_menu():
         df_kay_time=math_daily_time('Kay'),
         update_calvin=update_calvin,
         update_samuel=update_samuel,
-        update_kay=update_kay
+        update_kay=update_kay,
+        indicator_dic=_indicator_dic()
     )
 
 @app.route('/register', methods=['POST', 'GET'])

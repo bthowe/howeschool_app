@@ -371,15 +371,16 @@ def db_writer(db_math_aggregate, user, df):
     print(ret)
 
 
-def miss_lst_create(record):
+def miss_lst_create(record, lst):
     dict_out = defaultdict(list)
 
-    add_miss_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record['add_miss_list']]
-    rem_miss_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record['rem_miss_list']]
+    add_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record[lst]]
+    rem_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record['rem_miss_list']]
 
-    for prob in add_miss_list:
+    # todo: this method for removing from miss list is maybe flawed
+    for prob in add_list:
         dict_out[prob['chapter']].append(prob['problem'])
-    for prob in rem_miss_list:
+    for prob in rem_list:
         dict_out[prob['chapter']].remove(prob['problem'])
     k_to_del = [k for k, v in dict_out.items() if not dict_out[k]]
     for k in k_to_del:
@@ -401,9 +402,12 @@ def _test_atomize(record):
     miss_lst = record['miss_lst'].get(str(record['end_chapter']))
     df_out['correct'] = df_out.apply(lambda x: 0 if str(x['problem']) in miss_lst else 1, axis=1)
 
+    hard_lst = record['hard_lst'].get(str(record['end_chapter']))
+    df_out['hard'] = df_out.apply(lambda x: 1 if str(x['problem']) in hard_lst else 0, axis=1)
+
     df_out['meta__insert_time'] = str(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
 
-    return df_out[['book', 'chapter', 'correct', 'date', 'origin', 'problem', 'name', 'meta__insert_time']]
+    return df_out[['book', 'chapter', 'correct', 'hard', 'date', 'origin', 'problem', 'name', 'meta__insert_time']]
 
 
 def _chapter_atomize(db_origin, db_number, chapter, record):
@@ -421,13 +425,18 @@ def _chapter_atomize(db_origin, db_number, chapter, record):
 
     df = df_practice.append(df_review).reset_index(drop=True)
 
-    # miss_lst = miss_lst_create(record).get(str(chapter))  # how to return None instead of throwing an error when key doesn't exist.
     miss_lst = record['miss_lst'].get(str(chapter))  # how to return None instead of throwing an error when key doesn't exist.
+    hard_lst = record['hard_lst'].get(str(chapter))
 
     if miss_lst:
         df['correct'] = df.apply(lambda x: 0 if str(x['problem']) in miss_lst else 1, axis=1)
     else:
         df['correct'] = 1
+    if hard_lst:
+        df['hard'] = df.apply(lambda x: 1 if str(x['problem']) in hard_lst else 0, axis=1)
+    else:
+        df['hard'] = 0
+
     df['book'] = record['book']
     df['chapter'] = chapter
     df['date'] = record['date']
@@ -447,7 +456,7 @@ def _ass_atomize(db_origin, db_number, record):
     df = pd.DataFrame()
     for chapter in range(record['start_chapter'], record['end_chapter'] + 1):
         df = df.append(_chapter_atomize(db_origin, db_number, chapter, record))
-    return df[['book', 'chapter', 'correct', 'date', 'origin', 'problem', 'name', 'meta__insert_time']]
+    return df[['book', 'chapter', 'correct', 'hard', 'date', 'origin', 'problem', 'name', 'meta__insert_time']]
 
 
 def _elapsed_time(record):
