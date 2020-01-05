@@ -1,46 +1,13 @@
 TODO:
 2019/12/27
-1. I need to add the hard_miss_lst to the aggregate db
-2. What's the problem with the right margin
-1. what metrics do I want
-    1. time
-    2. number of problems
-    3. correct
-    4. hard
 
-other plots:
+2. What's the problem with the right margin?
+3. other plots:
     1. total time trend (math_performance, or math_aggregate_time)
     2. where in the book they are and how they are progressing (math_performance)
     3. percent correct time trend (math_performance, or math_aggregate)
     4. percent hard time trend (math_performance, or new aggregate db)
 
-main plot: (math_performance)
-    * time
-    * number of problems
-    * correct per problem (positive)
-    * hard per problem (negative)
-    
-    * (no) time per problem (negative)
-    fraction correct ---------------- fraction easy
-                           |
-                           |
-                           |
-                     time per problem
-    
-    pcorr: good interval between .9 and 1
-    pnhard: should be at 1...no interval
-    dur: good interval between 90 minutes and 120.
-    probs: good interval is 2/3 of an assignment to 1.
-        Use the average number of problems in a chapter to determine 1 and 2/3.
-        
-    
-    
-    
-    
-    
-2. what do I need to get these metrics
-3. build out the infrastructure
-4. make the picture
 
 
 * need to provide documentation about when to use scripts in db_mgmt_scripts

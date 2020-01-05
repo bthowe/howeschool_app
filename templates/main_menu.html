@@ -29,16 +29,16 @@
     {% block main %}
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="" id="zero" data-toggle="tab" onclick=rend("Indicators")>Indicators</a>
+                <a class="nav-link active" href="" id="zero" data-toggle="tab" onclick=rend("indicators")>Indicators</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#calvin" id="one" data-toggle="tab" onclick=rend("Calvin")>Calvin</a>
+                <a class="nav-link" href="#calvin" id="one" data-toggle="tab" onclick=rend("calvin")>Calvin</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#samuel"  id="two" data-toggle="tab" onclick=rend("Samuel")>Samuel</a>
+                <a class="nav-link" href="#samuel"  id="two" data-toggle="tab" onclick=rend("samuel")>Samuel</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#kay"  id="three" data-toggle="tab" onclick=rend("Kay")>Kay</a>
+                <a class="nav-link" href="#kay"  id="three" data-toggle="tab" onclick=rend("kay")>Kay</a>
             </li>
         </ul>
 
@@ -79,12 +79,16 @@
                         <i class="fas fa-chart-area"></i>
                         Math Scores
                     </div>
+                    <div class="card-body" id="SamuelAssScores">
+                    </div>
                 </div>
 
                 <div class="card mb-3" id="SamuelTimeDiv">
                     <div class="card-header">
                         <i class="fas fa-chart-area"></i>
                         Math Minutes Worked
+                    </div>
+                    <div class="card-body" id="SamuelTimeScores">
                     </div>
                 </div>
 
@@ -95,12 +99,16 @@
                         <i class="fas fa-chart-area"></i>
                         Math Scores
                     </div>
+                    <div class="card-body" id="KayAssScores">
+                    </div>
                 </div>
 
                 <div class="card mb-3" id="KayTimeDiv">
                     <div class="card-header">
                         <i class="fas fa-chart-area"></i>
                         Math Minutes Worked
+                    </div>
+                    <div class="card-body" id="KayTimeScores">
                     </div>
                 </div>
 
@@ -117,10 +125,9 @@
 
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script>
-            var current_tab = "Indicators";
+            var current_tab = "indicators";
             var tab_width = document.getElementById("IndScores").offsetWidth;
             document.getElementById("IndScores").offsetHeight = tab_width / 2;
-<!--            todo: make tab height the same-->
 
             df_calvin = timeTransform({{ df_calvin | tojson }});
             df_samuel = timeTransform({{ df_samuel | tojson }});
@@ -149,15 +156,13 @@
                 return df
             };
 
-            if (document.getElementById('IndScores')) {
-                renderIndPlot();
-<!--                renderIndPlot(indicators);-->
-            }
-<!--            if (document.getElementById('CalvinAssScores')) {-->
-<!--                renderAssPlot(df_calvin, 'Calvin');-->
-<!--                renderTimePlot(df_calvin_time, 'Calvin');-->
-<!--            }-->
-
+            renderIndPlot();
+            renderAssPlot(df_calvin, 'Calvin');
+            renderTimePlot(df_calvin_time, 'Calvin');
+            renderAssPlot(df_samuel, 'Samuel');
+            renderTimePlot(df_samuel_time, 'Samuel');
+            renderAssPlot(df_kay, 'Kay');
+            renderTimePlot(df_kay_time, 'Kay');
 
             function indCreate(svg, name, svg_height, svg_width, margin, position) {
                 var height = svg_height,
@@ -287,24 +292,6 @@
             }
 
             function renderIndPlot(indicators) {
-                if (current_tab != "Indicators") {
-                    document.getElementById(current_tab + "AssDiv").remove();
-                    document.getElementById(current_tab + "TimeDiv").remove();
-                }
-                current_tab = "Indicators";
-
-                var divIndHead = document.createElement('div');
-                divIndHead.id = 'IndHead';
-                divIndHead.className = 'card-body';
-                divIndHead.innerHtml = 'Indicators';
-                var divIndScores = document.createElement('div');
-                divIndScores.id = 'IndScores';
-                divIndScores.className = 'card-body';
-
-                document.getElementById("IndDiv").appendChild(divIndHead);
-                document.getElementById("IndDiv").appendChild(divIndScores);
-
-
                 var svg = d3.select("div#IndScores").append("svg")
                 var height = tab_width / 3,
                     width = tab_width,
@@ -322,43 +309,11 @@
                 legendCreate(svg, width, height, margin, legendMargin)
             }
 
-
             function rend(name) {
-                if (current_tab == "Indicators") {
-                    document.getElementById("IndHead").remove();
-                    document.getElementById("IndScores").remove();
-                }
-                else {
-                    document.getElementById(current_tab + "AssScores").remove();
-                    document.getElementById(current_tab + "TimeScores").remove();
-                }
-                current_tab = name;
-
-                var divAss = document.createElement('div');
-                divAss.id = name + 'AssScores';
-                divAss.className = 'card-body';
-                var divTime = document.createElement('div');
-                divTime.id = name + 'TimeScores';
-                divTime.className = 'card-body';
-
-                document.getElementById(name + "AssDiv").appendChild(divAss);
-                document.getElementById(name + "TimeDiv").appendChild(divTime);
-
-                if (name == "Calvin") {
-                    renderAssPlot(df_calvin, 'Calvin');
-                    renderTimePlot(df_calvin_time, 'Calvin');
-                }
-                else if (name == "Samuel") {
-                    renderAssPlot(df_samuel, 'Samuel');
-                    renderTimePlot(df_samuel_time, 'Samuel');
-                }
-                else {
-                    renderAssPlot(df_kay, 'Kay');
-                    renderTimePlot(df_kay_time, 'Kay');
-                }
+                document.getElementById(name).className = "row-12 tab-pane fade show active"
+                document.getElementById(current_tab).className = "row-12 tab-pane fade"
+                current_tab = name
             }
-
-
 
             function renderAssPlot(df, name) {
                 var svg = d3.select("div#"+name+"AssScores").append("svg");
@@ -373,7 +328,7 @@
                     height = 300 - topMargin - bottomMargin,
                     translateText = "translate(" + (leftMargin + axisGap) + "," + topMargin + ")";
 
-                svg.selectAll("*").remove();
+<!--                svg.selectAll("*").remove();-->
                 svg.attr("width", "100%").attr("height", "290px");
 
                 var g_translate_plot = svg.append("g")
@@ -497,7 +452,7 @@
                     height = 300 - topMargin - bottomMargin,
                     translateText = "translate(" + (leftMargin + axisGap) + "," + topMargin + ")";
 
-                svg.selectAll("*").remove();
+<!--                svg.selectAll("*").remove();-->
                 svg.attr("width", "100%").attr("height", "290px");
 
                 var g_translate_plot = svg.append("g")
