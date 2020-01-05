@@ -1,7 +1,13 @@
 TODO:
 2019/12/27
-
-
+1. database viewer
+    1. be able to change what is in there through the UI
+    2. make it easier to search or organize or something
+2. enter_performance
+    1. make it so I can choose immediately whether I'm doing scripture or math
+        1. have a default
+            1. can change to other mode immediately by pressing enter
+            2. or can keep mode by tabbing through
 
 
 
