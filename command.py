@@ -318,7 +318,7 @@ def math_daily_create(name):
     df['date'] = pd.to_datetime(df['date'])
     df = df.loc[df['date'] >= datetime.date.today() - datetime.timedelta(days=30)]
     df.sort_values('date', ascending=True, inplace=True)
-    return performance_over_time(df, 'correct').to_dict('records'), str(df['meta__insert_time'].iloc[0])
+    return performance_over_time(df, 'correct').to_dict('records')
 
 
 def math_daily_time(name):
@@ -350,7 +350,7 @@ def _indicator_dic():
 
         last_date = df1.iloc[-1]['date'].date()
         df1.query('date == "{}"'.format(last_date), inplace=True)
-
+        print(str(last_date))
         df2 = pd.DataFrame(list(db_time.db[kid].find()))
         df2.query('date == "{}"'.format(last_date), inplace=True)
 
@@ -361,12 +361,12 @@ def _indicator_dic():
         perc_correct = df1['correct'].mean()
         perc_nothard = 1 - df1['hard'].mean()
 
-
         dict_out[kid] = {
             'total_probs': total_probs,
             'duration': duration,
             'perc_correct': perc_correct,
-            'perc_nothard': perc_nothard
+            'perc_nothard': perc_nothard,
+            'date': str(last_date)
         }
     return dict_out
 
@@ -374,23 +374,17 @@ def _indicator_dic():
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['guest'])
 @login_required
 def main_menu():
-    df_calvin_ass, update_calvin = math_daily_create('Calvin')
-    df_samuel_ass, update_samuel = math_daily_create('Samuel')
-    df_kay_ass, update_kay = math_daily_create('Kay')
     return render_template(
         'main_menu.html',
         name=current_user.username,
         access=current_user.access,
         page_name='Main Menu',
-        df_calvin=df_calvin_ass,
-        df_samuel=df_samuel_ass,
-        df_kay=df_kay_ass,
+        df_calvin=math_daily_create('Calvin'),
+        df_samuel=math_daily_create('Samuel'),
+        df_kay=math_daily_create('Kay'),
         df_calvin_time=math_daily_time('Calvin'),
         df_samuel_time=math_daily_time('Samuel'),
         df_kay_time=math_daily_time('Kay'),
-        update_calvin=update_calvin,
-        update_samuel=update_samuel,
-        update_kay=update_kay,
         indicator_dic=_indicator_dic()
     )
 

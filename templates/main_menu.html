@@ -137,10 +137,6 @@
             df_samuel_time = timeTransform({{ df_samuel_time | tojson }});
             df_kay_time = timeTransform({{ df_kay_time | tojson }});
 
-            update_calvin = "{{ update_calvin }}";
-            update_samuel = "{{ update_samuel }}";
-            update_kay = "{{ update_kay }}";
-
             indicators = {{ indicator_dic | tojson }};
 
             function parse(str) {
@@ -291,7 +287,8 @@
                     .attr("r", r)
             }
 
-            function renderIndPlot(indicators) {
+            function renderIndPlot() {
+                document.getElementById("IndHead").innerHTML = "<i class='fas fa-chart-area'></i> Indicators (" + indicators['Calvin']['date'] + ")"
                 var svg = d3.select("div#IndScores").append("svg")
                 var height = tab_width / 3,
                     width = tab_width,
