@@ -414,21 +414,21 @@ def register():
 # def enter_performance():
 #     return render_template('enter_performance.html', access=current_user.access, page_name='Math Performance')
 
-# todo: make sure this works...maybe I want to update this too.
-#     will it work? I can't imagine interfacing with the database would work.
 @app.route("/enter_performance", methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
 @login_required
 def enter_performance():
     form = helpers_classes.ScriptureDailyForm()
     if request.method == 'POST':  # and form.validate_on_submit():
+        math_scrip_flag = 1
         tab = db_script.db[form.choose_kid.data]
         for comment in form.comment.data.split('\r'):
             data = helpers_functions.scripture_data_json(form, comment)
             ret = tab.insert_one(data)
             print('data inserted: {}'.format(ret))
-        return redirect(url_for('enter_performance'))
-    return render_template('enter_performance.html', form=form, access=current_user.access, page_name='Performance')
+        return render_template('enter_performance.html', form=form, access=current_user.access, page_name='Performance', math_scrip_flag=0)
+        # return redirect(url_for('enter_performance'))
+    return render_template('enter_performance.html', form=form, access=current_user.access, page_name='Performance', math_scrip_flag=1)
 
 
 @app.route("/scripture_commentary", methods=['POST', 'GET'])

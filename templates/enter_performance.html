@@ -192,10 +192,18 @@
             var rem_miss_list = [];
             var test;
             var view = 'Math Performance';
+            var math_scrip_flag = {{ math_scrip_flag }};
 
             document.getElementById('switch_view').focus();
-            enter_math_performance()
-<!--            enter_scrip_performance()-->
+
+            console.log(math_scrip_flag)
+<!--            enter_math_performance()-->
+            if (math_scrip_flag == 1) {
+                enter_math_performance()
+            }
+            else {
+                enter_scrip_performance()
+            }
 
             var today = new Date();
             var dd = today.getDate();
