@@ -1,7 +1,7 @@
 TODO:
 2019/12/27
 
-
+mongod --dbpath ~/data/db
 
 
 

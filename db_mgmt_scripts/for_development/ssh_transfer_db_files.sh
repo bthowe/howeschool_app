@@ -21,5 +21,5 @@ mongorestore --db vocab --verbose vocab
 mongorestore --db scripture_commentary --verbose scripture_commentary
 mongorestore --db forms --verbose forms
 mongorestore --db banking --verbose banking
-python3 /Users/thowe/Projects/howeschool_app/aggregator_math_performance.py
-python3 /Users/thowe/Projects/howeschool_app/aggregator_math_time.py
+python3 /Users/thowe/Projects/howeschool_app/db_mgmt_scripts/aggregator_math_performance.py
+python3 /Users/thowe/Projects/howeschool_app/db_mgmt_scripts/aggregator_math_time.py

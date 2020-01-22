@@ -350,7 +350,7 @@ def _indicator_dic():
 
         last_date = df1.iloc[-1]['date'].date()
         df1.query('date == "{}"'.format(last_date), inplace=True)
-        print(str(last_date))
+
         df2 = pd.DataFrame(list(db_time.db[kid].find()))
         df2.query('date == "{}"'.format(last_date), inplace=True)
 
