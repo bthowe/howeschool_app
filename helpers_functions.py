@@ -98,6 +98,48 @@ def weekly_forms_email():
         ]
     )
 
+def _time_sheets(dates, goals, name, scrip):
+    return '''
+    \\begin{{sidewaystable}}
+    \\centering
+    \\begin{{tabular}}{{|l|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|}}
+    \\multicolumn{{7}}{{l}}{{Name: {12}}} \\\\
+    \\multicolumn{{13}}{{p{{25cm}}}}{{Scripture: {13}}} \\\\
+    \\multicolumn{{7}}{{l}}{{}} \\\\
+    \\multicolumn{{7}}{{l}}{{}} \\\\
+    \\cline{{2-13}}
+    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{Monday}} & \\multicolumn{{2}}{{c|}}{{Tuesday}} & \\multicolumn{{2}}{{c|}}{{Wednesday}} & \\multicolumn{{2}}{{c|}}{{Thursday}} & \\multicolumn{{2}}{{c|}}{{Friday}} & \\multicolumn{{2}}{{c|}}{{Saturday}} \\\\
+    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{{0}}} & \\multicolumn{{2}}{{c|}}{{{1}}} & \\multicolumn{{2}}{{c|}}{{{2}}} & \\multicolumn{{2}}{{c|}}{{{3}}} & \\multicolumn{{2}}{{c|}}{{{4}}} & \\multicolumn{{2}}{{c|}}{{{5}}} \\\\
+    \\cline{{2-13}}
+    \\cline{{2-13}}
+    \\multicolumn{{1}}{{l|}}{{}} & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop \\\\
+    \\hline
+    \\hline
+    Math & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    Reading & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    Writing & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    Vocabulary & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    Discussion &
+    \\multicolumn{{2}}{{|p{{3cm}}|}}{{{6}}} &
+    \\multicolumn{{2}}{{p{{3cm}}|}}{{{7}}} &
+    \\multicolumn{{2}}{{p{{3cm}}|}}{{{8}}} &
+    \\multicolumn{{2}}{{p{{3cm}}|}}{{{9}}} &
+    \\multicolumn{{2}}{{p{{3cm}}|}}{{{10}}} &
+    \\multicolumn{{2}}{{p{{3cm}}|}}{{{11}}}
+    \\\\[70pt]
+    \\hline
+    \\end{{tabular}}
+    \\end{{sidewaystable}}
+    '''.format(
+        dates[0], dates[1], dates[2], dates[3], dates[4], dates[5],  # 0-5
+        goals[0], goals[1], goals[2], goals[3], goals[4], goals[5],  # 6-11
+        name,  # 12
+        scrip  # 13
+    )
 
 def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions, jobs):
     header = r'''
