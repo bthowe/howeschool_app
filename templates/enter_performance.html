@@ -18,84 +18,20 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <div class="row">
                 <div class="col-6">
-                    <form onsubmit="return false;">
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <label for="choose_kid">Name</label>
-                                <select id="choose_kid" class="form-control" onchange=bookAutoFill()>
-                                    <option selected>Choose...</option>
-                                    <option>Calvin</option>
-                                    <option>Samuel</option>
-                                    <option>Kay</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="choose_book">Book</label>
-                                <select id="choose_book" class="form-control">
-                                    <option selected>Choose...</option>
-                                    <option value="Math_5_4">Math 5/4</option>
-                                    <option value="Math_6_5">Math 6/5</option>
-                                    <option value="Math_7_6">Math 7/6</option>
-                                    <option value="Math_8_7">Math 8/7</option>
-                                    <option value="Algebra_1_2">Algebra 1/2</option>
-                                    <option value="Algebra_1">Algebra 1</option>
-                                    <option value="Algebra_2">Algebra 2</option>
-                                    <option value="Advanced_math">Advanced Math</option>
-                                    <option value="Calculus">Calculus</option>
-                                </select>
-                            </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <button id="switch_view" type="submit" class="btn btn-primary" onclick=switch_view()>Switch to Scripture Commentary</button>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md" id="main_div">
+                        </div>
+                    </div>
 
-                        <div class="form-row">
-                            <div class="form-group col-md-auto">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="testCheck">
-                                    <label class="form-check-label" for="testCheck">Test</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <label for="start_chapter">Start Chapter</label>
-                                <input type="text" class="form-control" id="start_chapter" placeholder="Start Chapter">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="start_problem">First Problem</label>
-                                <input type="text" class="form-control" id="start_problem" placeholder="First Problem">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <label for="end_chapter">End Chapter</label>
-                                <input type="text" class="form-control" id="end_chapter" placeholder="End Chapter">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="end_problem">Last Problem</label>
-                                <input type="text" class="form-control" id="end_problem" placeholder="Last Problem">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <label for="date">Date</label>
-                                <input type="text" class="form-control" id="date" placeholder="yyyy-hh-mm">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="start_time">Start Time</label>
-                                <input type="text" class="form-control" id="start_time" placeholder="hh:mm">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="end_time">Stop Time</label>
-                                <input type="text" class="form-control" id="end_time" placeholder="hh:mm">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <button id="button" type="submit" class="btn btn-primary">Submit</button>
-                                <button id="agg_button" type="submit" class="btn btn-secondary" onclick=aggKickoff()>Update Agg Tables</button>
-                            </div>
-                        </div>
-                    </form>
+<!--                    <form id="main_form" method="POST" action="scripture_commentary">-->
+<!--&lt;!&ndash;                    <form id="main_form">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <form id="main_form" onsubmit="return false;">&ndash;&gt;-->
+<!--                    </form>-->
                 </div>
 {#                Todo: think about adding a view of the data in the following commented out pane#}
 {#                <div class="col-6">#}
@@ -113,6 +49,132 @@
     {% block scripts %}
         {{ super() }}
 
+        <script id="math_form_html" type="text/html">
+            <form id="main_form" onsubmit="return false;">
+            <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="choose_kid">Name</label>
+                        <select id="choose_kid" class="form-control" onchange=bookAutoFill()>
+                            <option selected>Choose...</option>
+                            <option>Calvin</option>
+                            <option>Samuel</option>
+                            <option>Kay</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="choose_book">Book</label>
+                        <select id="choose_book" class="form-control">
+                            <option selected>Choose...</option>
+                            <option value="Math_5_4">Math 5/4</option>
+                            <option value="Math_6_5">Math 6/5</option>
+                            <option value="Math_7_6">Math 7/6</option>
+                            <option value="Math_8_7">Math 8/7</option>
+                            <option value="Algebra_1_2">Algebra 1/2</option>
+                            <option value="Algebra_1">Algebra 1</option>
+                            <option value="Algebra_2">Algebra 2</option>
+                            <option value="Advanced_math">Advanced Math</option>
+                            <option value="Calculus">Calculus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-auto">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="testCheck">
+                            <label class="form-check-label" for="testCheck">Test</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="start_chapter">Start Chapter</label>
+                        <input type="text" class="form-control" id="start_chapter" placeholder="Start Chapter">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="start_problem">First Problem</label>
+                        <input type="text" class="form-control" id="start_problem" placeholder="First Problem">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="end_chapter">End Chapter</label>
+                        <input type="text" class="form-control" id="end_chapter" placeholder="End Chapter">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="end_problem">Last Problem</label>
+                        <input type="text" class="form-control" id="end_problem" placeholder="Last Problem">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="date">Date</label>
+                        <input type="text" class="form-control" id="date" placeholder="yyyy-hh-mm">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="start_time">Start Time</label>
+                        <input type="text" class="form-control" id="start_time" placeholder="hh:mm">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="end_time">Stop Time</label>
+                        <input type="text" class="form-control" id="end_time" placeholder="hh:mm">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button id="button" type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </script>
+
+        <script id="scrip_form_html" type="text/html">
+            <form id="main_form" method="POST" action="enter_performance">
+                <div class="row">
+                    <div class="form-group col-md-4">
+{#                        {{ form.choose_kid.label }}#}
+{#                        {{ form.choose_kid(class_="col-12") }}#}
+                        {{ wtf.form_field(form.choose_kid) }}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(form.date) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(form.start_book) }}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(form.start_chapter) }}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(form.start_verse) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(form.end_book) }}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(form.end_chapter) }}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(form.end_verse) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.comment.label }}
+                    {{ form.comment(class_="col-12", cols="46", rows="5") }}
+                </div>
+                <div class="form-row">
+                    <div class="col-md-auto pt-2">
+                        <input class="btn btn-primary" id="submit" type="submit"/>
+                    </div>
+                </div>
+            </form>
+        </script>
+
         <script>
             var kid;
             var book;
@@ -129,9 +191,19 @@
             var hard_miss_list = [];
             var rem_miss_list = [];
             var test;
+            var view = 'Math Performance';
+<!--            var math_scrip_flag = {{ math_scrip_flag }};-->
 
-            document.getElementById('choose_kid').focus();
+            document.getElementById('switch_view').focus();
 
+<!--            console.log(math_scrip_flag)-->
+            enter_math_performance()
+<!--            if (math_scrip_flag == 1) {-->
+<!--                enter_math_performance()-->
+<!--            }-->
+<!--            else {-->
+<!--                enter_scrip_performance()-->
+<!--            }-->
 
             var today = new Date();
             var dd = today.getDate();
@@ -147,6 +219,34 @@
             }
             document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
 
+
+            function enter_math_performance() {
+                document.getElementById("main_div").innerHTML = document.getElementById('math_form_html').innerHTML;
+<!--                document.getElementById("main_form").onsubmit = function() {return false;}-->
+<!--                document.getElementById("main_form").onsubmit = "return false;";-->
+                document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
+            }
+
+            function enter_scrip_performance() {
+                document.getElementById("main_div").innerHTML = document.getElementById('scrip_form_html').innerHTML;
+<!--                document.getElementById("main_form").method = "POST"-->
+<!--                document.getElementById("main_form").action = "scripture_commentary"-->
+                document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
+            }
+
+
+            function switch_view() {
+                if (view == 'Math Performance') {
+                    document.getElementById('switch_view').innerHTML = 'Switch to Math Performance'
+                    enter_scrip_performance()
+                    view = 'Scripture Commentary'
+                }
+                else {
+                    document.getElementById('switch_view').innerHTML = 'Switch to Scripture Commentary'
+                    view = 'Math Performance'
+                    enter_math_performance()
+                }
+            }
 
             function problem_buttons_create(chapter, chapter_details, problem_details) {
                 var main_content = document.getElementById('main_content');
@@ -325,7 +425,7 @@
                     test = document.getElementById('testCheck').checked;
 
                     var button = document.getElementById("button").style.visibility = 'hidden';
-                    var agg_button = document.getElementById("agg_button").style.visibility = 'hidden';
+<!--                    var agg_button = document.getElementById("agg_button").style.visibility = 'hidden';-->
 
                     if ((kid == 'choose kid') || (book == 'choose book') || (isNaN(start_chapter)) || (start_problem == "") || (isNaN(end_chapter)) || (end_problem == "")){
                         alert('Fill in all fields, dummy.')
@@ -361,7 +461,7 @@
                         );
                     }
                     document.getElementById('button').className = "hidden"
-                    document.getElementById('agg_button').className = "hidden"
+<!--                    document.getElementById('agg_button').className = "hidden"-->
                 }
                 var button_submit = document.getElementById('button');
                 button_submit.addEventListener('click', submit, true);

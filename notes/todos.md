@@ -1,16 +1,28 @@
 TODO:
-2019/12/27
-
 mongod --dbpath ~/data/db
 
+2020/01/05
+1. enter_performance
+    1. would be nice if it didn't default back to math after submitting scripture
+        1. not a huge issue, only means I have to click one more button
+2. what about the viz that allows me to see types of problems they have been missing?
+    * thinking about this viz again, I like it just fine.
+    * where is it?
+    * where do I put it?
+        * subtabs in the kid-specific tab? maybe sub-sub-tabs.
+            * child > math > ass trend, time trend, wrong right viz from before, map of book progression, hard time trend
+            * child > scriptures > map of BoM and progression
+3. database viewer I
+    1. be able to change what is in there through the UI
+    2. make it easier to search or organize or something
+4. database viewer II 
+    1. can I somehow get confirmation immediately after submitting?
+        1. like maybe a pane that has a list of submissions from today.
+            1. I could click on any of these and see an expanded view
+            2. click on edit button to be taken to a portal to make a change in the browser 
 
 
-2. What's the problem with the right margin?
-3. other plots:
-    1. total time trend (math_performance, or math_aggregate_time)
-    2. where in the book they are and how they are progressing (math_performance)
-    3. percent correct time trend (math_performance, or math_aggregate)
-    4. percent hard time trend (math_performance, or new aggregate db)
+2. What's the problem with the right margin in indicators plot?
 
 
 
