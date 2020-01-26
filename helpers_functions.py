@@ -30,18 +30,26 @@ def weekly_data_json(form):
         "week_start_date": str(form.weekof.data),
         "scripture_ref": form.scripture_ref.data,
         "scripture": form.scripture.data,
+        "discussion_ref": form.discussion_ref.data,
+        "discussion_question": form.discussion_question.data,
         "mon_job": form.mon_job.data,
         "tue_job": form.tue_job.data,
         "wed_job": form.wed_job.data,
         "thu_job": form.thu_job.data,
         "fri_job": form.fri_job.data,
         "sat_job": form.sat_job.data,
-        "mon_question": form.mon_dis.data,
-        "tue_question": form.tue_dis.data,
-        "wed_question": form.wed_dis.data,
-        "thu_question": form.thu_dis.data,
-        "fri_question": form.fri_dis.data,
-        "sat_question": form.sat_dis.data,
+        "calvin_goal1": form.cal_goal1.data,
+        "calvin_goal2": form.cal_goal2.data,
+        "calvin_goal3": form.cal_goal3.data,
+        "calvin_goal4": form.cal_goal4.data,
+        "samuel_goal1": form.sam_goal1.data,
+        "samuel_goal2": form.sam_goal2.data,
+        "samuel_goal3": form.sam_goal3.data,
+        "samuel_goal4": form.sam_goal4.data,
+        "kay_goal1": form.kay_goal1.data,
+        "kay_goal2": form.kay_goal2.data,
+        "kay_goal3": form.kay_goal3.data,
+        "kay_goal4": form.kay_goal4.data,
         "calvin_book": form.cal_book.data,
         "samuel_book": form.sam_book.data,
         "kay_book": form.kay_book.data
@@ -99,7 +107,52 @@ def weekly_forms_email():
     )
 
 
-def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions, jobs):
+def _time_sheet(dates, discussion_question, name, scrip, goals):
+    return '''
+    \\begin{{sidewaystable}}
+    \\centering
+    \\begin{{tabular}}{{|l|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|}}
+    \\multicolumn{{7}}{{l}}{{Name: {11}}} \\\\
+    \\multicolumn{{13}}{{p{{25cm}}}}{{Scripture: {12}}} \\\\
+    \\multicolumn{{7}}{{l}}{{}} \\\\
+    \\multicolumn{{7}}{{l}}{{}} \\\\
+    \\cline{{2-13}}
+    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{Monday}} & \\multicolumn{{2}}{{c|}}{{Tuesday}} & \\multicolumn{{2}}{{c|}}{{Wednesday}} & \\multicolumn{{2}}{{c|}}{{Thursday}} & \\multicolumn{{2}}{{c|}}{{Friday}} & \\multicolumn{{2}}{{c|}}{{Saturday}} \\\\
+    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{{0}}} & \\multicolumn{{2}}{{c|}}{{{1}}} & \\multicolumn{{2}}{{c|}}{{{2}}} & \\multicolumn{{2}}{{c|}}{{{3}}} & \\multicolumn{{2}}{{c|}}{{{4}}} & \\multicolumn{{2}}{{c|}}{{{5}}} \\\\
+    \\cline{{2-13}}
+    \\cline{{2-13}}
+    \\multicolumn{{1}}{{l|}}{{}} & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop \\\\
+    \\hline
+    \\hline
+    Math & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    Reading & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    Writing & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    Vocabulary & & & & & & & & & & & &\\\\[70pt]
+    \\hline
+    \\hline
+    &
+    \\multicolumn{{2}}{{||p{{3cm}}|}}{{Spiritual Goal: {6}}} &
+    \\multicolumn{{2}}{{p{{3cm}}|}}{{Physical Goal: {7}}} &
+    \\multicolumn{{2}}{{p{{3cm}}|}}{{Social Goal: {8}}} &
+    \\multicolumn{{2}}{{p{{3cm}}||}}{{Intellectual Goal: {9}}} &
+    \\multicolumn{{4}}{{p{{6cm}}|}}{{{10}}}
+    \\\\[70pt]
+    \\hline
+    \\end{{tabular}}
+    \\end{{sidewaystable}}
+    '''.format(
+        dates[0], dates[1], dates[2], dates[3], dates[4], dates[5],  # 0-5
+        goals[0], goals[1], goals[2], goals[3],  # 6-9
+        '{0} (from {1})'.format(discussion_question[1], discussion_question[0]),  # 10
+        name,  # 11
+        scrip  # 12
+    )
+
+
+def weekly_form_latex_create(kids, books, dates, scripture, discussion_question, goals, jobs):
     header = r'''
     \documentclass[10pt,twoside,letterpaper,oldfontcommands,openany]{memoir}
     \usepackage{rotating, caption}
@@ -189,47 +242,7 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_questions
 
     time_sheets = ''''''
     for name in kids:
-        time_sheets += '''
-        \\begin{{sidewaystable}}
-        \\centering
-        \\begin{{tabular}}{{|l|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|}}
-        \\multicolumn{{7}}{{l}}{{Name: {12}}} \\\\
-        \\multicolumn{{13}}{{p{{25cm}}}}{{Scripture: {13}}} \\\\
-        \\multicolumn{{7}}{{l}}{{}} \\\\
-        \\multicolumn{{7}}{{l}}{{}} \\\\
-        \\cline{{2-13}}
-        \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{Monday}} & \\multicolumn{{2}}{{c|}}{{Tuesday}} & \\multicolumn{{2}}{{c|}}{{Wednesday}} & \\multicolumn{{2}}{{c|}}{{Thursday}} & \\multicolumn{{2}}{{c|}}{{Friday}} & \\multicolumn{{2}}{{c|}}{{Saturday}} \\\\
-        \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{{0}}} & \\multicolumn{{2}}{{c|}}{{{1}}} & \\multicolumn{{2}}{{c|}}{{{2}}} & \\multicolumn{{2}}{{c|}}{{{3}}} & \\multicolumn{{2}}{{c|}}{{{4}}} & \\multicolumn{{2}}{{c|}}{{{5}}} \\\\
-        \\cline{{2-13}}
-        \\cline{{2-13}}
-        \\multicolumn{{1}}{{l|}}{{}} & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop \\\\
-        \\hline
-        \\hline
-        Math & & & & & & & & & & & &\\\\[70pt]
-        \\hline
-        Reading & & & & & & & & & & & &\\\\[70pt]
-        \\hline
-        Writing & & & & & & & & & & & &\\\\[70pt]
-        \\hline
-        Vocabulary & & & & & & & & & & & &\\\\[70pt]
-        \\hline
-        Discussion &
-        \\multicolumn{{2}}{{|p{{3cm}}|}}{{{6}}} &
-        \\multicolumn{{2}}{{p{{3cm}}|}}{{{7}}} &
-        \\multicolumn{{2}}{{p{{3cm}}|}}{{{8}}} &
-        \\multicolumn{{2}}{{p{{3cm}}|}}{{{9}}} &
-        \\multicolumn{{2}}{{p{{3cm}}|}}{{{10}}} &
-        \\multicolumn{{2}}{{p{{3cm}}|}}{{{11}}}
-        \\\\[70pt]
-        \\hline
-        \\end{{tabular}}
-        \\end{{sidewaystable}}
-        '''.format(
-            dates[0], dates[1], dates[2], dates[3], dates[4], dates[5],  # 0-5
-            discussion_questions[0], discussion_questions[1], discussion_questions[2], discussion_questions[3], discussion_questions[4], discussion_questions[5],  # 6-11
-            name,  # 12
-            scrip  # 13
-        )
+        time_sheets += _time_sheet(dates, discussion_question, name, scrip, goals[name])
 
     jobs = '''
     \\clearpage

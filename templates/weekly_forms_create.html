@@ -65,8 +65,42 @@
                     </div>
                 </div>
 
+
                 <div class="form-row">
-                    <h1>Job</h1>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col">
+                                <h1>Discussion Question for the Week</h1>
+                            </div>
+                        </div>
+                        <div class="row" id="discussion_question_enter">
+                            <div class="col">
+                                <table class="table table-sm">
+                                    <thead class="thead-light">
+                                    <tr class="d-flex">
+                                        <th class="col-2"></th>
+                                        <th class="col-5"></th>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="d-flex">
+                                        <th class="col-2">Reference</th>
+                                        <td class="col-5">{{ form.discussion_ref(class_="col-12") }}</td>
+                                    </tr>
+                                    <tr class="d-flex">
+                                        <th class="col-2">Question</th>
+                                        <td class="col-5">{{ form.discussion_question(cols="46", rows="10") }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-row">
+                    <h1>Jobs</h1>
                     <table class="table table-sm">
                         <thead class="thead-light">
                         <tr class="d-flex">
@@ -103,49 +137,99 @@
                     </table>
                 </div>
                 <div class="form-row">
-                    <h1>Discussion</h1>
+                    <h1>Calvin Goals</h1>
                     <table class="table table-sm">
                         <thead class="thead-light">
                         <tr class="d-flex">
-                            <th class="col-2">Day of Week</th>
-                            <th class="col-5">Discussion Question</th>
+                            <th class="col-2">Goal</th>
+                            <th class="col-5"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr class="d-flex">
-                            <th class="col-2">{{ form.mon_dis.label }}</th>
-                            <td class="col-5">{{ form.mon_dis(class_="col-12") }} </td>
+                            <th class="col-2">{{ form.cal_goal1.label }}</th>
+                            <td class="col-5">{{ form.cal_goal1(class_="col-12") }} </td>
                         </tr>
                         <tr class="d-flex">
-                            <th class="col-2">{{ form.tue_dis.label }}</th>
-                            <td class="col-5">{{ form.tue_dis(class_="col-12") }} </td>
+                            <th class="col-2">{{ form.cal_goal2.label }}</th>
+                            <td class="col-5">{{ form.cal_goal2(class_="col-12") }} </td>
                         </tr>
                         <tr class="d-flex">
-                            <th class="col-2">{{ form.wed_dis.label }}</th>
-                            <td class="col-5">{{ form.wed_dis(class_="col-12") }} </td>
+                            <th class="col-2">{{ form.cal_goal3.label }}</th>
+                            <td class="col-5">{{ form.cal_goal3(class_="col-12") }} </td>
                         </tr>
                         <tr class="d-flex">
-                            <th class="col-2">{{ form.thu_dis.label }}</th>
-                            <td class="col-5">{{ form.thu_dis(class_="col-12") }} </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th class="col-2">{{ form.fri_dis.label }}</th>
-                            <td class="col-5">{{ form.fri_dis(class_="col-12") }} </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th class="col-2">{{ form.sat_dis.label }}</th>
-                            <td class="col-5">{{ form.sat_dis(class_="col-12") }} </td>
+                            <th class="col-2">{{ form.cal_goal4.label }}</th>
+                            <td class="col-5">{{ form.cal_goal4(class_="col-12") }} </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="form-row">
-                    <h1>Book</h1>
+                    <h1>Samuel Goals</h1>
+                    <table class="table table-sm">
+                        <thead class="thead-light">
+                        <tr class="d-flex">
+                            <th class="col-2">Goal</th>
+                            <th class="col-5"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.sam_goal1.label }}</th>
+                            <td class="col-5">{{ form.sam_goal1(class_="col-12") }} </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.sam_goal2.label }}</th>
+                            <td class="col-5">{{ form.sam_goal2(class_="col-12") }} </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.sam_goal3.label }}</th>
+                            <td class="col-5">{{ form.sam_goal3(class_="col-12") }} </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.sam_goal4.label }}</th>
+                            <td class="col-5">{{ form.sam_goal4(class_="col-12") }} </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-row">
+                    <h1>Kay Goals</h1>
+                    <table class="table table-sm">
+                        <thead class="thead-light">
+                        <tr class="d-flex">
+                            <th class="col-2">Goal</th>
+                            <th class="col-5"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.kay_goal1.label }}</th>
+                            <td class="col-5">{{ form.kay_goal1(class_="col-12") }} </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.kay_goal2.label }}</th>
+                            <td class="col-5">{{ form.kay_goal2(class_="col-12") }} </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.kay_goal3.label }}</th>
+                            <td class="col-5">{{ form.kay_goal3(class_="col-12") }} </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th class="col-2">{{ form.kay_goal4.label }}</th>
+                            <td class="col-5">{{ form.kay_goal4(class_="col-12") }} </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-row">
+                    <h1>Math Book</h1>
                     <table class="table table-sm">
                         <thead class="thead-light">
                         <tr class="d-flex">
                             <th class="col-2">Kid</th>
-                            <th class="col-2">Book</th>
+                            <th class="col-5">Book</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -188,13 +272,18 @@
 
             document.getElementById('scripture_ref').value = formData['scripture_ref'];
             document.getElementById('scripture').value = formData['scripture'];
+
             for (i = 0; i < day_lst.length; ++i) {
                 document.getElementById(day_lst[i] + '_job').value = formData[day_lst[i] + '_job'];
-                document.getElementById(day_lst[i] + '_question').value = formData[day_lst[i] + '_question'];
-                for (j = 0; j < kid_lst.length; ++j) {
-                    document.getElementById(kid_lst[j] + '_book').value = formData[kid_lst[j] + '_book'];
-                }
             }
+            for (i = 0; i < kid_lst.length; ++i) {
+                document.getElementById(kid_lst[i] + '_book').value = formData[kid_lst[i] + '_book'];
+                document.getElementById(kid_lst[i] + '_goal1').value = formData[kid_lst[i] + '_goal1'];
+                document.getElementById(kid_lst[i] + '_goal2').value = formData[kid_lst[i] + '_goal2'];
+                document.getElementById(kid_lst[i] + '_goal3').value = formData[kid_lst[i] + '_goal3'];
+                document.getElementById(kid_lst[i] + '_goal4').value = formData[kid_lst[i] + '_goal4'];
+            }
+
 
             function scriptEnter(type) {
                 console.log(type);

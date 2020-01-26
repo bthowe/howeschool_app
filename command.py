@@ -14,6 +14,8 @@ import helpers_classes
 import helpers_constants
 import helpers_functions
 
+# mongod --dbpath ~/path/to/your/app/data
+
 pd.set_option('max_columns', 1000)
 pd.set_option('max_info_columns', 1000)
 pd.set_option('expand_frame_repr', False)
@@ -466,7 +468,12 @@ def weekly_forms_create():
                 [form.cal_book.data, form.sam_book.data, form.kay_book.data],
                 [str(form.weekof.data + datetime.timedelta(days)) for days in range(0, 6)],
                 [form.scripture_ref.data, form.scripture.data],
-                [form.mon_dis.data, form.tue_dis.data, form.wed_dis.data, form.thu_dis.data, form.fri_dis.data, form.sat_dis.data],
+                [form.discussion_ref.data, form.discussion_question.data],
+                {
+                    'Calvin': [form.cal_goal1.data, form.cal_goal2.data, form.cal_goal3.data, form.cal_goal4.data],
+                    'Samuel': [form.sam_goal1.data, form.sam_goal2.data, form.sam_goal3.data, form.sam_goal4.data],
+                    'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data]
+                },
                 [form.mon_job.data, form.tue_job.data, form.wed_job.data, form.thu_job.data, form.fri_job.data, form.sat_job.data]
         )
         data_scriptures = helpers_functions.scripture_list_json(form)
