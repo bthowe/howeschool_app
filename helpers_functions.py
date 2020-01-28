@@ -328,6 +328,46 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_question,
     subprocess.Popen(['sudo', '/usr/local/bin/laton', 'weekly_time_sheet.tex'])
 
 
+def goals_latex_create(kids, goals):
+    header = r'''
+    \documentclass[10pt,twoside,letterpaper,oldfontcommands,openany]{memoir}
+    \usepackage{rotating, caption}
+    \usepackage[margin=0.25in]{geometry}
+    \newcommand{\tabitem}{~~\llap{\textbullet}~~}
+    \pagenumbering{gobble}
+    \begin{document}
+    '''
+
+    footer = r'''\end{document}'''
+
+    goals_table = r'''
+    \begin{table}
+    \centering
+    \begin{tabular}{| l | l | l  | l  | l |}
+    \hline
+    & Spiritual Goal & Physical Goal & Social Goal & Intellectual Goal \\
+    \hline\hline
+    '''
+    for kid in kids:
+        goals_table += r'''{kid} & {g1} & {g2} & {g3} & {g4} \\ \hline '''.format(kid=kid, g1=goals[kid][0], g2=goals[kid][1], g3=goals[kid][2], g4=goals[kid][3])
+
+    goals_table += r'''
+    \end{tabular}
+    \end{table}
+    '''
+
+    content = header + goals_table + footer
+    print(content)
+
+    with open('goals_table.tex', 'w') as f:
+        f.write(content)
+
+    subprocess.Popen(['sudo', '/usr/local/bin/laton', 'goals_table.tex'])
+
+
+
+
+
 def scriptures_latex_create(df):
     df.sort_values('week_start_date', inplace=True)
 

@@ -480,6 +480,14 @@ def weekly_forms_create():
         ret_scriptures = db_forms.db['Scriptures'].insert_one(data_scriptures)
         print('Scriptures data inserted: {}'.format(ret_scriptures))
         helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
+        helpers_functions.goals_latex_create(
+            ['Calvin', 'Samuel', 'Kay'],
+            {
+                'Calvin': [form.cal_goal1.data, form.cal_goal2.data, form.cal_goal3.data, form.cal_goal4.data],
+                'Samuel': [form.sam_goal1.data, form.sam_goal2.data, form.sam_goal3.data, form.sam_goal4.data],
+                'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data]
+            }
+        )
 
         return redirect(url_for('weekly_forms_create'))
     return render_template('weekly_forms_create.html', form=form, date=date, form_data=output, access=current_user.access, page_name='Weekly Forms')
@@ -492,13 +500,17 @@ def download_forms():
 
     path_week_base = '/home/pi/PythonProjects/howeschool_app/weekly_time_sheet.pdf'
     path_scrip_base = '/home/pi/PythonProjects/howeschool_app/scripture_table.pdf'
+    path_goals_base = '/home/pi/PythonProjects/howeschool_app/goals_table.pdf'
     path_week_static = '/home/pi/PythonProjects/howeschool_app/static/weekly_time_sheet.pdf'
     path_scrip_static = '/home/pi/PythonProjects/howeschool_app/static/scripture_table.pdf'
+    path_goals_static = '/home/pi/PythonProjects/howeschool_app/static/goals_table.pdf'
 
     if os.path.exists(path_week_base):
         os.rename(path_week_base, path_week_static)
     if os.path.exists(path_scrip_base):
         os.rename(path_scrip_base, path_scrip_static)
+    if os.path.exists(path_goals_base):
+        os.rename(path_goals_base, path_goals_static)
 
     if request.method == 'POST':  # and form.validate_on_submit():
         helpers_functions.weekly_forms_email()
@@ -509,8 +521,9 @@ def download_forms():
         form=form,
         access=current_user.access,
         page_name='Download Forms',
-        weekly_forms_pdf=str(datetime.datetime.fromtimestamp(os.path.getmtime(path_scrip_static))),
-        scripture_list_pdf=str(datetime.datetime.fromtimestamp(os.path.getmtime(path_week_static)))
+        weekly_forms_pdf=str(datetime.datetime.fromtimestamp(os.path.getmtime(path_week_static))),
+        scripture_list_pdf=str(datetime.datetime.fromtimestamp(os.path.getmtime(path_scrip_static))),
+        goals_list_pdf=str(datetime.datetime.fromtimestamp(os.path.getmtime(path_goals_static)))
     )
 
 
