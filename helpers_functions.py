@@ -466,11 +466,15 @@ def db_writer(db_math_aggregate, user, df):
     print(ret)
 
 
-def miss_lst_create(record, lst):
+def miss_lst_create(record, lst, test=False):
     dict_out = defaultdict(list)
 
-    add_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record[lst]]
-    rem_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record['rem_miss_list']]
+    if test:
+        add_list = [{'chapter': 'test {}'.format(problem['chapter']), 'problem': problem['problem']} for problem in record[lst]]
+        rem_list = [{'chapter': 'test {}'.format(problem['chapter']), 'problem': problem['problem']} for problem in record['rem_miss_list']]
+    else:
+        add_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record[lst]]
+        rem_list = [{'chapter': problem['chapter'], 'problem': problem['problem']} for problem in record['rem_miss_list']]
 
     # todo: this method for removing from miss list is maybe flawed
     for prob in add_list:
@@ -493,7 +497,6 @@ def _test_atomize(record):
     df_out['date'] = record['date']
     df_out['origin'] = np.nan
 
-    # miss_lst = miss_lst_create(record).get(str(record['end_chapter']))
     miss_lst = record['miss_lst'].get(str(record['end_chapter']))
     df_out['correct'] = df_out.apply(lambda x: 0 if str(x['problem']) in miss_lst else 1, axis=1)
 

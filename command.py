@@ -133,9 +133,11 @@ def add_missed_problems():
     if js['test']:
         js['start_chapter'] = 'test {}'.format(js['start_chapter'])
         js['end_chapter'] = 'test {}'.format(js['end_chapter'])
-
-    js['miss_lst'] = helpers_functions.miss_lst_create(js, 'add_miss_list')
-    js['hard_lst'] = helpers_functions.miss_lst_create(js, 'hard_miss_list')
+        js['miss_lst'] = helpers_functions.miss_lst_create(js, 'add_miss_list', test=True)
+        js['hard_lst'] = helpers_functions.miss_lst_create(js, 'hard_miss_list', test=True)
+    else:
+        js['miss_lst'] = helpers_functions.miss_lst_create(js, 'add_miss_list')
+        js['hard_lst'] = helpers_functions.miss_lst_create(js, 'hard_miss_list')
 
     # update aggregate performance and time databases
     if js['test']:
