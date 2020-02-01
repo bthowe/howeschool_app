@@ -498,9 +498,13 @@ def _test_atomize(record):
     df_out['origin'] = np.nan
 
     miss_lst = record['miss_lst'].get(str(record['end_chapter']))
+    if not miss_lst:
+        miss_lst = []
     df_out['correct'] = df_out.apply(lambda x: 0 if str(x['problem']) in miss_lst else 1, axis=1)
 
     hard_lst = record['hard_lst'].get(str(record['end_chapter']))
+    if not hard_lst:
+        hard_lst = []
     df_out['hard'] = df_out.apply(lambda x: 1 if str(x['problem']) in hard_lst else 0, axis=1)
 
     df_out['meta__insert_time'] = str(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
