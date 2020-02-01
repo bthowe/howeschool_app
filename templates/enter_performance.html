@@ -192,18 +192,10 @@
             var rem_miss_list = [];
             var test;
             var view = 'Math Performance';
-<!--            var math_scrip_flag = {{ math_scrip_flag }};-->
 
             document.getElementById('switch_view').focus();
 
-<!--            console.log(math_scrip_flag)-->
             enter_math_performance()
-<!--            if (math_scrip_flag == 1) {-->
-<!--                enter_math_performance()-->
-<!--            }-->
-<!--            else {-->
-<!--                enter_scrip_performance()-->
-<!--            }-->
 
             var today = new Date();
             var dd = today.getDate();
@@ -222,15 +214,26 @@
 
             function enter_math_performance() {
                 document.getElementById("main_div").innerHTML = document.getElementById('math_form_html').innerHTML;
-<!--                document.getElementById("main_form").onsubmit = function() {return false;}-->
-<!--                document.getElementById("main_form").onsubmit = "return false;";-->
                 document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
+                document.getElementById('start_chapter').addEventListener('keydown', function(event) {
+                    if (document.getElementById('start_chapter').value.indexOf('t') > -1) {
+                        if (event.keyCode == 9) {
+                            const chap = document.getElementById('start_chapter').value;
+                            document.getElementById('start_chapter').value = chap.slice(1, chap.length + 1)
+                            document.getElementById('end_chapter').value = chap.slice(1, chap.length + 1)
+
+                            document.getElementById('start_problem').value = 1
+                            document.getElementById('end_problem').value = 20
+                            document.getElementById('testCheck').checked = true;
+
+                            document.getElementById('end_problem').focus()
+                        }
+                    }
+                });
             }
 
             function enter_scrip_performance() {
                 document.getElementById("main_div").innerHTML = document.getElementById('scrip_form_html').innerHTML;
-<!--                document.getElementById("main_form").method = "POST"-->
-<!--                document.getElementById("main_form").action = "scripture_commentary"-->
                 document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
             }
 
