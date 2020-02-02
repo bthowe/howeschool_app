@@ -295,32 +295,55 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_question,
     \\begin{{sidewaystable}}
     \\footnotesize
     \\centering
-    \\begin{{tabular}}{{| p{{1cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} |}}
+    \\begin{{tabular}}{{| p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} |}}
     \\hline\\hline
-     & Monday & Tuesday & Wednesday & Thursday & Friday & Saturday \\\\[10pt]
+     Monday & Tuesday & Wednesday & Thursday & Friday & Saturday \\\\[10pt]
     \\hline\\hline
-    Calvin & \\tabitem {0} & \\tabitem {1} & \\tabitem {2} & \\tabitem {3} & \\tabitem {4} & \\tabitem {5} \\\\
+    \\tabitem {0} & \\tabitem {1} & \\tabitem {2} & \\tabitem {3} & \\tabitem {4} & \\tabitem {5} \\\\
+    \\hline
     & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
+    \\hline
     & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 \\\\
-    \\hline\\hline
-    Samuel & \\tabitem {0} & \\tabitem {1} & \\tabitem {2} & \\tabitem {3} & \\tabitem {4} & \\tabitem {5} \\\\
-    & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
-    & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 \\\\
-    \\hline\\hline
-    Kay & \\tabitem {0} & \\tabitem {1} & \\tabitem {2} & \\tabitem {3} & \\tabitem {4} & \\tabitem {5} \\\\
-    & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
-    & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 \\\\
-    \\hline\\hline
-    Seth & \\tabitem School & \\tabitem School & \\tabitem School & \\tabitem School & \\tabitem School & \\tabitem School \\\\
-     & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
-     & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell \\\\
     \\hline\\hline
     \\end{{tabular}}
     \\end{{sidewaystable}}
     '''.format(jobs[0], jobs[1], jobs[2], jobs[3], jobs[4], jobs[5], '5 minute pickup')
+    # jobs = '''
+    # \\clearpage
+    # \\newpage
+    # \\makeatletter
+    # \\setlength{{\@fptop}}{{5pt}}
+    # \\makeatother
+    # \\begin{{sidewaystable}}
+    # \\footnotesize
+    # \\centering
+    # \\begin{{tabular}}{{| p{{1cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} |}}
+    # \\hline\\hline
+    #  & Monday & Tuesday & Wednesday & Thursday & Friday & Saturday \\\\[10pt]
+    # \\hline\\hline
+    # Calvin & \\tabitem {0} & \\tabitem {1} & \\tabitem {2} & \\tabitem {3} & \\tabitem {4} & \\tabitem {5} \\\\
+    # & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
+    # & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 \\\\
+    # \\hline\\hline
+    # Samuel & \\tabitem {0} & \\tabitem {1} & \\tabitem {2} & \\tabitem {3} & \\tabitem {4} & \\tabitem {5} \\\\
+    # & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
+    # & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 \\\\
+    # \\hline\\hline
+    # Kay & \\tabitem {0} & \\tabitem {1} & \\tabitem {2} & \\tabitem {3} & \\tabitem {4} & \\tabitem {5} \\\\
+    # & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
+    # & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 & \\tabitem 4:30 \\\\
+    # \\hline\\hline
+    # Seth & \\tabitem School & \\tabitem School & \\tabitem School & \\tabitem School & \\tabitem School & \\tabitem School \\\\
+    #  & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} & \\tabitem {6} \\\\
+    #  & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell & \\tabitem Stairwell \\\\
+    # \\hline\\hline
+    # \\end{{tabular}}
+    # \\end{{sidewaystable}}
+    # '''.format(jobs[0], jobs[1], jobs[2], jobs[3], jobs[4], jobs[5], '5 minute pickup')
 
 
     content = header + jobs + time_sheets + math_scripture + footer
+    print(content)
 
     with open('weekly_time_sheet.tex', 'w') as f:
          f.write(content)
