@@ -320,6 +320,15 @@ def weekly_form_latex_create(kids, books, dates, scripture, discussion_question,
 
 
 def goals_latex_create(kids, goals):
+    '''
+    \\begin{{sidewaystable}}
+    \\footnotesize
+    \\centering
+    \\begin{{tabular}}{{| p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} | p{{3.5cm}} |}}
+    \\hline\\hline
+
+    '''
+
     header = r'''
     \documentclass[10pt,twoside,letterpaper,oldfontcommands,openany]{memoir}
     \usepackage{rotating, caption}
@@ -332,9 +341,10 @@ def goals_latex_create(kids, goals):
     footer = r'''\end{document}'''
 
     goals_table = r'''
-    \begin{table}
+    \begin{sidewaystable}
+    \footnotesize
     \centering
-    \begin{tabular}{| l | l | l  | l  | l |}
+    \begin{tabular}{| l | p{3.5cm} | p{3.5cm}  | p{3.5cm}  | p{3.5cm} |}
     \hline
     & Spiritual Goal & Physical Goal & Social Goal & Intellectual Goal \\
     \hline\hline
@@ -344,7 +354,7 @@ def goals_latex_create(kids, goals):
 
     goals_table += r'''
     \end{tabular}
-    \end{table}
+    \end{sidewaystable}
     '''
 
     content = header + goals_table + footer
