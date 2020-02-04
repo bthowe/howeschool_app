@@ -1,6 +1,11 @@
 TODO:
 mongod --dbpath ~/data/db
 
+2020/01/27
+1. goal sheet for Kassie
+2. Seth jobs...maybe reform the job sheet so it just lists jobs
+
+
 2020/01/05
 1. enter_performance
     1. would be nice if it didn't default back to math after submitting scripture
