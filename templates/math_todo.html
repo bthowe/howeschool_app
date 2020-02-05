@@ -1,0 +1,121 @@
+{% extends "base_template.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{super()}}
+{% endblock styles %}
+
+
+{% block body %}
+    {% block navbar %}
+        {{super()}}
+    {% endblock navbar %}
+    {% block content1 %}
+        {{super()}}
+    {% endblock content1 %}
+    {% block main %}
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" id="main">
+        </div>
+
+    {% endblock main %}
+    {% block content2 %}
+        {{ super() }}
+    {% endblock content2 %}
+    {% block scripts %}
+        {{ super() }}
+        <script>
+            df = {{ math_todo | tojson }}
+
+
+            console.log(df['Calvin'])
+            tableCreate('Calvin', df['Calvin'])
+            tableCreate('Samuel', df['Samuel'])
+            tableCreate('Kay', df['Kay'])
+            function tableCreate(name, dbs_details) {
+                var table_row = document.createElement('div');
+                table_row.id = name + '_div';
+                table_row.className = 'row';
+
+<!--                var table_col = document.createElement('div');-->
+<!--                table_col.className = 'col-8';-->
+
+                var table_div = document.createElement('div');
+                table_div.id = 'table_div';
+                table_div.className = 'wrapper container';
+
+                table_div_row1 = document.createElement('div');
+                table_div_row1.className = 'row';
+                table_div_row1.innerHTML = name;
+                table_div.appendChild(table_div_row1)
+
+                table_div_row2 = document.createElement('div');
+                table_div_row2.className = 'row';
+
+                var table = document.createElement('table');
+                table.className = "table";
+<!--                table.className = "table table-striped table-bordered";-->
+
+                var thead = document.createElement('thead');
+                thead.className = "thead-dark";
+
+                var tr = document.createElement('tr');
+                tr.className = "d-flex";
+
+                var th = document.createElement('th');
+                th.scope = 'col';
+                th.setAttribute("style", "width:50px;");
+                tr.appendChild(th);
+
+
+                for (var key in dbs_details[0]) {
+                    var th = document.createElement('th');
+                    th.scope = 'col';
+                    th.innerText = key;
+                    th.className = "col-2";
+                    tr.appendChild(th);
+                }
+                thead.appendChild(tr);
+                table.appendChild(thead);
+
+                var tbody = document.createElement('tbody');
+                for (var i = 0; i < dbs_details.length; i++) {
+                    tr = document.createElement('tr');
+                    tr.className = "d-flex";
+                    var th = document.createElement('th');
+                    th.scope = 'row';
+                    th.innerHTML = i + 1;
+                    th.setAttribute("style", "width:50px;");
+                    tr.appendChild(th);
+
+                    for (var k in dbs_details[i]) {
+                        var td = document.createElement('td');
+                        td.className = "col-2";
+                        td.setAttribute("style", "width:305px;");
+
+                        td_div = document.createElement('div');
+                        td_div.setAttribute("style", "word-break:break-all;");
+                        td_div.innerHTML = dbs_details[i][k];
+
+                        td.appendChild(td_div);
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                }
+
+                table.appendChild(tbody);
+
+                table_div_row2.appendChild(table)
+                table_div.appendChild(table_div_row2)
+                table_row.appendChild(table_div);
+
+                document.getElementById('main').appendChild(table_row)
+            }
+        </script>
+
+    {% endblock scripts %}
+
+{% endblock body %}
+
+
+<!--todo: how to make the tables striped and bordered but not have the rows extend to BFE-->

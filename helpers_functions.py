@@ -571,3 +571,12 @@ def _elapsed_time(record):
         end_time = end_time + datetime.timedelta(hours=12)
 
     return [{'date': record['date'], 'kid': record['kid'], 'duration': int((end_time - start_time).seconds / 60)}]
+
+
+def _math_todo_create(name, db_aggregate, begin_date):
+    df_hard = pd.DataFrame(list(db_aggregate.db[name].find())). \
+        query('date >= "{}"'.format(begin_date)). \
+        query('hard == 1'.format(begin_date)) \
+        [['book', 'chapter', 'problem']]
+    df_hard['book'] = df_hard['book'].map(helpers_constants.book_dict)
+    return df_hard.to_dict('records')

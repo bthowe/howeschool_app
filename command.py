@@ -661,6 +661,20 @@ def qotw():
     return render_template('qotw.html', questions=questions, page_name='Questions of the Week', access=current_user.access)
 
 
+@app.route("/math_todo")
+@helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
+@login_required
+def math_todo():
+    begin_date = str(datetime.date.today() - datetime.timedelta(17))
+
+    df = {
+        'Calvin': helpers_functions._math_todo_create('Calvin', db_aggregate, begin_date),
+        'Samuel': helpers_functions._math_todo_create('Samuel', db_aggregate, begin_date),
+        'Kay': helpers_functions._math_todo_create('Kay', db_aggregate, begin_date)
+    }
+    return render_template('math_todo.html', math_todo=df, access=current_user.access, page_name='Math To Do')
+
+
 @app.route("/database_viewer", methods=['POST', 'GET'])
 @helpers_functions.requires_access_level(helpers_constants.ACCESS['admin'])
 @login_required
