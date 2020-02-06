@@ -1,6 +1,12 @@
 TODO:
 mongod --dbpath ~/data/db
 
+
+2020/02/05
+1. how to make the tables striped and bordered but not have the rows extend to BFE
+2. some record when review problems are done and entering these 
+3. update math todo to reflect these review problems
+
 2020/01/27
 1. goal sheet for Kassie
 2. Seth jobs...maybe reform the job sheet so it just lists jobs

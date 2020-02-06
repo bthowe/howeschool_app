@@ -64,7 +64,7 @@ class MathDailyForm(FlaskForm):
     end_time = TimeField('Stop Time', validators=[InputRequired()], id='end_time', render_kw={"placeholder": "hh:mm"})
 
 class ScriptureDailyForm(FlaskForm):
-    choose_kid = SelectField('Name', choices=[('choose', 'Choose...'), ('Calvin', 'Calvin'), ('Samuel', 'Samuel'), ('Kay', 'Kay')], validators=[InputRequired()], id='choose_kid')
+    choose_kid = SelectField('Name', choices=[('choose', 'Choose...'), ('Calvin', 'Calvin'), ('Samuel', 'Samuel'), ('Kay', 'Kay')], validators=[InputRequired()], id='choose_kid', render_kw={'onchange': 'focus_to_date()'})
     date = DateField('Date', validators=[InputRequired()], id='date')
     start_book = StringField('Start Book', validators=[InputRequired()], id='start_book')
     start_chapter = IntegerField('Start Chapter', validators=[InputRequired()], id='start_chapter')
