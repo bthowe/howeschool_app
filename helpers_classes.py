@@ -46,9 +46,14 @@ class WeeklyForm(FlaskForm):
     kay_goal2 = StringField('Physical', validators=[InputRequired()], id='kay_goal2')
     kay_goal3 = StringField('Social', validators=[InputRequired()], id='kay_goal3')
     kay_goal4 = StringField('Intellectual', validators=[InputRequired()], id='kay_goal4')
+    seth_goal1 = StringField('Spiritual', validators=[InputRequired()], id='seth_goal1')
+    seth_goal2 = StringField('Physical', validators=[InputRequired()], id='seth_goal2')
+    seth_goal3 = StringField('Social', validators=[InputRequired()], id='seth_goal3')
+    seth_goal4 = StringField('Intellectual', validators=[InputRequired()], id='seth_goal4')
     cal_book = StringField('Calvin', validators=[InputRequired()], id='calvin_book')
     sam_book = StringField('Samuel', validators=[InputRequired()], id='samuel_book')
     kay_book = StringField('Kay', validators=[InputRequired()], id='kay_book')
+    seth_book = StringField('Seth', validators=[InputRequired()], id='seth_book')
 
 
 class MathDailyForm(FlaskForm):

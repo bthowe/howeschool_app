@@ -458,15 +458,16 @@ def weekly_forms_create():
         ret_weekly = db_forms.db['Weekly'].insert_one(data_weekly)
         print('Weekly data inserted: {}'.format(ret_weekly))
         helpers_functions.weekly_form_latex_create(
-                ['Calvin', 'Samuel', 'Kay'],
-                [form.cal_book.data, form.sam_book.data, form.kay_book.data],
+                ['Calvin', 'Samuel', 'Kay', 'Seth'],
+                [form.cal_book.data, form.sam_book.data, form.kay_book.data, form.seth_book.data],
                 [str(form.weekof.data + datetime.timedelta(days)) for days in range(0, 6)],
                 [form.scripture_ref.data, form.scripture.data],
                 [form.discussion_ref.data, form.discussion_question.data],
                 {
                     'Calvin': [form.cal_goal1.data, form.cal_goal2.data, form.cal_goal3.data, form.cal_goal4.data],
                     'Samuel': [form.sam_goal1.data, form.sam_goal2.data, form.sam_goal3.data, form.sam_goal4.data],
-                    'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data]
+                    'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data],
+                    'Seth': [form.seth_goal1.data, form.seth_goal2.data, form.seth_goal3.data, form.seth_goal4.data]
                 },
                 [form.mon_job.data, form.tue_job.data, form.wed_job.data, form.thu_job.data, form.fri_job.data, form.sat_job.data]
         )
@@ -475,11 +476,12 @@ def weekly_forms_create():
         print('Scriptures data inserted: {}'.format(ret_scriptures))
         helpers_functions.scripture_table_create(pd.DataFrame(list(db_forms.db['Scriptures'].find())))
         helpers_functions.goals_latex_create(
-            ['Calvin', 'Samuel', 'Kay'],
+            ['Calvin', 'Samuel', 'Kay', 'Seth'],
             {
                 'Calvin': [form.cal_goal1.data, form.cal_goal2.data, form.cal_goal3.data, form.cal_goal4.data],
                 'Samuel': [form.sam_goal1.data, form.sam_goal2.data, form.sam_goal3.data, form.sam_goal4.data],
-                'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data]
+                'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data],
+                'Seth': [form.seth_goal1.data, form.seth_goal2.data, form.seth_goal3.data, form.seth_goal4.data]
             }
         )
 

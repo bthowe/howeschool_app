@@ -168,11 +168,9 @@ def _time_sheet(dates, discussion_question, name, scrip, goals):
     \\hline
     Math & & & & & & & & & & & &\\\\[70pt]
     \\hline
-    Reading & & & & & & & & & & & &\\\\[70pt]
+    Reading & & & & & & & & & & & &\\\\[140pt]
     \\hline
     Writing & & & & & & & & & & & &\\\\[70pt]
-    \\hline
-    Vocabulary & & & & & & & & & & & &\\\\[70pt]
     \\hline
     \\hline
     &
