@@ -176,8 +176,8 @@ def _time_sheet(dates, discussion_question, name, scrip, goals):
     \\hline
     \\hline
     &
-    \\multicolumn{{3}}{{||l}}{{Goal: {6}}} &
-    \\multicolumn{{3}}{{||l|}}{{Question of the Week: {7}}}
+    \\multicolumn{{3}}{{||p{{10.5cm}}}}{{Goal: {6}}} &
+    \\multicolumn{{3}}{{||p{{10.5cm}}|}}{{Question of the Week: {7}}}
     \\\\[70pt]
     \\hline
     \\end{{tabular}}
