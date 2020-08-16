@@ -39,20 +39,22 @@ def weekly_data_json(form):
         "fri_job": form.fri_job.data,
         "sat_job": form.sat_job.data,
         "calvin_goal1": form.cal_goal1.data,
-        "calvin_goal2": form.cal_goal2.data,
-        "calvin_goal3": form.cal_goal3.data,
-        "calvin_goal4": form.cal_goal4.data,
+        # "calvin_goal2": form.cal_goal2.data,
+        # "calvin_goal3": form.cal_goal3.data,
+        # "calvin_goal4": form.cal_goal4.data,
         "samuel_goal1": form.sam_goal1.data,
-        "samuel_goal2": form.sam_goal2.data,
-        "samuel_goal3": form.sam_goal3.data,
-        "samuel_goal4": form.sam_goal4.data,
+        # "samuel_goal2": form.sam_goal2.data,
+        # "samuel_goal3": form.sam_goal3.data,
+        # "samuel_goal4": form.sam_goal4.data,
         "kay_goal1": form.kay_goal1.data,
-        "kay_goal2": form.kay_goal2.data,
-        "kay_goal3": form.kay_goal3.data,
-        "kay_goal4": form.kay_goal4.data,
+        # "kay_goal2": form.kay_goal2.data,
+        # "kay_goal3": form.kay_goal3.data,
+        # "kay_goal4": form.kay_goal4.data,
+        "seth_goal1": form.seth_goal1.data,
         "calvin_book": form.cal_book.data,
         "samuel_book": form.sam_book.data,
-        "kay_book": form.kay_book.data
+        "kay_book": form.kay_book.data,
+        "seth_book": form.seth_book.data
     }
     return data
 
@@ -153,42 +155,39 @@ def _time_sheet(dates, discussion_question, name, scrip, goals):
     return '''
     \\begin{{sidewaystable}}
     \\centering
-    \\begin{{tabular}}{{|l|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|p{{1.5cm}}|}}
-    \\multicolumn{{7}}{{l}}{{Name: {11}}} \\\\
-    \\multicolumn{{13}}{{p{{25cm}}}}{{Scripture: {12}}} \\\\
+    \\begin{{tabular}}{{|l|p{{3.5cm}}|p{{3.5cm}}|p{{3.5cm}}|p{{3.5cm}}|p{{3.5cm}}|p{{3.5cm}}|}}
+    \\multicolumn{{7}}{{l}}{{Name: {8}}} \\\\
+    \\multicolumn{{7}}{{p{{25cm}}}}{{Scripture: {9}}} \\\\
     \\multicolumn{{7}}{{l}}{{}} \\\\
     \\multicolumn{{7}}{{l}}{{}} \\\\
-    \\cline{{2-13}}
-    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{Monday}} & \\multicolumn{{2}}{{c|}}{{Tuesday}} & \\multicolumn{{2}}{{c|}}{{Wednesday}} & \\multicolumn{{2}}{{c|}}{{Thursday}} & \\multicolumn{{2}}{{c|}}{{Friday}} & \\multicolumn{{2}}{{c|}}{{Saturday}} \\\\
-    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{2}}{{|c|}}{{{0}}} & \\multicolumn{{2}}{{c|}}{{{1}}} & \\multicolumn{{2}}{{c|}}{{{2}}} & \\multicolumn{{2}}{{c|}}{{{3}}} & \\multicolumn{{2}}{{c|}}{{{4}}} & \\multicolumn{{2}}{{c|}}{{{5}}} \\\\
-    \\cline{{2-13}}
-    \\cline{{2-13}}
-    \\multicolumn{{1}}{{l|}}{{}} & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop & Start & Stop \\\\
+    \\cline{{2-7}}
+    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{1}}{{|c|}}{{Monday}} & \\multicolumn{{1}}{{c|}}{{Tuesday}} & \\multicolumn{{1}}{{c|}}{{Wednesday}} & \\multicolumn{{1}}{{c|}}{{Thursday}} & \\multicolumn{{1}}{{c|}}{{Friday}} & \\multicolumn{{1}}{{c|}}{{Saturday}} \\\\
+    \\multicolumn{{1}}{{l}}{{}} & \\multicolumn{{1}}{{|c|}}{{{0}}} & \\multicolumn{{1}}{{c|}}{{{1}}} & \\multicolumn{{1}}{{c|}}{{{2}}} & \\multicolumn{{1}}{{c|}}{{{3}}} & \\multicolumn{{1}}{{c|}}{{{4}}} & \\multicolumn{{1}}{{c|}}{{{5}}} \\\\
+    \\cline{{2-7}}
+    \\cline{{2-7}}
+    \\multicolumn{{1}}{{l|}}{{}} & \\multicolumn{{1}}{{|c|}}{{Time}} & \\multicolumn{{1}}{{c|}}{{Time}} & \\multicolumn{{1}}{{c|}}{{Time}} & \\multicolumn{{1}}{{c|}}{{Time}} & \\multicolumn{{1}}{{c|}}{{Time}} & \\multicolumn{{1}}{{c|}}{{Time}} \\\\
     \\hline
+    \\hline 
+    Math & & & & & & \\\\[70pt]
     \\hline
-    Math & & & & & & & & & & & &\\\\[70pt]
+    Reading & & & & & & \\\\[140pt]
     \\hline
-    Reading & & & & & & & & & & & &\\\\[140pt]
-    \\hline
-    Writing & & & & & & & & & & & &\\\\[70pt]
+    Writing & & & & & & \\\\[70pt]
     \\hline
     \\hline
     &
-    \\multicolumn{{2}}{{||p{{3cm}}|}}{{Spiritual Goal: {6}}} &
-    \\multicolumn{{2}}{{p{{3cm}}|}}{{Physical Goal: {7}}} &
-    \\multicolumn{{2}}{{p{{3cm}}|}}{{Social Goal: {8}}} &
-    \\multicolumn{{2}}{{p{{3cm}}||}}{{Intellectual Goal: {9}}} &
-    \\multicolumn{{4}}{{p{{6cm}}|}}{{{10}}}
+    \\multicolumn{{3}}{{||l}}{{Goal: {6}}} &
+    \\multicolumn{{3}}{{||l|}}{{Question of the Week: {7}}}
     \\\\[70pt]
     \\hline
     \\end{{tabular}}
     \\end{{sidewaystable}}
     '''.format(
         dates[0], dates[1], dates[2], dates[3], dates[4], dates[5],  # 0-5
-        goals[0], goals[1], goals[2], goals[3],  # 6-9
-        '{0} (from {1})'.format(discussion_question[1], discussion_question[0]),  # 10
-        name,  # 11
-        scrip  # 12
+        goals[0],  # 6
+        '{0} (from {1})'.format(discussion_question[1], discussion_question[0]),  # 7
+        name,  # 8
+        scrip  # 9
     )
 
 
@@ -348,7 +347,7 @@ def goals_latex_create(kids, goals):
     \hline\hline
     '''
     for kid in kids:
-        goals_table += r'''{kid} & {g1} & {g2} & {g3} & {g4} \\ \hline '''.format(kid=kid, g1=goals[kid][0], g2=goals[kid][1], g3=goals[kid][2], g4=goals[kid][3])
+        goals_table += r'''{kid} & {g1} & & &  \\ \hline '''.format(kid=kid, g1=goals[kid][0])
 
     goals_table += r'''
     \end{tabular}

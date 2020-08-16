@@ -464,10 +464,10 @@ def weekly_forms_create():
                 [form.scripture_ref.data, form.scripture.data],
                 [form.discussion_ref.data, form.discussion_question.data],
                 {
-                    'Calvin': [form.cal_goal1.data, form.cal_goal2.data, form.cal_goal3.data, form.cal_goal4.data],
-                    'Samuel': [form.sam_goal1.data, form.sam_goal2.data, form.sam_goal3.data, form.sam_goal4.data],
-                    'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data],
-                    'Seth': [form.seth_goal1.data, form.seth_goal2.data, form.seth_goal3.data, form.seth_goal4.data]
+                    'Calvin': [form.cal_goal1.data],
+                    'Samuel': [form.sam_goal1.data],
+                    'Kay': [form.kay_goal1.data],
+                    'Seth': [form.seth_goal1.data]
                 },
                 [form.mon_job.data, form.tue_job.data, form.wed_job.data, form.thu_job.data, form.fri_job.data, form.sat_job.data]
         )
@@ -478,10 +478,10 @@ def weekly_forms_create():
         helpers_functions.goals_latex_create(
             ['Calvin', 'Samuel', 'Kay', 'Seth'],
             {
-                'Calvin': [form.cal_goal1.data, form.cal_goal2.data, form.cal_goal3.data, form.cal_goal4.data],
-                'Samuel': [form.sam_goal1.data, form.sam_goal2.data, form.sam_goal3.data, form.sam_goal4.data],
-                'Kay': [form.kay_goal1.data, form.kay_goal2.data, form.kay_goal3.data, form.kay_goal4.data],
-                'Seth': [form.seth_goal1.data, form.seth_goal2.data, form.seth_goal3.data, form.seth_goal4.data]
+                'Calvin': [form.cal_goal1.data],
+                'Samuel': [form.sam_goal1.data],
+                'Kay': [form.kay_goal1.data],
+                'Seth': [form.seth_goal1.data]
             }
         )
 
